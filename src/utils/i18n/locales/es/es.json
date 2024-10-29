@@ -1,0 +1,11 @@
+{
+    "welcome": "Bienvenido a MovingRentals",
+    "home": "Esta es la página principal.",
+    "features": "Características",
+    "customers": "Clientes",
+    "integrations": "Integraciones",
+    "login": "Iniciar sesión",
+    "signup": "Regístrate",
+    "select_language": "Seleccionar idioma",
+    "footer_copyright": "© 2023 MovingRentals. Todos los derechos reservados."
+}

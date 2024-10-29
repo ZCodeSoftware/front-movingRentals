@@ -1,9 +1,13 @@
+import { useTranslation } from "react-i18next"
+import Layout from "./layout"
+
 function App() {
+  const { t } = useTranslation()
 
   return (
-    <>
-      Moving Rentals
-    </>
+    <Layout>
+      {t("welcome")}
+    </Layout>
   )
 }
 
