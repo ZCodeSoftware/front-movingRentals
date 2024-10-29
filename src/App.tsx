@@ -1,12 +1,11 @@
-import { useTranslation } from "react-i18next"
 import Layout from "./layout"
+import Hero from "./components/hero"
 
 function App() {
-  const { t } = useTranslation()
 
   return (
     <Layout>
-      {t("welcome")}
+      <Hero />
     </Layout>
   )
 }

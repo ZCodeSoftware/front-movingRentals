@@ -7,5 +7,8 @@
     "login": "Login",
     "signup": "Sign Up",
     "select_language": "Select Language",
-    "footer_copyright": "© 2023 MovingRentals. All rights reserved."
+    "hero_title": "Welcome to MovingRentals",
+    "hero_subtitle": "Your journey starts here",
+    "hero_button": "Get Started",
+    "footer_copyright": "© 2024 MovingRentals. All rights reserved."
 }
