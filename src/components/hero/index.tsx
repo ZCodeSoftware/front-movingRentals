@@ -1,6 +1,7 @@
 // components/Hero.tsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const Hero: React.FC = () => {
     const { t } = useTranslation();
@@ -18,7 +19,9 @@ const Hero: React.FC = () => {
                 <h1 className="text-4xl md:text-6xl font-bold mb-4">{t('hero_title')}</h1>
                 <p className="text-lg md:text-2xl mb-8">{t('hero_subtitle')}</p>
                 <button className="bg-yellow-500 text-black px-6 py-3 rounded-md text-lg md:text-xl font-semibold">
+                    <Link to='/home'>
                     {t('hero_button')}
+                    </Link>
                 </button>
             </div>
         </div>
