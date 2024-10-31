@@ -10,5 +10,6 @@
     "hero_title": "Welcome to MovingRentals",
     "hero_subtitle": "Your journey starts here",
     "hero_button": "Get Started",
-    "footer_copyright": "© 2024 MovingRentals. All rights reserved."
+    "footer_copyright": "© 2024 MovingRentals. All rights reserved.",
+    "not_products_available": "No products available."
 }
