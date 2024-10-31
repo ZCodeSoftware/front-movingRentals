@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { fetchCategories } from "../../services/categories/dataService";
+import { fetchCategories } from "../../services/categories/categoriesService";
 import { ICategories } from "../../services/categories/models/categories.interface";
 import { useTranslation } from 'react-i18next';
 import { Card, CardFooter, Image } from "@nextui-org/react";
 import ImageSlider from "../../components/imageSlider/ImageSlider";
 import { images } from "../../mocks/imageSliderHome";
+import { Link } from "react-router-dom";
 
 const Home = () => {
 
@@ -31,6 +32,7 @@ const Home = () => {
       <section className="flex flex-wrap">
         {data.map(c => (
           <div className="p-2 w-full sm:w-1/2 md:w-1/3" key={c.id}>
+            <Link to={`/list-by-category/${c.id}`}>
             <Card radius="none" className="h-full" isPressable>
               <Image
                 alt="Test"
@@ -43,6 +45,7 @@ const Home = () => {
                 <p className="text-white/80 font-black">{c.name}</p>
               </CardFooter>
             </Card>
+            </Link>
           </div>
         ))}
       </section>
