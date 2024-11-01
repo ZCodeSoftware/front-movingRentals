@@ -40,7 +40,7 @@ const ListByCategory = () => {
           </section>
           <section className='flex flex-wrap'>
             {data.map(p => (
-              <div className='p-2 w-full sm:w-1/2 md:w-1/3' key={p.id}>
+              <div className='p-2 w-full sm:w-1/2 md:w-1/3' key={p._id}>
                 <Card radius='none' className='h-full w-full' isPressable>
                   <CardHeader className='pb-0 py-2 px-4 flex-col items-start border'>
                     <p className=' font-black'>{p.name}</p>
