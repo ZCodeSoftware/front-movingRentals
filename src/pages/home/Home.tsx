@@ -30,8 +30,8 @@ const Home = () => {
     <main>
       <section className='flex w-full justify-center flex-wrap p-4'>
         {data.map(c => (
-          <div className='p-2 w-2/4 md:w-1/3' key={c.id}>
-            <Link to={`/list-by-category/${c.id}`}>
+          <div className='p-2 w-2/4 md:w-1/3' key={c._id}>
+            <Link to={`/list-by-category/${c._id}`}>
               <Card radius='none' className='h-full' isPressable>
                 <Image
                   alt='Test'
