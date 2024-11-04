@@ -25,5 +25,15 @@
 
   "listByCategory": {
     "not_products_available": "No hay productos disponibles"
+  },
+
+  "logIn": {
+    "log_in_title": "Accede a tu cuenta",
+    "log_in": "Acceder",
+    "log_in_google": "Inicia sesión con Google",
+    "not_registered": "No estas registrado?",
+    "password": "Contraseña",
+    "email": "Correo electrónico",
+    "register": "Crea una cuenta"
   }
 }
