@@ -60,7 +60,7 @@ const ListByCategory = () => {
           </section>
         </main>
       ) : (
-        <h1>{t('not_products_available')}</h1>
+        <h1>{t('listByCategory.not_products_available')}</h1>
       )}
     </>
   )

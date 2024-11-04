@@ -52,16 +52,16 @@ const Home = () => {
       <section className='flex justify-center flex-wrap p-6'>
         <div className='flex flex-col md:flex-row items-center justify-evenly w-full'>
           <div className='p-2'>
-            <h1>{t('home')}</h1>
-            <p>{t('home')}</p>
+            <h1>{t('homePage.home')}</h1>
+            <p>{t('homePage.home')}</p>
           </div>
           <div className='p-2'>
-            <h1>{t('home')}</h1>
-            <p>{t('home')}</p>
+            <h1>{t('homePage.home')}</h1>
+            <p>{t('homePage.home')}</p>
           </div>
           <div className='p-2'>
-            <h1>{t('home')}</h1>
-            <p>{t('home')}</p>
+            <h1>{t('homePage.home')}</h1>
+            <p>{t('homePage.home')}</p>
           </div>
         </div>
       </section>
