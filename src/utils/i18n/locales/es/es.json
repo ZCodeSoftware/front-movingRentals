@@ -1,15 +1,29 @@
 {
+  "landingPage": {
     "welcome": "Bienvenido a MovingRentals",
-    "home": "Esta es la página principal.",
+    "hero_subtitle": "Tu viaje comienza aquí",
+    "hero_button": "Comenzar",
+    "hero_title": "Bienvenido a MovingRentals"
+  },
+
+  "homePage": {
+    "home": "Esta es la página principal."
+  },
+
+  "navBar": {
     "features": "Características",
     "customers": "Clientes",
     "integrations": "Integraciones",
     "login": "Iniciar sesión",
     "signup": "Regístrate",
-    "select_language": "Seleccionar idioma",
-    "hero_title": "Bienvenido a MovingRentals",
-    "hero_subtitle": "Tu viaje comienza aquí",
-    "hero_button": "Comenzar",
-    "footer_copyright": "© 2024 MovingRentals. Todos los derechos reservados.",
+    "select_language": "Seleccionar idioma"
+  },
+
+  "footer": {
+    "footer_copyright": "© 2024 MovingRentals. Todos los derechos reservados."
+  },
+
+  "listByCategory": {
     "not_products_available": "No hay productos disponibles"
+  }
 }
