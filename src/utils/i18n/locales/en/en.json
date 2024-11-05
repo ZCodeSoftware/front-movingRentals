@@ -35,5 +35,29 @@
     "password": "Password",
     "email": "Email",
     "register": "Create an account"
+  },
+
+  "SignIn": {
+    "sign_in_title": "Create your account",
+    "sign_in": "Create account",
+    "have_an_account": "Are you registered?",
+    "confirm_password": "Confirm your password",
+    "formValidations": {
+      "requires": {
+        "email_require": "Email is required",
+        "password_require": "Password is required",
+        "confirm_password_require": "You must confirm your password",
+        "confirm_password_match": "Passwords do not match"
+      },
+      "valid": {
+        "uppercase": "Must contain at least one uppercase letter",
+        "lowercase": "Must contain at least one lowercase letter",
+        "number": "Must contain at least one number",
+        "special_character": "Must contain at least one special character",
+        "characters": "Must contain at least 8 characters",
+        "@": "Must contain an @",
+        "dot": "Must contain a dot"
+      }
+    }
   }
 }

@@ -35,5 +35,29 @@
     "password": "Contraseña",
     "email": "Correo electrónico",
     "register": "Crea una cuenta"
+  },
+
+  "SignIn": {
+    "sign_in_title": "Creá tu cuenta",
+    "sign_in": "Crear cuenta",
+    "have_an_account": "Ya estas registrado?",
+    "confirm_password": "Confirmá tu contraseña",
+    "formValidations": {
+      "requires": {
+        "email_require": "El correo es obligatorio",
+        "password_require": "La contraseña es obligatoria",
+        "confirm_password_require": "Debes confirmar tu contraseña",
+        "confirm_password_match": "Las contraseñas no coinciden"
+      },
+      "valid": {
+        "uppercase": "Debe contener al menos una letra mayúscula",
+        "lowercase": "Debe contener al menos una letra minúscula",
+        "number": "Debe contener al menos un número",
+        "special_character": "Debe contener al menos un caracter especial",
+        "characters": "Debe contener al menos 8 caracteres",
+        "@": "Debe contener un @",
+        "dot": "Debe contener un punto"
+      }
+    }
   }
 }
