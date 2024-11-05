@@ -1,4 +1,4 @@
-export interface ILoginInterface {
+export interface IAuth {
   email: string
   password: string
 }

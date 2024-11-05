@@ -6,3 +6,5 @@ export const LIST_BY_CATEGORY_ROUTE = '/list-by-category/:id'
 export const CART_ROUTE = '/cart'
 // Login
 export const LOGIN_ROUTE = '/login'
+// Signin
+export const SIGNIN_ROUTE = '/signin'
