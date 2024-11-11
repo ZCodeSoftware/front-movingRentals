@@ -1,62 +1,55 @@
 import { useState } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { login } from '../../../services/auth/login/POST/login.post.service'
-import { validateEmail } from '../utils/validations/email-validation'
-import { useNavigate } from 'react-router-dom'
 import { Button, Input } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
+import { ILoginForm } from './models/form.interface'
+import TextError from '../../../components/textError/TextError'
+import { Link } from 'react-router-dom'
 
 const Login = () => {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<ILoginForm>({ mode: 'onChange', reValidateMode: 'onChange' })
+
   const { t } = useTranslation()
-  const [disabled, setDisabled] = useState(true)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const navigate = useNavigate()
+  const [isFocused, setIsFocused] = useState({ email: false, password: false })
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
-    if (form.email && validateEmail(form.email) && form.password) {
-      setDisabled(false)
-    } else {
-      setDisabled(true)
-    }
-  }
-
-  const handleSubmit = async () => {
-    try {
-      await login(form)
-      navigate('/home')
-    } catch (error) {
-      throw error
-    }
+  const onSubmit: SubmitHandler<ILoginForm> = async data => {
+    await login(data)
   }
 
   return (
     <main className='w-full h-screen'>
-      <form className='w-full h-screen flex flex-col justify-center items-center '>
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full h-screen flex flex-col justify-center items-center '>
         <h1 className='text-3xl text-center p-4'>{t('logIn.log_in_title')}</h1>
         <section className='w-full md:w-2/5 p-4 mt-10'>
           <Input
+            {...register('email', {
+              required: t('SignIn.formValidations.requires.email_require')
+            })}
+            onFocus={() => setIsFocused({ ...isFocused, email: true })}
+            onBlur={() => setIsFocused({ ...isFocused, email: false })}
             type='email'
             label={t('logIn.email')}
             name='email'
             className='p-2'
-            value={form.email}
-            onChange={handleChange}
           />
+          {isFocused.email && errors.email && errors.email.message && <TextError error={errors.email.message} />}
           <Input
+            {...register('password', {
+              required: t('SignIn.formValidations.requires.password_require')
+            })}
+            onFocus={() => setIsFocused({ ...isFocused, password: true })}
+            onBlur={() => setIsFocused({ ...isFocused, password: false })}
             type={isPasswordVisible ? 'text' : 'password'}
             label={t('logIn.password')}
             name='password'
             className='p-2'
-            value={form.password}
-            onChange={handleChange}
             endContent={
               <button
                 className='focus:outline-none'
@@ -72,15 +65,12 @@ const Login = () => {
               </button>
             }
           />
+          {isFocused.password && errors.password && errors.password.message && (
+            <TextError error={errors.password.message} />
+          )}
         </section>
         <section className='flex flex-col w-3/4 md:w-2/12'>
-          <Button
-            className={`p-2 ${disabled ? 'bg-gray-200 cursor-not-allowed hover:bg-gray-200' : 'bg-blue-500'}`}
-            onClick={handleSubmit}
-            disabled={disabled}
-            data-hover={disabled}
-            disableAnimation={disabled}
-          >
+          <Button className='p-2' type='submit'>
             {t('logIn.log_in')}
           </Button>
           <Button className='mt-4' type='button'>
@@ -89,7 +79,9 @@ const Login = () => {
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('logIn.not_registered')}</p>
-          <Button type='button'>{t('logIn.register')}</Button>
+          <Button type='button'>
+            <Link to={'/signin'}>{t('logIn.register')}</Link>
+          </Button>
         </section>
       </form>
     </main>

@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { signin } from '../../../services/auth/signin/POST/signin.post.service'
 import { login } from '../../../services/auth/login/POST/login.post.service'
 import useFormValidations from '../../../hooks/useFormValidation'
-import { IForm } from './models/form.interface'
+import { ISigninForm } from './models/form.interface'
 import TextError from '../../../components/textError/TextError'
+import { Link } from 'react-router-dom'
 
 const Signin = () => {
   const { t } = useTranslation()
@@ -21,11 +22,11 @@ const Signin = () => {
     formState: { errors },
     handleSubmit,
     watch
-  } = useForm<IForm>({ mode: 'onChange', reValidateMode: 'onChange' })
+  } = useForm<ISigninForm>({ mode: 'onChange', reValidateMode: 'onChange' })
 
   const { validatePassword, validateEmail } = useFormValidations()
 
-  const onSubmit: SubmitHandler<IForm> = async data => {
+  const onSubmit: SubmitHandler<ISigninForm> = async data => {
     const response = await signin({ email: data.email, password: data.password })
     if (response) {
       await login({ email: data.email, password: data.password })
@@ -122,7 +123,9 @@ const Signin = () => {
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('SignIn.have_an_account')}</p>
-          <Button type='button'>{t('logIn.log_in')}</Button>
+          <Button type='button'>
+            <Link to={'/login'}>{t('logIn.log_in')}</Link>
+          </Button>
         </section>
       </form>
     </main>
