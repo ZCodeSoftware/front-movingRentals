@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { fetchCategories } from '../../services/categories/categoriesService'
 import { ICategories } from '../../services/categories/models/categories.interface'
 import { useTranslation } from 'react-i18next'
-import { Card, CardFooter, Image } from '@nextui-org/react'
 import ImageSlider from '../../components/imageSlider/ImageSlider'
 import { images } from '../../mocks/imageSliderHome'
-import { Link } from 'react-router-dom'
+import RentalSearch from '../../components/rentalSearch/RentalSearch'
+import HomeCards from './components/HomeCards'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
@@ -22,32 +22,44 @@ const Home = () => {
     getData()
   }, [])
 
+  const vehicles = data.filter(v => v._id != '6')
+  const tours = data.filter(t => t._id === '6')
+
   if (loading) {
     return <div>Loading...</div>
   }
 
   return (
-    <main>
-      <section className='flex w-full justify-center flex-wrap p-4'>
-        {data.map(c => (
-          <div className='p-2 w-2/4 md:w-1/3' key={c._id}>
-            <Link to={`/list-by-category/${c._id}`}>
-              <Card radius='none' className='h-full' isPressable>
-                <Image
-                  alt='Test'
-                  sizes='200px'
-                  className=' h-[300px] md:h-[600px] object-cover'
-                  radius='none'
-                  src={c.image}
-                  width='100%'
-                />
-                <CardFooter className='justify-center before:bg-white/10 bg-gray-400 bg-opacity-30 border-white/80 border-1 overflow-hidden absolute before:rounded-xl bottom-0 w-full shadow-small z-10'>
-                  <p className='text-white/80 font-black'>{c.name}</p>
-                </CardFooter>
-              </Card>
-            </Link>
+    <main className='w-full'>
+      <div className='relative hidden md:block '>
+        <div
+          className='absolute top-0 left-0 w-full h-80 object-cover bg-top'
+          style={{
+            backgroundImage:
+              'url(https://plus.unsplash.com/premium_photo-1669748157617-a3a83cc8ea23?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHVlc3RhJTIwZGUlMjBzb2wlMjBwbGF5YXxlbnwwfHwwfHx8MA%3D%3D)'
+          }}
+        ></div>
+      </div>
+      <div className='block md:sticky top-16 z-20'>
+        <RentalSearch categoriesData={data} />
+      </div>
+      <section className='flex flex-col md:items-center md:mt-24'>
+        <div className='p-6'>
+          <h1 className='text-xl mb-2'>Vehicles</h1>
+          <div className='flex w-full mx-auto overflow-x-auto'>
+            <div className='flex space-x-4 md:space-x-6 w-max'>
+              <HomeCards items={vehicles} />
+            </div>
           </div>
-        ))}
+        </div>
+      </section>
+      <section className='flex flex-col items-center'>
+        <div className='p-6'>
+          <h1 className='text-xl mb-2'>Tours</h1>
+          <div className='flex space-x-4 md:space-x-6 w-max'>
+            <HomeCards items={tours} />
+          </div>
+        </div>
       </section>
       <section className='flex justify-center flex-wrap p-6'>
         <div className='flex flex-col md:flex-row items-center justify-evenly w-full'>
