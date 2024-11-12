@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { fetchProducts } from '../../services/products/productsService'
 import { IProducts } from '../../services/products/models/products.interface'
 import { useTranslation } from 'react-i18next'
-import { Card, CardBody, CardHeader, Image } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, CardFooter, Image } from '@nextui-org/react'
 
 const ListByCategory = () => {
   const [data, setData] = useState<IProducts[]>([])
@@ -54,6 +54,18 @@ const ListByCategory = () => {
                       width='100%'
                     />
                   </CardBody>
+                  <CardFooter className='flex justify-center items-center border px-4 py-0'>
+                    <div className='w-2/4 h-full flex flex-col items-start text-left p-2'>
+                      <h1 className='font-bold'>Specs</h1>
+                      <p>Engine: {p.specs?.engine}</p>
+                      <p>Max speed: {p.specs?.maxSpeed}</p>
+                      <p>Passenger capacity: {p.specs?.passenger}</p>
+                    </div>
+                    <div className='w-2/4 h-full flex flex-col items-start text-left p-2'>
+                      <h1 className='font-bold'>PRICE PER 24HR</h1>
+                      <p>${p.price}</p>
+                    </div>
+                  </CardFooter>
                 </Card>
               </div>
             ))}
