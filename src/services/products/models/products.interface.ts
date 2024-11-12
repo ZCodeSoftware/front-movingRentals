@@ -3,5 +3,10 @@ export interface IProducts {
   category: { _id: string; name: string }
   name: string
   image: string
+  specs?: {
+    engine: string
+    maxSpeed: string
+    passenger: string
+  }
   price: number
 }
