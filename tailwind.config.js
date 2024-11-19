@@ -8,7 +8,13 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        poppins: ['"Poppins"', 'sans-serif'],
+        sourGummy: ['"Sour Gummy"', 'sans-serif'],
+        wallpoet: ['"Wallpoet"', 'sans-serif'],
+      },
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

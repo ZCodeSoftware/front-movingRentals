@@ -46,37 +46,26 @@ export default function NavbarComponent() {
 
       <NavbarContent className='sm:hidden pr-3' justify='center'>
         <NavbarBrand>
-          <p className='font-bold text-inherit'>ACME</p>
+          <Link color='foreground' href='/'>
+            <p className='font-bold text-inherit'>Moving Rentals</p>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className='hidden sm:flex gap-4' justify='center'>
         <NavbarBrand>
-          <p className='font-bold text-inherit'>ACME</p>
+          <Link color='foreground' href='/'>
+            <p className='font-bold text-inherit'>Moving Rentals</p>
+          </Link>
         </NavbarBrand>
-        <NavbarItem>
-          <Link color='foreground' href='#'>
-            {t('navBar.features')}
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href='#' aria-current='page'>
-            {t('navBar.customers')}
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color='foreground' href='#'>
-            {t('navBar.integrations')}
-          </Link>
-        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify='end'>
         <NavbarItem className='hidden lg:flex'>
-          <Link href='#'>{t('navBar.login')}</Link>
+          <Link href='/login'>{t('navBar.login')}</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color='warning' href='#' variant='flat'>
+          <Button as={Link} color='warning' href='/signin' variant='flat'>
             {t('navBar.signup')}
           </Button>
         </NavbarItem>
