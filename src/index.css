@@ -33,3 +33,31 @@ body::-webkit-scrollbar-thumb {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
+
+/* Nueva clase scroll-container */
+.scroll-container {
+  --sb-track-color: #232E33;
+  --sb-thumb-color: #42ec97;
+  --sb-size: 13px;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 5px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 5px;
+  border: 4px solid #232E33;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scroll-container {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}

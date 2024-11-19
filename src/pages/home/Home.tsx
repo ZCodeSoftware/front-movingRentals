@@ -100,7 +100,6 @@ const Home = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          onClick={() => alert(`Clima en Tulum: ${weather.main.temp}${getTemperatureUnit()}, ${weather.weather[0].description}`)}
         >
           {getWeatherIcon(weather.weather[0].main)}
           <div>
