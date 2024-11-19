@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchCategories } from '../../services/categories/categoriesService';
 import { ICategories } from '../../services/categories/models/categories.interface';
-import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import ImageSlider from '../../components/imageSlider/ImageSlider';
 import { images } from '../../mocks/imageSliderHome';
@@ -26,7 +25,6 @@ const Home = () => {
   }
 
   const [weather, setWeather] = useState<WeatherData | null>(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const getData = async () => {
