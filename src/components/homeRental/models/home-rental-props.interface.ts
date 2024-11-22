@@ -1,5 +1,5 @@
 import { ICategories } from '../../../services/categories/models/categories.interface'
 
-export interface IRentalSearchProps {
+export interface IHomeRentalProps {
   categoriesData: ICategories[]
 }

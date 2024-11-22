@@ -56,5 +56,29 @@
         "dot": "Must contain a dot"
       }
     }
+  },
+  "HomeRental": {
+    "categories": "Categories",
+    "branch": "Branch",
+    "date_picker": {
+      "title": "Duration",
+      "min_hours_valid": "The minimum reservation is 4 hours",
+      "previous_day_valid": "You cannot select a date earlier than today"
+    },
+    "travelers": {
+      "title": "Travelers",
+      "subtitle": "Choose the number of travelers",
+      "adults": "Adults",
+      "childrens": "Childrens"
+    },
+    "selected_products": "Selected Products",
+    "add_to_cart": "Add to Cart",
+    "selected_items": "selected items",
+    "no_products_available": "No products available",
+    "no_categories_available": "No categories available",
+    "transfers": {
+      "title": "Transfers",
+      "no_transfers_available": "No transfers available"
+    }
   }
 }
