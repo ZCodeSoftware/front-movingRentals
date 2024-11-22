@@ -5,28 +5,26 @@
     "hero_button": "Get Started",
     "hero_title": "Welcome to MovingRentals"
   },
-
   "homePage": {
     "home": "This is the home page."
   },
-
   "navBar": {
-    "features": "Features",
-    "customers": "Customers",
-    "integrations": "Integrations",
+    "home": "Home",
+    "cart": "Cart",
+    "profile": "Profile",
     "login": "Login",
     "signup": "Sign Up",
-    "select_language": "Select Language"
+    "select_language": "Select Language",
+    "features": "Features",
+    "customers": "Customers",
+    "integrations": "Integrations"
   },
-
   "footer": {
     "footer_copyright": "© 2024 MovingRentals. All rights reserved."
   },
-
   "listByCategory": {
     "not_products_available": "No products available."
   },
-
   "logIn": {
     "log_in_title": "Access to your account",
     "log_in": "Log In",
@@ -36,7 +34,6 @@
     "email": "Email",
     "register": "Create an account"
   },
-
   "SignIn": {
     "sign_in_title": "Create your account",
     "sign_in": "Create account",

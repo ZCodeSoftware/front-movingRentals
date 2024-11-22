@@ -19,7 +19,7 @@ const Home = () => {
       humidity: number;
     };
     weather: {
-      main: string; // "Rain", "Clouds", "Clear", etc.
+      main: string;
       description: string;
     }[];
   }
@@ -96,7 +96,7 @@ const Home = () => {
 
       {weather && (
         <motion.div
-          className="fixed bottom-6 right-6 bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer flex items-center space-x-3 hover:bg-opacity-80 z-50"
+          className="fixed bottom-14 right-6 hidden bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
