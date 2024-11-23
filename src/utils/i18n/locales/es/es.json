@@ -56,5 +56,29 @@
         "dot": "Debe contener un punto"
       }
     }
+  },
+  "HomeRental": {
+    "categories": "Categorías",
+    "branch": "Sucursal",
+    "date_picker": {
+      "title": "Duración",
+      "min_hours_valid": "El mínimo de reserva es de 4 horas",
+      "previous_day_valid": "No puedes seleccionar una fecha anterior a la actual"
+    },
+    "travelers": {
+      "title": "Pasajeros",
+      "subtitle": "Elige la cantidad de pasajeros",
+      "adults": "Adultos",
+      "childrens": "Niños"
+    },
+    "selected_products": "Productos seleccionados",
+    "add_to_cart": "Añadir al carrito",
+    "selected_items": "items seleccionados",
+    "no_products_available": "No hay productos disponibles",
+    "no_categories_available": "No hay categorías disponibles",
+    "transfers": {
+      "title": "Traslados",
+      "no_transfers_available": "No hay traslados disponibles"
+    }
   }
 }
