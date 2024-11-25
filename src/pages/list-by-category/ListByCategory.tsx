@@ -33,10 +33,7 @@ const ListByCategory = () => {
         <main>
           <section className='w-full flex flex-col justify-center items-center p-4'>
             <h1 className='text-3xl text-center p-4'>{data[0].category.name}</h1>
-            <p className='w-full md:w-2/4 border p-4'>
-              A security deposit is required for each and every rental. The deposit is kept in a safe at our office. You
-              will get your deposit back when you return the vehicle.
-            </p>
+            <p className='w-full md:w-2/4 border p-4'>{data[0].category.disclaimer}</p>
           </section>
           <section className='flex flex-wrap'>
             {data.map(p => (
