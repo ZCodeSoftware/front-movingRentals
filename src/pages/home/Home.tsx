@@ -120,7 +120,7 @@ const Home = () => {
           <h1 className='text-xl mb-2'>Vehicles</h1>
           <div className='flex w-full mx-auto overflow-x-auto'>
             <div className='flex space-x-4 md:space-x-6 w-max'>
-              <HomeCards items={data.filter(v => v._id !== '6')} />
+              <HomeCards items={data.filter(v => v.disclaimer && v)} />
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ const Home = () => {
         <div className='p-6'>
           <h1 className='text-xl mb-2'>Tours</h1>
           <div className='flex space-x-4 md:space-x-6 w-max'>
-            <HomeCards items={data.filter(t => t._id === '6')} />
+            <HomeCards items={data.filter(t => !t.disclaimer && t)} />
           </div>
         </div>
       </motion.section>

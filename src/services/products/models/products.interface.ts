@@ -1,6 +1,8 @@
+import { ICategories } from '../../categories/models/categories.interface'
+
 export interface IProducts {
   _id: string
-  category: { _id: string; name: string }
+  category: ICategories
   name: string
   image: string
   specs?: {

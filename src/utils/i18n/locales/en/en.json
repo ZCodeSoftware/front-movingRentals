@@ -6,7 +6,8 @@
     "hero_title": "Welcome to MovingRentals"
   },
   "homePage": {
-    "home": "This is the home page."
+    "home": "This is the home page.",
+    "no_products_available": "No products available"
   },
   "navBar": {
     "home": "Home",
