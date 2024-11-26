@@ -1,7 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './layout'
-import { Home, ListByCategory, Cart, Login, Signin } from './pages'
-import { HOME_ROUTE, LIST_BY_CATEGORY_ROUTE, CART_ROUTE, LOGIN_ROUTE, SIGNIN_ROUTE } from './config/routes'
+import { Home, ListByCategory, Cart, Login, Signin, Profile } from './pages'
+import {
+  HOME_ROUTE,
+  LIST_BY_CATEGORY_ROUTE,
+  CART_ROUTE,
+  LOGIN_ROUTE,
+  SIGNIN_ROUTE,
+  PROFILE_ROUTE
+} from './config/routes'
 import Hero from './components/hero'
 import NotFoundPage from './pages/notFound'
 
@@ -16,6 +23,7 @@ function App() {
           <Route path={CART_ROUTE} element={<Cart />} />
           <Route path={LOGIN_ROUTE} element={<Login />} />
           <Route path={SIGNIN_ROUTE} element={<Signin />} />
+          <Route path={PROFILE_ROUTE} element={<Profile />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Layout>
