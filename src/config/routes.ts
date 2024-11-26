@@ -8,3 +8,5 @@ export const CART_ROUTE = '/cart'
 export const LOGIN_ROUTE = '/login'
 // Signin
 export const SIGNIN_ROUTE = '/signin'
+// Profile
+export const PROFILE_ROUTE = '/profile'
