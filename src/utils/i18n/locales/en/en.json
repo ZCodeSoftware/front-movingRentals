@@ -81,5 +81,15 @@
       "title": "Transfers",
       "no_transfers_available": "No transfers available"
     }
+  },
+  "Profile": {
+    "title": "My Profile",
+    "change_password": "Change Password",
+    "log_out": "Log Out",
+    "delete_account": "Delete Account",
+    "reservations": {
+      "title": "My Reservations",
+      "close_button": "Close"
+    }
   }
 }

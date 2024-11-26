@@ -81,5 +81,15 @@
       "title": "Traslados",
       "no_transfers_available": "No hay traslados disponibles"
     }
+  },
+  "Profile": {
+    "title": "Mi perfil",
+    "change_password": "Cambiar contraseña",
+    "log_out": "Cerrar sesión",
+    "delete_account": "Eliminar cuenta",
+    "reservations": {
+      "title": "Mis reservas",
+      "close_button": "Cerrar"
+    }
   }
 }
