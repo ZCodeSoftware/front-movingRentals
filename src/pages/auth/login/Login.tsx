@@ -5,6 +5,7 @@ import { Button, Input } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
 import { ILoginForm } from './models/form.interface'
 import TextError from '../../../components/textError/TextError'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
@@ -14,13 +15,17 @@ const Login = () => {
     formState: { errors }
   } = useForm<ILoginForm>({ mode: 'onChange', reValidateMode: 'onChange' })
 
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isFocused, setIsFocused] = useState({ email: false, password: false })
   const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible)
 
   const onSubmit: SubmitHandler<ILoginForm> = async data => {
-    await login(data)
+    const response = await login(data)
+    if (response) {
+      navigate('/home')
+    }
   }
 
   return (

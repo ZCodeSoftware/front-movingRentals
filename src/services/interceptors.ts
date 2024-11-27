@@ -1,26 +1,28 @@
-import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 export const AppInterceptors = {
   req: (config: InternalAxiosRequestConfig) => {
-    const jwt = localStorage.getItem('accessToken');
+    const user = localStorage.getItem('user')
+    const parsedUser = user && JSON.parse(user)
+    const jwt = parsedUser.token
 
     if (jwt) {
-      config.headers.set('Authorization', `Bearer ${jwt}`);
+      config.headers.set('Authorization', `Bearer ${jwt}`)
     }
 
-    return config;
+    return config
   },
   reqErr: (err: AxiosError) => {
-    return Promise.reject(err);
+    return Promise.reject(err)
   },
   res: (res: AxiosResponse) => {
-    return res;
+    return res
   },
   resErr: (err: AxiosError) => {
     if (err.response?.status === 401) {
-      console.log('Response error: ', err);
+      console.log('Response error: ', err)
     }
 
-    return Promise.reject(err);
+    return Promise.reject(err)
   }
 }
