@@ -26,8 +26,8 @@ const useFormValidations = () => {
   }
 
   const validateEmail = {
-    hasAt: (value: string) => value.includes('@') || traduction.email.hasAt,
-    hasPoint: (value: string) => value.includes('.') || traduction.email.hasPoint
+    hasAt: (value: string | undefined) => value?.includes('@') || traduction.email.hasAt,
+    hasPoint: (value: string | undefined) => value?.includes('.') || traduction.email.hasPoint
   }
 
   return { validatePassword, validateEmail }

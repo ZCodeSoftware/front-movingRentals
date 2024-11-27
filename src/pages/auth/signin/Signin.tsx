@@ -4,12 +4,14 @@ import { Input, Button } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
 import { signin } from '../../../services/auth/signin/POST/signin.post.service'
 import { login } from '../../../services/auth/login/POST/login.post.service'
+import { useNavigate } from 'react-router-dom'
 import useFormValidations from '../../../hooks/useFormValidation'
 import { ISigninForm } from './models/form.interface'
 import TextError from '../../../components/textError/TextError'
 import { Link } from 'react-router-dom'
 
 const Signin = () => {
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState({ password: false, confirmPassword: false })
   const [isFocused, setIsFocused] = useState({ email: false, password: false, confirmPassword: false })
@@ -30,6 +32,7 @@ const Signin = () => {
     const response = await signin({ email: data.email, password: data.password })
     if (response) {
       await login({ email: data.email, password: data.password })
+      navigate('/home')
     }
   }
 
