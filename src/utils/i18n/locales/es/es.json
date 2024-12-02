@@ -90,6 +90,27 @@
     "reservations": {
       "title": "Mis reservas",
       "close_button": "Cerrar"
+    },
+    "validations": {
+      "field-require": "El campo es obligatorio",
+      "name-and-lastname": "El valor debe tener entre 2 y 50 caracteres y solo contener letras",
+      "cellphone": "El número de teléfono debe contener solo números sin espacios"
+    },
+    "labels": {
+      "edit-email": "Editar correo electrónico",
+      "edit-name": "Editar nombre",
+      "edit-lastname": "Editar apellido",
+      "edit-cellphone": "Editar número de teléfono"
+    },
+    "place-holders": {
+      "name": "Nombre",
+      "lastname": "Apellido",
+      "email": "Correo electrónico",
+      "cellphone": "Número de teléfono",
+      "edit-email": "Introduce tu nuevo correo electrónico",
+      "edit-name": "Introduce tu nuevo nombre",
+      "edit-lastname": "Introduce tu nuevo apellido",
+      "edit-cellphone": "Introduce tu nuevo número de teléfono"
     }
   }
 }
