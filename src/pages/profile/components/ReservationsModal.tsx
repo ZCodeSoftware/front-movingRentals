@@ -7,7 +7,7 @@ const ReservationsModal = () => {
 
   return (
     <>
-      <Button onPress={onOpen} className='w-64'>
+      <Button onPress={onOpen} className='w-64 bg-buttonPrimary'>
         {t('Profile.reservations.title')}
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='2xl'>
