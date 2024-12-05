@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Image } from '@nextui-org/react'
 import { removeCartItem } from '../../../services/cart/cartService'
+import trashIcon from '../../../assets/SVG/trash-icon.svg'
 
 const CartItemList = ({ product }: any) => {
   const [productList, setProductList] = useState(product)
@@ -31,8 +32,10 @@ const CartItemList = ({ product }: any) => {
                   <div className='flex flex-col'></div>
                 </div>
               </div>
-              <div className='flex flex-col justify-center items-end'>
-                <button onClick={() => handleRemove(p._id)}>Remove</button>
+              <div className='flex flex-col justify-end items-end'>
+                <button onClick={() => handleRemove(p._id)}>
+                  <Image src={trashIcon}></Image>
+                </button>
               </div>
             </div>
           )

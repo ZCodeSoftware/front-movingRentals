@@ -20,8 +20,8 @@ const HomeCards = ({ items }: IHomeCardProps) => {
                   src={i.image || 'https://www.motolucero.com.ar/wp-content/uploads/2022/12/portada-cuatri.jpg'}
                   width='100%'
                 />
-                <CardFooter className='justify-center before:bg-white/10 bg-gray-400 bg-opacity-30 border-white/80 border-1 overflow-hidden absolute before:rounded-xl bottom-0 w-full shadow-small z-10'>
-                  <p className='text-white/80 font-black'>{i.name}</p>
+                <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>
+                  <p className='text-black font-black'>{i.name}</p>
                 </CardFooter>
               </Card>
             </Link>

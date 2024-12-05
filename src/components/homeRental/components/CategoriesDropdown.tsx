@@ -62,7 +62,9 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
     <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
       <Dropdown closeOnSelect={false} className='max-w-full md:w-[500px]'>
         <DropdownTrigger>
-          <Button className='w-44 h-14 bg-gray-100 hover:bg-gray-200'>{t('HomeRental.categories')}</Button>
+          <Button className='w-44 h-14' style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}>
+            {t('HomeRental.categories')}
+          </Button>
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
           {categoriesData && categoriesData.length > 0 ? (

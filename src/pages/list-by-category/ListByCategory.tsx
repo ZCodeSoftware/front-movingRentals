@@ -35,30 +35,31 @@ const ListByCategory = () => {
             <h1 className='text-3xl text-center p-4'>{data[0].category.name}</h1>
             <p className='w-full md:w-2/4 border p-4'>{data[0].category.disclaimer}</p>
           </section>
-          <section className='flex flex-wrap'>
+          <section className='grid md:grid-cols-4 gap-4 p-4'>
             {data.map(p => (
-              <div className='p-2 w-full sm:w-1/2 md:w-1/3' key={p._id}>
-                <Card radius='none' className='h-full w-full' isPressable>
-                  <CardHeader className='pb-0 py-2 px-4 flex-col items-start border'>
-                    <p className=' font-black'>{p.name}</p>
+              <div key={p._id}>
+                <Card radius='none' className='rounded-xl' isPressable>
+                  <CardHeader className='pb-0 py-2 px-4 flex-col items-start'>
+                    <p className='font-extrabold'>{p.name}</p>
                   </CardHeader>
-                  <CardBody className='py-2'>
+                  <CardBody>
                     <Image
                       alt='Test'
-                      className=' h-[300px] md:h-[600px] object-contain'
+                      className='object-contain rounded-lg'
                       radius='none'
                       src={p.image}
                       width='100%'
+                      sizes='200px'
                     />
                   </CardBody>
-                  <CardFooter className='flex justify-center items-center border px-4 py-0'>
-                    <div className='w-2/4 h-full flex flex-col items-start text-left p-2'>
+                  <CardFooter className='w-full flex flex-row items-start justify-between px-3 text-nowrap'>
+                    <div className='flex flex-col text-left'>
                       <h1 className='font-bold'>Specs</h1>
                       <p>Engine: {p.specs?.engine}</p>
                       <p>Max speed: {p.specs?.maxSpeed}</p>
                       <p>Passenger capacity: {p.specs?.passenger}</p>
                     </div>
-                    <div className='w-2/4 h-full flex flex-col items-start text-left p-2'>
+                    <div className='flex flex-col items-start '>
                       <h1 className='font-bold'>PRICE PER 24HR</h1>
                       <p>${p.price}</p>
                     </div>

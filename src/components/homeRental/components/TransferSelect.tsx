@@ -24,6 +24,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({ transfer, onTransfer
     <Select
       value={transfer._id}
       className='max-w-44'
+      style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
       label={t('HomeRental.transfers.title')}
       onChange={e => {
         const selectedTransfer = transfers.find(t => t._id === e.target.value)
