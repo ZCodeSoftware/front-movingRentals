@@ -58,34 +58,34 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
 
   return (
     <div
-      className={`bg-white border rounded-lg md:p-6 w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
+      className={`bg-backgroundWhite border border-[#EEEEEE] rounded-lg w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
         isSticky || selectData.selectedItem.length > 0 ? 'md:w-full' : 'md:w-11/12'
       }`}
     >
-      <div className='w-full flex flex-col md:flex-row justify-evenly p-2'>
+      <div className='flex flex-col md:flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
+        <TransferSelector
+          transfer={selectData.transfer}
+          onTransferChange={transfer => {
+            setSelectData(prev => ({
+              ...prev,
+              transfer
+            }))
+          }}
+        />
+        <CategoriesDropdown
+          categoriesData={categoriesData}
+          productsByCategory={productsByCategory}
+          selectedItemsByCategory={selectedItemsByCategory}
+          loading={loading}
+          setProductsByCategory={setProductsByCategory}
+          setSelectedItemsByCategory={setSelectedItemsByCategory}
+          setLoading={setLoading}
+          setSelectData={setSelectData}
+        />
+        <ToursDropdown />
+      </div>
+      <div className='w-full flex flex-col md:flex-row justify-evenly md:p-6'>
         <div className='flex flex-col items-center'>
-          <div className='flex w-full md:w-2/3 p-4 justify-around items-center'>
-            <TransferSelector
-              transfer={selectData.transfer}
-              onTransferChange={transfer => {
-                setSelectData(prev => ({
-                  ...prev,
-                  transfer
-                }))
-              }}
-            />
-            <CategoriesDropdown
-              categoriesData={categoriesData}
-              productsByCategory={productsByCategory}
-              selectedItemsByCategory={selectedItemsByCategory}
-              loading={loading}
-              setProductsByCategory={setProductsByCategory}
-              setSelectedItemsByCategory={setSelectedItemsByCategory}
-              setLoading={setLoading}
-              setSelectData={setSelectData}
-            />
-            <ToursDropdown />
-          </div>
           <div className='flex flex-col md:flex-row justify-start gap-4 items-start p-2'>
             <BranchSelector
               branch={selectData.branch}
@@ -123,7 +123,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           <SelectedProductRender products={selectData.selectedItem} />
         </div>
         <div className='flex justify-center items-center p-2'>
-          <Button className='p-2' isDisabled={isSubmitDisable}>
+          <Button className='p-2 bg-buttonPrimary' isDisabled={isSubmitDisable}>
             {t('HomeRental.add_to_cart')}
           </Button>
         </div>

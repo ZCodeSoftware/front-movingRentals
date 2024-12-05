@@ -10,6 +10,7 @@ const BranchSelector: React.FC<IBranchSelectProps> = ({ branch, onBranchChange }
     <Select
       value={branch}
       className='min-w-44'
+      style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
       label={t('HomeRental.branch')}
       onChange={e => onBranchChange(e.target.value)}
     >

@@ -11,7 +11,7 @@ const TravelersDropdown: React.FC<ITravelersDropdownProps> = ({ travelers, onInc
         <DropdownTrigger className='w-full h-full p-2'>
           <Button
             data-hover={false}
-            variant='light'
+            style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
             className='flex flex-col items-start bg-gray-100 hover:bg-gray-200 gap-1'
           >
             <h1 className='text-xs m-0'>{t('HomeRental.travelers.title')}</h1>

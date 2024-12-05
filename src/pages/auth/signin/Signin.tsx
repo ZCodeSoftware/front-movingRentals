@@ -39,8 +39,8 @@ const Signin = () => {
   const passwordConfirm = watch('password')
 
   return (
-    <main className='w-full h-screen'>
-      <form onSubmit={handleSubmit(onSubmit)} className='w-full h-screen flex flex-col justify-center items-center '>
+    <main className='md:w-3/4 h-full'>
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full h-full flex flex-col justify-center items-center '>
         <h1 className='text-3xl text-center p-4'>{t('SignIn.sign_in_title')}</h1>
         <section className='w-full md:w-2/5 p-4 mt-10'>
           <Input
@@ -116,17 +116,17 @@ const Signin = () => {
             <TextError error={errors.confirmPassword.message} />
           )}
         </section>
-        <section className='flex flex-col w-3/4 md:w-2/12'>
+        <section className='flex flex-col w-3/4 md:w-2/12 m-4'>
           <Button className='p-2' type='submit'>
             {t('SignIn.sign_in')}
           </Button>
-          <Button className='mt-4' type='button'>
+          <Button className='mt-4 bg-buttonPrimary' type='button'>
             {t('logIn.log_in_google')}
           </Button>
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('SignIn.have_an_account')}</p>
-          <Button type='button'>
+          <Button className='bg-buttonPrimary' type='button'>
             <Link to={'/login'}>{t('logIn.log_in')}</Link>
           </Button>
         </section>

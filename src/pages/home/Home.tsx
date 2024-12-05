@@ -83,7 +83,7 @@ const Home = () => {
   }
 
   return (
-    <main className='w-full'>
+    <main className='w-full bg-backgroundWhite'>
       <div
         className='absolute top-0 left-0 w-full h-96 object-cover bg-top'
         style={{
@@ -116,7 +116,7 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className='p-6'>
+        <div className='w-full flex flex-col items-start justify-start p-6'>
           <h1 className='text-xl mb-2'>Vehicles</h1>
           <div className='flex w-full mx-auto overflow-x-auto'>
             <div className='flex space-x-4 md:space-x-6 w-max'>
@@ -132,7 +132,7 @@ const Home = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className='p-6'>
+        <div className='w-full flex flex-col items-start justify-start p-6'>
           <h1 className='text-xl mb-2'>Tours</h1>
           <div className='flex space-x-4 md:space-x-6 w-max'>
             <HomeCards items={data.filter(t => !t.disclaimer && t)} />
@@ -146,7 +146,7 @@ const Home = () => {
         animate={{ opacity: 1, rotate: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <ImageSlider images={images} autoplay={false} />
+        <ImageSlider images={images} autoplay={true} className='bg-backgroundWhite' />
       </motion.section>
     </main>
   )

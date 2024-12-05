@@ -12,6 +12,9 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({ selectData, setS
         <DateRangePicker
           hourCycle={24}
           className='w-full'
+          classNames={{
+            inputWrapper: 'bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF]'
+          }}
           hideTimeZone
           onChange={e =>
             setSelectData((prev: any) => ({

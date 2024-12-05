@@ -29,8 +29,8 @@ const Login = () => {
   }
 
   return (
-    <main className='w-full h-screen'>
-      <form onSubmit={handleSubmit(onSubmit)} className='w-full h-screen flex flex-col justify-center items-center '>
+    <main className='md:w-3/4 h-full'>
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full h-full flex flex-col justify-start items-center'>
         <h1 className='text-3xl text-center p-4'>{t('logIn.log_in_title')}</h1>
         <section className='w-full md:w-2/5 p-4 mt-10'>
           <Input
@@ -74,17 +74,17 @@ const Login = () => {
             <TextError error={errors.password.message} />
           )}
         </section>
-        <section className='flex flex-col w-3/4 md:w-2/12'>
-          <Button className='p-2' type='submit'>
+        <section className='flex flex-col w-3/4 md:w-2/12 m-4'>
+          <Button className='p-2 border' variant='light' type='submit' style={{}}>
             {t('logIn.log_in')}
           </Button>
-          <Button className='mt-4' type='button'>
+          <Button className='mt-4 bg-buttonPrimary' type='button'>
             {t('logIn.log_in_google')}
           </Button>
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('logIn.not_registered')}</p>
-          <Button type='button'>
+          <Button className='bg-buttonPrimary' type='button'>
             <Link to={'/signin'}>{t('logIn.register')}</Link>
           </Button>
         </section>
