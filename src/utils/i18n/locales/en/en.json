@@ -59,7 +59,7 @@
     }
   },
   "HomeRental": {
-    "categories": "Categories",
+    "vehicles": "Vehicles",
     "branch": "Branch",
     "date_picker": {
       "title": "Duration",

@@ -1,6 +1,7 @@
 import { ZonedDateTime } from '@internationalized/date'
-import { IProducts } from '../../../services/products/models/products.interface'
+import { IVehicles } from '../../../services/products/models/vehicles.interface'
 import { ITransfers } from '../../../services/transfers/models/transfers.interface'
+import { ITours } from '../../../services/products/models/tours.interface'
 
 export interface ISelectData {
   dates: {
@@ -8,7 +9,8 @@ export interface ISelectData {
     end: ZonedDateTime
   }
   travelers: { adults: number; childrens: number }
-  selectedItem: IProducts[]
+  selectedItem: IVehicles[]
+  selectedTours: ITours[]
   branch: string
   transfer: ITransfers
 }

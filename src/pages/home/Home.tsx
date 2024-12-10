@@ -8,9 +8,12 @@ import HomeRental from '../../components/homeRental/HomeRental'
 import HomeCards from './components/HomeCards'
 import { motion } from 'framer-motion'
 import { FaCloud, FaSun, FaCloudRain, FaSnowflake, FaSmog } from 'react-icons/fa'
+import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service'
+import { ITours } from '../../services/products/models/tours.interface'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
+  const [toursData, setToursData] = useState<ITours[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   interface WeatherData {
@@ -28,8 +31,10 @@ const Home = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await fetchCategories()
-      setData(result)
+      const resultCategories = await fetchCategories()
+      const resultTours = await fetchAllTours()
+      setData(resultCategories)
+      setToursData(resultTours)
       setLoading(false)
     }
 
@@ -135,7 +140,7 @@ const Home = () => {
         <div className='w-full flex flex-col items-start justify-start p-6'>
           <h1 className='text-xl mb-2'>Tours</h1>
           <div className='flex space-x-4 md:space-x-6 w-max'>
-            <HomeCards items={data.filter(t => !t.disclaimer && t)} />
+            <HomeCards items={toursData} />
           </div>
         </div>
       </motion.section>

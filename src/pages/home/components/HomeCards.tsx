@@ -1,14 +1,13 @@
 import { Card, CardFooter, Image } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { IHomeCardProps } from '../models/home-cards-props'
 
-const HomeCards = ({ items }: IHomeCardProps) => {
+const HomeCards = ({ items }: any) => {
   const { t } = useTranslation()
   return (
     <div className='flex space-x-4 overflow-x-auto md:overflow-visible w-full md:justify-center'>
       {items.length > 0 ? (
-        items.map(i => (
+        items.map((i: any) => (
           <Card key={i._id} className='flex-none w-72 mx-2'>
             <Link to={`/list-by-category/${i._id}`}>
               <Card radius='none' className='h-full' isPressable>
