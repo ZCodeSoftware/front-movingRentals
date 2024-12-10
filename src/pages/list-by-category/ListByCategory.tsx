@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { fetchProducts } from '../../services/products/productsService'
-import { IProducts } from '../../services/products/models/products.interface'
+import { fetchVehicles } from '../../services/products/vehicles/GET/vehicles.get.service'
+import { IVehicles } from '../../services/products/models/vehicles.interface'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, CardHeader, CardFooter, Image } from '@nextui-org/react'
 
 const ListByCategory = () => {
-  const [data, setData] = useState<IProducts[]>([])
+  const [data, setData] = useState<IVehicles[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const { id } = useParams()
   const { t } = useTranslation()
@@ -14,7 +14,7 @@ const ListByCategory = () => {
   useEffect(() => {
     const getData = async () => {
       if (id) {
-        const result = await fetchProducts(id)
+        const result = await fetchVehicles(id)
         setData(result)
         setLoading(false)
       }
@@ -55,9 +55,7 @@ const ListByCategory = () => {
                   <CardFooter className='w-full flex flex-row items-start justify-between px-3 text-nowrap'>
                     <div className='flex flex-col text-left'>
                       <h1 className='font-bold'>Specs</h1>
-                      <p>Engine: {p.specs?.engine}</p>
-                      <p>Max speed: {p.specs?.maxSpeed}</p>
-                      <p>Passenger capacity: {p.specs?.passenger}</p>
+                      <p>{p.specs}</p>
                     </div>
                     <div className='flex flex-col items-start '>
                       <h1 className='font-bold'>PRICE PER 24HR</h1>

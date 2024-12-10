@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { getLocalTimeZone, now } from '@internationalized/date'
 import { Button } from '@nextui-org/react'
 import { IHomeRentalProps } from './models/home-rental-props.interface'
-import { IProducts } from '../../services/products/models/products.interface'
+import { IVehicles } from '../../services/products/models/vehicles.interface'
 import { ISelectData } from './models/Select-data'
 import CategoriesDropdown from './components/CategoriesDropdown'
 import ToursDropdown from './components/ToursDropdown'
@@ -14,7 +14,7 @@ import SelectedProductRender from './components/SelectedProductRender'
 import TransferSelector from './components/TransferSelect'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
-  const [productsByCategory, setProductsByCategory] = useState<Record<string, IProducts[]>>({})
+  const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
   const [selectedItemsByCategory, setSelectedItemsByCategory] = useState<Record<string, Set<string>>>({})
   const [loading, setLoading] = useState<Record<string, boolean>>({})
   const [selectData, setSelectData] = useState<ISelectData>({
@@ -24,6 +24,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     },
     travelers: { adults: 1, childrens: 0 },
     selectedItem: [],
+    selectedTours: [],
     branch: '',
     transfer: { _id: '', place: '' }
   })
@@ -59,7 +60,9 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   return (
     <div
       className={`bg-backgroundWhite border border-[#EEEEEE] rounded-lg w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
-        isSticky || selectData.selectedItem.length > 0 ? 'md:w-full' : 'md:w-11/12'
+        isSticky || selectData.selectedItem.length > 0 || selectData.selectedTours.length > 0
+          ? 'md:w-full'
+          : 'md:w-11/12'
       }`}
     >
       <div className='flex flex-col md:flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
@@ -74,15 +77,20 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
         />
         <CategoriesDropdown
           categoriesData={categoriesData}
-          productsByCategory={productsByCategory}
+          vehiclesByCategory={vehiclesByCategory}
           selectedItemsByCategory={selectedItemsByCategory}
           loading={loading}
-          setProductsByCategory={setProductsByCategory}
+          setVehiclesByCategory={setVehiclesByCategory}
           setSelectedItemsByCategory={setSelectedItemsByCategory}
           setLoading={setLoading}
           setSelectData={setSelectData}
         />
-        <ToursDropdown />
+        <ToursDropdown
+          loading={loading}
+          setLoading={setLoading}
+          setSelectData={setSelectData}
+          selectData={selectData.selectedTours}
+        />
       </div>
       <div className='w-full flex flex-col md:flex-row justify-evenly md:p-6'>
         <div className='flex flex-col items-center'>
@@ -120,7 +128,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           </div>
         </div>
         <div className='flex h-full'>
-          <SelectedProductRender products={selectData.selectedItem} />
+          <SelectedProductRender products={[...selectData.selectedItem, ...selectData.selectedTours]} />
         </div>
         <div className='flex justify-center items-center p-2'>
           <Button className='p-2 bg-buttonPrimary' isDisabled={isSubmitDisable}>

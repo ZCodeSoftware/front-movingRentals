@@ -1,14 +1,10 @@
 import { ICategories } from '../../categories/models/categories.interface'
 
-export interface IProducts {
+export interface IVehicles {
   _id: string
   category: ICategories
   name: string
   image: string
-  specs?: {
-    engine: string
-    maxSpeed: string
-    passenger: string
-  }
+  specs?: ''
   price: number
 }

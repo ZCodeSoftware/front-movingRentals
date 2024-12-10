@@ -59,7 +59,7 @@
     }
   },
   "HomeRental": {
-    "categories": "Categorías",
+    "vehicles": "Vehiculos",
     "branch": "Sucursal",
     "date_picker": {
       "title": "Duración",

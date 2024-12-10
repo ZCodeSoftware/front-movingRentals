@@ -1,9 +1,9 @@
-import { IProducts } from '../../products/models/products.interface'
+import { IVehicles } from '../../products/models/vehicles.interface'
 import { IDeal } from './deals.interface'
 
 export interface ICart {
   _id: string
-  products: IProducts[]
+  products: IVehicles[]
   deals?: IDeal[]
   totalPrice: number
 }
