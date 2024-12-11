@@ -98,6 +98,8 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
             <BranchSelector
               branch={selectData.branch}
               onBranchChange={branch => setSelectData(prev => ({ ...prev, branch }))}
+              loading={loading}
+              setLoading={setLoading}
             />
             <DatePickerSection
               selectData={selectData}

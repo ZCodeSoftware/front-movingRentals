@@ -61,6 +61,8 @@
   "HomeRental": {
     "vehicles": "Vehicles",
     "branch": "Branch",
+    "map": "Map",
+    "close": "Close",
     "date_picker": {
       "title": "Duration",
       "min_hours_valid": "The minimum reservation is 4 hours",
@@ -112,5 +114,9 @@
       "edit-lastname": "Enter your new last name",
       "edit-cellphone": "Enter your new phone number"
     }
+  },
+  "Product-detail": {
+    "view-more": "View more",
+    "view-less": "view less"
   }
 }
