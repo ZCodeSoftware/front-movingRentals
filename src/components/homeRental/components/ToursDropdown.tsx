@@ -26,7 +26,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({ loading, setLoading, set
         }}
         data-filled={true}
         data-has-value={true}
-        className='w-[200px]'
+        className='md:min-w-44 min-w-28'
         style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
         selectionMode='multiple'
         label='Tours'

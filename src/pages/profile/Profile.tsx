@@ -24,7 +24,7 @@ const Profile = () => {
   return (
     <main className='w-full h-screen flex flex-col justify-center items-center p-4 bg-backgroundWhite'>
       <h1 className='text-2xl p-4 font-bold'>{t('Profile.title')}</h1>
-      <div className='md:w-2/5 h-full'>
+      <div className='md:w-2/5 w-full h-full'>
         {userData && (
           <>
             <section className='w-full md:h-2/4 flex flex-col justify-evenly items-center my-4'>
@@ -124,10 +124,16 @@ const Profile = () => {
               </div>
               <ReservationsModal />
             </section>
-            <section className='w-full h-2/4 flex flex-col md:flex-row md:justify-between items-center md:items-start'>
-              <Button className='w-48 bg-buttonPrimary'>{t('Profile.change_password')}</Button>
-              <Button className='w-48 my-6 md:my-0 md:mx-6 bg-[#F68989]'>{t('Profile.log_out')}</Button>
-              <Button className='w-48 border border-[#FF3030] bg-transparent-'>{t('Profile.delete_account')}</Button>
+            <section className='w-full h-2/4 flex flex-col md:flex-row md:justify-around items-center md:items-start'>
+              <div className='flex'>
+                <Button className='md:w-48 md:mx-[28px] bg-buttonPrimary'>{t('Profile.change_password')}</Button>
+              </div>
+              <div className='w-full flex md:flex-row flex-row-reverse justify-around items-center'>
+                <Button className='md:w-48 my-6 md:my-0 bg-[#F68989]'>{t('Profile.log_out')}</Button>
+                <Button className='md:w-48 border border-[#FF3030] bg-transparent-'>
+                  {t('Profile.delete_account')}
+                </Button>
+              </div>
             </section>
           </>
         )}

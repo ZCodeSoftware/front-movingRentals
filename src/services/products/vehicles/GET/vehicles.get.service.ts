@@ -1,8 +1,8 @@
-import { AppApiGateWay } from '../../../app.api.gateway'
+import { AppApiGateWayNoJWT } from '../../../app.api.gateway-no-jwt'
 import { IVehicles } from '../../models/vehicles.interface'
 
 export const fetchVehicles = async (id: string): Promise<IVehicles[]> => {
-  const response = await AppApiGateWay.get('/vehicle')
+  const response = await AppApiGateWayNoJWT.get('/vehicle')
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(response.data.filter((p: IVehicles) => p.category._id === id))

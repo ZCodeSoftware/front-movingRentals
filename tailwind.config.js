@@ -12,6 +12,7 @@ export default {
       },
       colors: {
         buttonPrimary: '#B6D8FF',
+        buttonSecondary: '#D4EDFF',
         backgroundWhite: '#FBFBFB'
       }
     }

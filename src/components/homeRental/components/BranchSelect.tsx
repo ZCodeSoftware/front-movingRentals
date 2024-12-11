@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { IBranchSelectProps } from '../models/branch-select-props'
 import { fetchAllBranches } from '../../../services/branches/GET/branches.get.service'
 import { IBranches } from '../../../services/branches/models/branches.interface'
+import mapIcon from '../../../assets/SVG/map-icon.svg'
 
 const BranchSelector: React.FC<IBranchSelectProps> = ({ branch, onBranchChange, loading, setLoading }) => {
   const [data, setData] = useState<IBranches[]>([])
@@ -30,7 +31,7 @@ const BranchSelector: React.FC<IBranchSelectProps> = ({ branch, onBranchChange, 
   }
 
   return (
-    <div className='flex items-center justify-center'>
+    <div className='w-full flex items-center justify-center'>
       <Select
         value={branch}
         className='min-w-44'
@@ -58,8 +59,8 @@ const BranchSelector: React.FC<IBranchSelectProps> = ({ branch, onBranchChange, 
         )}
       </Select>
       {coordinates && branch && (
-        <Button className='ml-2' color='primary' size='sm' onPress={() => setIsMapModalOpen(true)}>
-          {t('HomeRental.map')}
+        <Button className='h-14 ml-2 bg-buttonPrimary rounded-xl' size='sm' onPress={() => setIsMapModalOpen(true)}>
+          <img src={mapIcon} alt={t('HomeRental.map')} />
         </Button>
       )}
       <Modal isOpen={isMapModalOpen} onClose={() => setIsMapModalOpen(false)} className='md:w-2/4 h-auto absolute z-50'>

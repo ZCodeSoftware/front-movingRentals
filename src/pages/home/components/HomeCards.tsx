@@ -27,7 +27,7 @@ const HomeCards = ({ items }: any) => {
                       width='100%'
                     />
                     <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>
-                      <p className='text-black font-black'>{i.name}</p>
+                      <p className='text-black font-semibold'>{i.name}</p>
                     </CardFooter>
                   </Card>
                 </Link>
@@ -51,7 +51,7 @@ const HomeCards = ({ items }: any) => {
                     width='100%'
                   />
                   <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>
-                    <p className='text-black font-black'>{i.name}</p>
+                    <p className='text-black font-semibold'>{i.name}</p>
                   </CardFooter>
                 </Card>
               </Card>

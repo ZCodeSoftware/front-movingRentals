@@ -1,8 +1,8 @@
-import { AppApiGateWay } from '../../../app.api.gateway'
+import { AppApiGateWayNoJWT } from '../../../app.api.gateway-no-jwt'
 import { ITours } from '../../models/tours.interface'
 
 export const fetchTours = async (id: string): Promise<ITours[]> => {
-  const response = await AppApiGateWay.get('/tour')
+  const response = await AppApiGateWayNoJWT.get('/tour')
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(response.data.filter((p: ITours) => p.category._id === id))
@@ -11,6 +11,6 @@ export const fetchTours = async (id: string): Promise<ITours[]> => {
 }
 
 export const fetchAllTours = async (): Promise<ITours[]> => {
-  const response = await AppApiGateWay.get('/tour')
+  const response = await AppApiGateWayNoJWT.get('/tour')
   return response.data
 }
