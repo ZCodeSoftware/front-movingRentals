@@ -4,10 +4,12 @@ import { fetchVehicles } from '../../services/products/vehicles/GET/vehicles.get
 import { IVehicles } from '../../services/products/models/vehicles.interface'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, CardHeader, CardFooter, Image } from '@nextui-org/react'
+import ProductDetailModal from './components/ProductDetailModal'
 
 const ListByCategory = () => {
   const [data, setData] = useState<IVehicles[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [openModal, setOpenModal] = useState(false)
   const { id } = useParams()
   const { t } = useTranslation()
 
@@ -38,7 +40,7 @@ const ListByCategory = () => {
           <section className='grid md:grid-cols-4 gap-4 p-4'>
             {data.map(p => (
               <div key={p._id}>
-                <Card radius='none' className='rounded-xl' isPressable>
+                <Card radius='none' className='rounded-xl' isPressable onPress={() => setOpenModal(true)}>
                   <CardHeader className='pb-0 py-2 px-4 flex-col items-start'>
                     <p className='font-extrabold'>{p.name}</p>
                   </CardHeader>
@@ -63,6 +65,7 @@ const ListByCategory = () => {
                     </div>
                   </CardFooter>
                 </Card>
+                {openModal && <ProductDetailModal product={data} setOpenModal={setOpenModal} />}
               </div>
             ))}
           </section>
