@@ -65,7 +65,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           : 'md:w-11/12'
       }`}
     >
-      <div className='flex flex-col md:flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
+      <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
         <TransferSelector
           transfer={selectData.transfer}
           onTransferChange={transfer => {

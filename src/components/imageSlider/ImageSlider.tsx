@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button, Card, Image, Modal, ModalContent, ModalBody } from '@nextui-org/react'
 import { IimageSliderProps, IImage } from './models/image-slider-props.interface'
+import chevronLeft from '../../assets/SVG/chevron-left.svg'
+import chevronRight from '../../assets/SVG/chevron-right.svg'
 
 const ImageCarousel: React.FC<IimageSliderProps> = ({
   images,
@@ -113,14 +115,14 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({
             ))}
           </div>
           <div className='absolute inset-y-0 left-0 flex items-center'>
-            <Button className='ml-2 bg-white/80 hover:bg-white/90' onClick={goToPrevious} size='sm'>
-              prev
+            <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToPrevious} size='sm'>
+              <Image src={chevronLeft} alt='prev' />
             </Button>
           </div>
 
           <div className='absolute inset-y-0 right-0 flex items-center'>
-            <Button className='mr-2 bg-white/80 hover:bg-white/90' onClick={goToNext} size='sm'>
-              next
+            <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToNext} size='sm'>
+              <Image src={chevronRight} alt='next' />
             </Button>
           </div>
         </div>

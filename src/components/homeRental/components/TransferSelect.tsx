@@ -23,7 +23,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({ transfer, onTransfer
   return (
     <Select
       value={transfer._id}
-      className='max-w-44'
+      className='md:max-w-44 max-w-28'
       style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
       label={t('HomeRental.transfers.title')}
       onChange={e => {
