@@ -33,7 +33,9 @@ const Cart = () => {
             <section className='rounded-lg md:overflow-auto overflow-hidden md:max-h-[80vh]'>
               <CartItemList product={cart.products} />
             </section>
-            <button className='max-w-28 flex p-2'>Remove all</button>
+            <div className='w-full flex justify-end md:justify-start'>
+              <button className='max-w-28 p-2'>Remove all</button>
+            </div>
           </div>
           <section className='mt-6 h-full md:mt-0 md:w-1/3 bg-transparent'>
             <div className='text-center p-4 mb-6'>

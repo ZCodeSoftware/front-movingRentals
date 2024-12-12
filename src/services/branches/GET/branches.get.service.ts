@@ -1,9 +1,9 @@
-import { AppApiGateWay } from '../../app.api.gateway'
+import { AppApiGateWayNoJWT } from '../../app.api.gateway-no-jwt'
 import { IBranches } from '../models/branches.interface'
 
 export const fetchAllBranches = async (): Promise<IBranches[]> => {
   try {
-    const response = await AppApiGateWay.get('/branches')
+    const response = await AppApiGateWayNoJWT.get('/branches')
     if (!response) {
       throw new Error('Error fetching categories')
     }
