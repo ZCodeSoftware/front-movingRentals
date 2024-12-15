@@ -9,3 +9,8 @@ export const fetchVehicles = async (id: string): Promise<IVehicles[]> => {
     }, 1000)
   })
 }
+
+export const fetchAllVehicles = async (): Promise<IVehicles[]> => {
+  const response = await AppApiGateWayNoJWT.get('/vehicle')
+  return response.data
+}

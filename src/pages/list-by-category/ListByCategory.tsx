@@ -49,23 +49,19 @@ const ListByCategory = () => {
                       alt='Test'
                       className='object-contain rounded-lg'
                       radius='none'
-                      src={p.image}
+                      src={p.images[0]}
                       width='100%'
                       sizes='200px'
                     />
                   </CardBody>
                   <CardFooter className='w-full flex flex-row items-start justify-between px-3 text-nowrap'>
-                    <div className='flex flex-col text-left'>
-                      <h1 className='font-bold'>Specs</h1>
-                      <p>{p.specs}</p>
-                    </div>
                     <div className='flex flex-col items-start '>
                       <h1 className='font-bold'>PRICE PER 24HR</h1>
                       <p>${p.price}</p>
                     </div>
                   </CardFooter>
                 </Card>
-                {openModal && <ProductDetailModal product={data} setOpenModal={setOpenModal} />}
+                {openModal && <ProductDetailModal product={p} setOpenModal={setOpenModal} />}
               </div>
             ))}
           </section>

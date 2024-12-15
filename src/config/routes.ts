@@ -10,3 +10,5 @@ export const LOGIN_ROUTE = '/login'
 export const SIGNIN_ROUTE = '/signin'
 // Profile
 export const PROFILE_ROUTE = '/profile'
+// Dashboard
+export const DASHBOARD_ROUTE = '/dashboard'

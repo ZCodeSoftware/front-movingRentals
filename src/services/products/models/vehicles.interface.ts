@@ -1,10 +1,17 @@
 import { ICategories } from '../../categories/models/categories.interface'
+import { IVehicleOwners } from '../../owners/models/vehicle-owners.interface'
 
 export interface IVehicles {
   _id: string
   category: ICategories
   name: string
-  image: string
-  specs?: ''
-  price: number
+  images: string[]
+  price?: number
+  pricePer4?: number
+  pricePer8?: number
+  pricePer24?: number
+  capacity: number
+  minRentalHours: number
+  description: string
+  owner: IVehicleOwners
 }

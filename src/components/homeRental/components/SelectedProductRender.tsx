@@ -12,7 +12,7 @@ const SelectedProductRender = ({ products }: { products: any }) => {
                 <Image src={(p.image && p.image) || p.images[0]} width='200' />
                 <div className='mx-2'>
                   <h1 className='font-bold'>{p.name}</h1>
-                  <p>{p.specs || p.description}</p>
+                  <p>{p.description || ''}</p>
                   <p>${p.price}</p>
                 </div>
               </CardBody>

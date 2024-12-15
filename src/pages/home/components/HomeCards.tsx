@@ -14,7 +14,7 @@ const HomeCards = ({ items }: any) => {
       {items.length > 0 ? (
         items.map((i: any) => (
           <>
-            {!i.hasOwnProperty(HOME_CARDS_CONSTANTS.INCLUDES) ? (
+            {!i.hasOwnProperty(HOME_CARDS_CONSTANTS.ITINERARY) ? (
               <Card key={i._id} className='flex-none w-72 mx-2'>
                 <Link to={`/list-by-category/${i._id}`}>
                   <Card radius='none' className='h-full' isPressable>
@@ -23,7 +23,7 @@ const HomeCards = ({ items }: any) => {
                       sizes='200px'
                       className=' object-cover'
                       radius='none'
-                      src={i.image || 'https://www.motolucero.com.ar/wp-content/uploads/2022/12/portada-cuatri.jpg'}
+                      src={i.images[0] || ''}
                       width='100%'
                     />
                     <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>
@@ -56,12 +56,12 @@ const HomeCards = ({ items }: any) => {
                 </Card>
               </Card>
             )}
+            {openDetailModal && <ProductDetailModal product={i} setOpenModal={setOpenDetailModal} />}
           </>
         ))
       ) : (
         <p>{t('homePage.no_products_available')}</p>
       )}
-      {openDetailModal && <ProductDetailModal product={items} setOpenModal={setOpenDetailModal} />}
     </div>
   )
 }

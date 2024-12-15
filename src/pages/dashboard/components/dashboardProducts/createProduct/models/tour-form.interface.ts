@@ -1,7 +1,4 @@
-import { ICategories } from '../../categories/models/categories.interface'
-
-export interface ITours {
-  _id: string
+export interface ITourForm {
   name: string
   price: number
   itinerary: string
@@ -10,5 +7,5 @@ export interface ITours {
   startDates: string
   description: string
   images: string[]
-  category: ICategories
+  category: string
 }
