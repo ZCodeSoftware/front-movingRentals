@@ -23,7 +23,7 @@ const HomeCards = ({ items }: any) => {
                       sizes='200px'
                       className=' object-cover'
                       radius='none'
-                      src={i.images[0] || ''}
+                      src={i.image || null}
                       width='100%'
                     />
                     <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>
@@ -47,7 +47,7 @@ const HomeCards = ({ items }: any) => {
                     sizes='200px'
                     className=' object-cover'
                     radius='none'
-                    src={i.image || 'https://www.motolucero.com.ar/wp-content/uploads/2022/12/portada-cuatri.jpg'}
+                    src={i.images[0] || null}
                     width='100%'
                   />
                   <CardFooter className='justify-center backdrop-blur-sm rounded-b-lg bg-backgroundWhite bg-opacity-60 border-white/80 border-t overflow-hidden absolute bottom-0 w-full z-10 p-1'>

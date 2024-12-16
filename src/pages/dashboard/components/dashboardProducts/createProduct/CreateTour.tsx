@@ -35,8 +35,8 @@ const CreateTour: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setTour(prevVehicle => ({
-      ...prevVehicle,
+    setTour(prevTour => ({
+      ...prevTour,
       [name]: name === 'price' ? Number(value) : value
     }))
   }
@@ -70,8 +70,6 @@ const CreateTour: React.FC = () => {
       category: ''
     })
   }
-
-  console.log(tour)
 
   return (
     <div className='max-w-fit mx-auto p-6 bg-white rounded-xl shadow-md space-y-4'>

@@ -86,7 +86,6 @@ const CreateVehicle: React.FC = () => {
       minRentalHours: 0
     })
   }
-  console.log(vehicle)
   return (
     <div className='max-w-fit mx-auto p-6 bg-white rounded-xl shadow-md space-y-4'>
       <h2 className='text-2xl font-bold text-center mb-4'>Crear Nuevo Vehiculo</h2>

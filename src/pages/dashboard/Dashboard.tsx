@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { IDashboardItem } from './models/dashboard-items.interface'
 import DashboardHome from './components/dashboardHome/DashboardHome'
-import DashboardProducts from './components/dashboardProducts/DashboardProductsList'
+import DashboardProducts from './components/dashboardProducts/servicesList/DashboardServicesList'
 import DashboardCreateProduct from './components/dashboardProducts/createProduct/DashboardCreateProduct'
 import Sidebar from './components/Sidebar'
 

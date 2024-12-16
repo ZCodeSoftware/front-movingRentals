@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { Select, SelectItem, Skeleton } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
 import { ITransferSelectProps } from '../models/transfer-select-props'
-import { fetchTransfers } from '../../../services/transfers/transfersService'
+import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.service'
 import { ITransfers } from '../../../services/transfers/models/transfers.interface'
 
-const TransferSelector: React.FC<ITransferSelectProps> = ({ transfer, onTransferChange }) => {
+const TransferSelector: React.FC<ITransferSelectProps> = ({ onTransferChange }) => {
   const { t } = useTranslation()
   const [transfers, setTransfers] = useState<ITransfers[]>([])
   const [loading, setLoading] = useState(true)
@@ -22,14 +22,13 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({ transfer, onTransfer
 
   return (
     <Select
-      value={transfer._id}
       className='md:max-w-44 max-w-28'
       style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
       label={t('HomeRental.transfers.title')}
       onChange={e => {
         const selectedTransfer = transfers.find(t => t._id === e.target.value)
         if (selectedTransfer) {
-          onTransferChange(selectedTransfer)
+          onTransferChange(selectedTransfer._id)
         }
       }}
     >
@@ -40,7 +39,11 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({ transfer, onTransfer
           <Skeleton className='w-[60%] h-6 rounded-lg'></Skeleton>
         </SelectItem>
       ) : transfers?.length > 0 ? (
-        transfers.map(t => <SelectItem key={t._id}>{t.place}</SelectItem>)
+        transfers.map(t => (
+          <SelectItem value={t._id} key={t._id}>
+            {t.name}
+          </SelectItem>
+        ))
       ) : (
         <SelectItem key='no-products' className='text-gray-500 text-center'>
           {t('HomeRental.transfers.no_transfers_available')}

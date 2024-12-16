@@ -4,8 +4,6 @@ import VehicleDetailComponent from './VehicleDetailComponent'
 import TourDetailComponent from './TourDetailComponent'
 
 const ProductDetailModal = ({ product, setOpenModal }: any) => {
-  console.log(product)
-
   return (
     <Modal
       isOpen={!!product}

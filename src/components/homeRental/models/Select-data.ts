@@ -1,6 +1,5 @@
 import { ZonedDateTime } from '@internationalized/date'
 import { IVehicles } from '../../../services/products/models/vehicles.interface'
-import { ITransfers } from '../../../services/transfers/models/transfers.interface'
 import { ITours } from '../../../services/products/models/tours.interface'
 
 export interface ISelectData {
@@ -12,5 +11,5 @@ export interface ISelectData {
   selectedItem: IVehicles[]
   selectedTours: ITours[]
   branch: string
-  transfer: ITransfers
+  transfer: string
 }

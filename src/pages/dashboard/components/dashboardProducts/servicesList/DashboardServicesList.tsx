@@ -1,27 +1,27 @@
-import { useState } from 'react'
 import { Navbar, NavbarContent, NavbarItem, Button } from '@nextui-org/react'
-import CreateVehicle from './CreateVehicle'
-import CreateTour from './CreateTour'
-import CreateTransfer from './CreateTransfer'
+import { useState } from 'react'
+import ToursList from './ToursList'
+import VehicleList from './VehiclesList'
+import TransfersList from './TransfersList'
 
-const DashboardCreateProduct = () => {
+const DashboardProducts = () => {
   const [view, setView] = useState('vehicles')
 
   const renderView = () => {
     switch (view) {
       case 'vehicles':
-        return <CreateVehicle />
+        return <VehicleList />
       case 'tours':
-        return <CreateTour />
+        return <ToursList />
       case 'transfers':
-        return <CreateTransfer />
+        return <TransfersList />
       default:
         return null
     }
   }
 
-  return [
-    <div className='w-full'>
+  return (
+    <div>
       <Navbar isBordered className='w-full flex justify-center'>
         <NavbarContent>
           <NavbarItem className='w-full flex justify-evenly'>
@@ -44,14 +44,14 @@ const DashboardCreateProduct = () => {
               variant={view === 'transfers' ? 'solid' : 'light'}
               onClick={() => setView('transfers')}
             >
-              Transfers
+              Tranfers
             </Button>
           </NavbarItem>
         </NavbarContent>
       </Navbar>
       <div>{renderView()}</div>;
     </div>
-  ]
+  )
 }
 
-export default DashboardCreateProduct
+export default DashboardProducts

@@ -51,7 +51,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({ loading, setLoading, set
             <Skeleton className='w-[60%] h-2 rounded-lg'></Skeleton>
           </SelectItem>
         ) : data?.length > 0 ? (
-          data.map(t => <SelectItem key={String(t._id)}>{t.description}</SelectItem>)
+          data.map(t => <SelectItem key={String(t._id)}>{t.name}</SelectItem>)
         ) : (
           <SelectItem key='no-products' className='text-gray-500 text-center'>
             {t('HomeRental.no_products_available')}

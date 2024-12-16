@@ -26,7 +26,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     selectedItem: [],
     selectedTours: [],
     branch: '',
-    transfer: { _id: '', place: '' }
+    transfer: ''
   })
   const [isSticky, setIsSticky] = useState(false)
   const [isSubmitDisable, setIsSubmitDisable] = useState(false)
@@ -67,7 +67,6 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     >
       <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
         <TransferSelector
-          transfer={selectData.transfer}
           onTransferChange={transfer => {
             setSelectData(prev => ({
               ...prev,
@@ -129,7 +128,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
             />
           </div>
         </div>
-        <div className='flex h-full'>
+        <div className='flex justify-center h-full'>
           <SelectedProductRender products={[...selectData.selectedItem, ...selectData.selectedTours]} />
         </div>
         <div className='flex justify-center items-center p-2'>
