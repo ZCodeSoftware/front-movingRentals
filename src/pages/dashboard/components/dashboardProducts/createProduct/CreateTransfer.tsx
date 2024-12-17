@@ -75,7 +75,7 @@ const CreateTransfer: React.FC = () => {
         </div>
 
         <Button type='submit' color='primary' fullWidth className='mt-4'>
-          Crear Transfer
+          Crear Translado
         </Button>
       </form>
     </div>

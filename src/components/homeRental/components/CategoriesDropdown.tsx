@@ -1,32 +1,32 @@
-import React from 'react'
+import { useState } from 'react'
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Button,
-  Select,
-  SelectItem,
-  Skeleton
+  Skeleton,
+  Accordion,
+  AccordionItem
 } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
 import { fetchVehicles } from '../../../services/products/vehicles/GET/vehicles.get.service'
 import { ICategoriesDropdownProps } from '../models/categories-dropdown-props'
-import { IVehicles } from '../../../services/products/models/vehicles.interface'
-import { ISelectData } from '../models/Select-data'
 import { CATEGORIES } from '../constants/homeRental.constants'
+import DatePickerSection from './DatePicker'
 
 const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
   categoriesData,
   vehiclesByCategory,
-  selectedItemsByCategory,
   loading,
   setVehiclesByCategory,
-  setSelectedItemsByCategory,
   setLoading,
-  setSelectData
+  setSelectData,
+  selectData,
+  setIsSubmitDisable
 }) => {
   const { t } = useTranslation()
+  const [openPickers, setOpenPickers] = useState(new Set())
 
   const getData = async (categoryId: string) => {
     if (categoryId && !vehiclesByCategory[categoryId]) {
@@ -40,25 +40,6 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
     }
   }
 
-  const handleSelectionChange = (categoryId: string, selectedKeys: any) => {
-    setSelectedItemsByCategory(prev => ({
-      ...prev,
-      [categoryId]: new Set(selectedKeys)
-    }))
-
-    const selectedProducts = Array.from(selectedKeys)
-      .map(id => vehiclesByCategory[categoryId]?.find((product: IVehicles) => product._id === id))
-      .filter((product): product is IVehicles => product !== undefined)
-
-    setSelectData((prev: ISelectData) => ({
-      ...prev,
-      selectedItem: [
-        ...prev.selectedItem.filter((item: IVehicles) => item.category._id !== categoryId),
-        ...selectedProducts
-      ]
-    }))
-  }
-
   return (
     <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
       <Dropdown closeOnSelect={false} className='max-w-full md:w-[500px]'>
@@ -70,45 +51,49 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
           {categoriesData && categoriesData.length > 0 ? (
             categoriesData
-              .filter(c => c.name !== CATEGORIES.TOURS)
+              .filter(c => c.name !== CATEGORIES.TOURS && c.name !== CATEGORIES.TRANSFERS)
               .map(c => (
                 <DropdownItem key={c._id} className='w-full' isReadOnly>
-                  <Select
-                    selectionMode='multiple'
-                    className='w-full truncate container'
-                    label={c.name}
-                    renderValue={() => {
-                      const count = selectedItemsByCategory[c._id]?.size || 0
-                      return count > 0 ? `${count} ${t('HomeRental.selected_items')}` : ''
-                    }}
-                    data-filled={true}
-                    data-has-value={true}
-                    onOpenChange={async isOpen => {
-                      if (isOpen) {
-                        await getData(c._id)
-                      }
-                    }}
-                    onSelectionChange={selectedKeys => handleSelectionChange(c._id, selectedKeys)}
-                    selectedKeys={selectedItemsByCategory[c._id] || new Set()}
-                  >
-                    {loading[c._id] ? (
-                      <SelectItem key='skeleton-1' isDisabled>
-                        <Skeleton className='w-full h-6 rounded-lg mb-2'></Skeleton>
-                        <Skeleton className='w-[80%] h-6 rounded-lg mb-2'></Skeleton>
-                        <Skeleton className='w-[60%] h-6 rounded-lg'></Skeleton>
-                      </SelectItem>
-                    ) : vehiclesByCategory[c._id]?.length > 0 ? (
-                      vehiclesByCategory[c._id].map(p => (
-                        <SelectItem key={p._id} className='text-center'>
-                          {p.name}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem key='no-products' className='text-gray-500 text-center'>
-                        {t('HomeRental.no_products_available')}
-                      </SelectItem>
-                    )}
-                  </Select>
+                  <Accordion className='text-black'>
+                    <AccordionItem key={c._id} className='cursor-pointer' title={c.name} onPress={() => getData(c._id)}>
+                      {loading[c._id] ? (
+                        <div className='w-full'>
+                          <Skeleton className='w-full h-6 rounded-lg mb-2' />
+                          <Skeleton className='w-[80%] h-6 rounded-lg mb-2' />
+                          <Skeleton className='w-[60%] h-6 rounded-lg' />
+                        </div>
+                      ) : vehiclesByCategory[c._id]?.length > 0 ? (
+                        vehiclesByCategory[c._id].map(p => (
+                          <div key={p._id} className='text-center'>
+                            <Button
+                              className='w-full m-2'
+                              onPress={() =>
+                                setOpenPickers(prev =>
+                                  prev.has(p._id)
+                                    ? new Set([...prev].filter(id => id !== p._id))
+                                    : new Set(prev).add(p._id)
+                                )
+                              }
+                            >
+                              {p.name}
+                            </Button>
+                            {openPickers.has(p._id) && (
+                              <div className='w-full flex justify-center'>
+                                <DatePickerSection
+                                  setSelectData={setSelectData}
+                                  vehicle={p}
+                                  selectData={selectData}
+                                  setIsSubmitDisable={setIsSubmitDisable}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className='text-gray-500 text-center'>{t('HomeRental.no_products_available')}</div>
+                      )}
+                    </AccordionItem>
+                  </Accordion>
                 </DropdownItem>
               ))
           ) : (

@@ -1,3 +1,4 @@
 export const CATEGORIES = {
-  TOURS: 'Tours'
+  TOURS: 'Tours',
+  TRANSFERS: 'Transfer'
 }
