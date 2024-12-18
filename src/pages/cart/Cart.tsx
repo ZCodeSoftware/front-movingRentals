@@ -1,27 +1,64 @@
-import { useState, useEffect } from 'react'
-import { fetchCart } from '../../services/cart/cartService'
-import { Button } from '@nextui-org/react'
-import CartItemList from './components/CartItemsList'
-import { ICart } from '../../services/cart/models/cart.interface'
+import { useState, useEffect } from 'react';
+import { fetchCart } from '../../services/cart/cartService';
+import { Button } from '@nextui-org/react';
+import CartItemList from './components/CartItemsList';
+import { ICart } from '../../services/cart/models/cart.interface';
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import { useTranslation } from 'react-i18next';
+import { AppApiGateWay } from '../../services/app.api.gateway';
+
 
 const Cart = () => {
-  const [cart, setCart] = useState<ICart>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const { i18n } = useTranslation();
+  const locale = i18n.language === 'en' ? 'en-US' : 'es-AR';
+  initMercadoPago(import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY, { locale });
+  const [cart, setCart] = useState<ICart>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [preferenceId, setPreferenceId] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
-      const result = await fetchCart('1')
-      setCart(result)
-      setLoading(false)
-    }
+      const result = await fetchCart('1');
+      setCart(result);
+      setLoading(false);
+    };
 
     if (!cart || (cart.products && cart.products.length <= 1)) {
-      getData()
+      getData();
     }
-  }, [cart])
+  }, [cart]);
+
+  console.log(preferenceId);
+
+
+  const createPreference = async () => {
+    try {
+      const response = await AppApiGateWay.post('/payments/mercadopago',
+        [{
+          title: 'Dummy Item',
+          description: 'Multicolor Item',
+          quantity: 1,
+          currency_id: 'MXN',
+          unit_price: 100.0,
+        }]
+      );
+
+      setPreferenceId(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleBuy = async () => {
+    const preferenceId = await createPreference();
+    if (preferenceId) {
+      setPreferenceId(preferenceId);
+    }
+  }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -50,9 +87,13 @@ const Cart = () => {
               <h2>Taxes: $123</h2>
               <h1 className='mt-6 font-bold'>Total: ${cart.totalPrice}</h1>
             </div>
-            <Button className='w-full rounded-md font-semibold text-xl border rounded-t-none bg-buttonPrimary p-6'>
+            <Button
+              onPress={handleBuy}
+              className='w-full rounded-md font-semibold text-xl border rounded-t-none bg-buttonPrimary p-6'
+            >
               Purchase
             </Button>
+            {preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
           </section>
         </div>
       ) : (
@@ -61,7 +102,7 @@ const Cart = () => {
         </div>
       )}
     </main>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;
