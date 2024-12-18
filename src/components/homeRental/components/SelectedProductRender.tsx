@@ -1,8 +1,10 @@
 import { Card, CardBody, Image } from '@nextui-org/react'
 import { HOME_CARDS_CONSTANTS } from '../../../pages/home/constants/home.constants'
 import { ISelectData, ISelectItems } from '../models/Select-data'
+import { useEffect } from 'react'
 
 const SelectedProductRender = ({ products, setSelectData, selectData }: any) => {
+
   const calculatePrice = ({ vehicle, dates }: ISelectItems) => {
     if (!dates.start || !dates.end) {
       throw new Error('Las fechas de inicio y fin deben estar definidas.')
@@ -15,7 +17,7 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
     const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60)
 
     let totalPrice = 0
-
+    
     if (differenceInHours >= 24) {
       const fullDays = Math.floor(differenceInHours / 24)
       totalPrice += fullDays * pricePer24
@@ -25,22 +27,11 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
     } else {
       totalPrice += calculateRemainingPrice(differenceInHours, price, pricePer4, pricePer8)
     }
-    const updateData = selectData.selectedItem.map((item: ISelectItems) => {
-      if (item.vehicle._id === vehicle._id) {
-        return { ...item, total: totalPrice }
-      }
-      return item
-    })
-    setSelectData((prev: ISelectData) => ({
-      ...prev,
-      selectedItem: updateData
-    }))
     return totalPrice
   }
 
   const calculateRemainingPrice = (hours: number, price: number, pricePer4: number, pricePer8: number) => {
     let cost = 0
-
     if (hours >= 8) {
       const fullBlocksOf8 = Math.floor(hours / 8)
       cost += fullBlocksOf8 * pricePer8
@@ -48,6 +39,7 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
     }
 
     if (hours >= 4) {
+
       const fullBlocksOf4 = Math.floor(hours / 4)
       cost += fullBlocksOf4 * pricePer4
       hours %= 4
@@ -59,6 +51,21 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
 
     return cost
   }
+
+  useEffect(() => {
+    const updateData = selectData.selectedItem.map((item: ISelectItems) => {
+
+        const totalPrice = calculatePrice({vehicle: item.vehicle, dates: item.dates})
+        
+        return { ...item, total: totalPrice }
+    })
+    
+    setSelectData((prev: ISelectData) => ({
+      ...prev,
+      selectedItem: updateData
+    }))
+    
+  }, [selectData.selectedItem.length])
 
   return (
     <>

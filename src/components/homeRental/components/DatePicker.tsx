@@ -27,7 +27,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
 
     if (currentDate.hour > 20) {
       const start = currentDate.add({ days: 1 })
-      const end = currentDate.add({ hours: 4 })
+      const end = currentDate.add({days: 1, hours: 4 })
 
       setSelectedDates({
         start,
