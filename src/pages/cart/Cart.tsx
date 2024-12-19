@@ -1,65 +1,158 @@
-import { useState, useEffect } from 'react';
-import { fetchCart } from '../../services/cart/cartService';
-import { Button } from '@nextui-org/react';
-import CartItemList from './components/CartItemsList';
-import { ICart } from '../../services/cart/models/cart.interface';
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
-import { useTranslation } from 'react-i18next';
-import { AppApiGateWay } from '../../services/app.api.gateway';
-
+import { useState, useEffect } from 'react'
+import { Button } from '@nextui-org/react'
+import CartItemList from './components/CartItemsList'
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
+import { useTranslation } from 'react-i18next'
+import { AppApiGateWay } from '../../services/app.api.gateway'
+import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
+import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
+import { setLocalStorage } from '../../utils/local-storage/setLocalStorage'
+import { fetchCart } from '../../services/cart/GET/cart.get.service'
+import { postCart } from '../../services/cart/POST/cart.post.service'
+import { ILocalCart } from './models/local-cart.interface'
+import { ISelectItems, ISelectTours } from '../../components/homeRental/models/Select-data'
+import { ITransfers } from '../../services/transfers/models/transfers.interface'
 
 const Cart = () => {
-  const { i18n } = useTranslation();
-  const locale = i18n.language === 'en' ? 'en-US' : 'es-AR';
-  initMercadoPago(import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY, { locale });
-  const [cart, setCart] = useState<ICart>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [preferenceId, setPreferenceId] = useState(null);
+  const { i18n } = useTranslation()
+  const locale = i18n.language === 'en' ? 'en-US' : 'es-AR'
+  initMercadoPago(import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY, { locale })
+  const [loading, setLoading] = useState<boolean>(true)
+  const [preferenceId, setPreferenceId] = useState(null)
+  const [cartVersion, setCartVersion] = useState(0)
+  const [userData, setUserData] = useState<any>(null)
+  const [localCart, setLocalCart] = useState<ILocalCart>({
+    branch: '',
+    selectedItems: [],
+    selectedTours: [],
+    transfer: [],
+    travelers: { adults: 0, childrens: 0 }
+  })
+  const [cartData, setCartData] = useState<null | any>(null)
 
   useEffect(() => {
-    const getData = async () => {
-      const result = await fetchCart('1');
-      setCart(result);
-      setLoading(false);
-    };
+    const fetchUserAndCart = async () => {
+      try {
+        const userResponse = await fetchUserDetail()
+        setUserData(userResponse.data)
 
-    if (!cart || (cart.products && cart.products.length <= 1)) {
-      getData();
+        if (userResponse.data && userResponse.data.cart && userResponse.data.cart._id) {
+          const cartResponse = await fetchCart(userResponse.data.cart._id)
+          setCartData(cartResponse.data)
+        }
+      } catch (error: any) {
+        const localCartData = getLocalStorage('cart')
+        if (localCartData) {
+          setLocalCart(localCartData)
+        }
+        throw new Error(error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [cart]);
 
-  console.log(preferenceId);
+    fetchUserAndCart()
+  }, [cartVersion])
 
+  console.log(preferenceId)
 
   const createPreference = async () => {
     try {
-      const response = await AppApiGateWay.post('/payments/mercadopago',
-        [{
+      const response = await AppApiGateWay.post('/payments/mercadopago', [
+        {
           title: 'Dummy Item',
           description: 'Multicolor Item',
           quantity: 1,
           currency_id: 'MXN',
-          unit_price: 100.0,
-        }]
-      );
+          unit_price: 100.0
+        }
+      ])
 
-      setPreferenceId(response.data);
-      return response.data;
+      setPreferenceId(response.data)
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
   const handleBuy = async () => {
-    const preferenceId = await createPreference();
+    const preferenceId = await createPreference()
     if (preferenceId) {
-      setPreferenceId(preferenceId);
+      setPreferenceId(preferenceId)
+    }
+  }
+
+  const handleRemoveItem = async (productId: string) => {
+    try {
+      if (getLocalStorage('user') && cartData) {
+        const updatedCartVehicles =
+          cartData.selectedItems.filter((product: ISelectItems) => product.vehicle._id != productId) || []
+        const updatedCartTours =
+          cartData.selectedTours.filter((product: ISelectTours) => product.tour._id != productId) || []
+        const updateTransfer = cartData.transfer.filter((product: ITransfers) => product._id != productId) || []
+
+        const newCart = {
+          ...cartData,
+          selectedItems: updatedCartVehicles,
+          selectedTours: updatedCartTours,
+          transfer: updateTransfer
+        }
+
+        await postCart({ cart: newCart, userCartId: userData.cart._id })
+        setCartData(newCart)
+      } else {
+        const updatedCartVehicles = localCart?.selectedItems?.filter(product => product.vehicle._id != productId) || []
+        const updatedCartTours = localCart?.selectedTours?.filter(product => product.tour._id != productId) || []
+        const updateTransfer = localCart?.transfer?.filter(product => product._id != productId) || []
+
+        const newCart = {
+          ...localCart,
+          selectedItems: updatedCartVehicles,
+          selectedTours: updatedCartTours,
+          transfer: updateTransfer
+        }
+
+        setLocalCart(newCart)
+        setLocalStorage('cart', newCart)
+      }
+      setCartVersion(prevVersion => prevVersion + 1)
+    } catch (error: any) {
+      throw new Error(error)
+    }
+  }
+
+  const handleRemoveAll = async () => {
+    try {
+      if (getLocalStorage('user') && cartData) {
+        const emptyCart = {
+          ...cartData,
+          selectedItems: [],
+          selectedTours: []
+        }
+
+        await postCart({ cart: emptyCart, userCartId: userData.cart._id })
+        setCartData(emptyCart)
+      } else {
+        const emptyCart = {
+          ...localCart,
+          selectedItems: [],
+          selectedTours: []
+        }
+
+        setLocalCart(emptyCart)
+        localStorage.removeItem('cart')
+      }
+      setCartVersion(prevVersion => prevVersion + 1)
+    } catch (error: any) {
+      console.error('Error al eliminar todos los productos del carrito:', error)
     }
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
+
+  const cart = userData && cartData ? cartData : { products: localCart }
 
   return (
     <main className='w-full'>
@@ -68,10 +161,12 @@ const Cart = () => {
         <div className='mx-auto max-w-5xl justify-center md:flex md:space-x-6 xl:px-0 p-4'>
           <div className='md:w-2/3 flex flex-col'>
             <section className='rounded-lg md:overflow-auto overflow-hidden md:max-h-[80vh]'>
-              <CartItemList product={cart.products} />
+              <CartItemList product={cart.products} handleRemove={handleRemoveItem} />
             </section>
             <div className='w-full flex justify-end md:justify-start'>
-              <button className='max-w-28 p-2'>Remove all</button>
+              <button onClick={handleRemoveAll} className='max-w-28 p-2'>
+                Remove all
+              </button>
             </div>
           </div>
           <section className='mt-6 h-full md:mt-0 md:w-1/3 bg-transparent'>
@@ -102,7 +197,7 @@ const Cart = () => {
         </div>
       )}
     </main>
-  );
-};
+  )
+}
 
-export default Cart;
+export default Cart

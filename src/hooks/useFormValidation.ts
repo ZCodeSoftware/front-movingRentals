@@ -18,11 +18,12 @@ const useFormValidations = () => {
   }
 
   const validatePassword = {
-    hasUpperCase: (value: string) => /[A-Z]/.test(value) || traduction.password.hasUpperCase,
-    hasLowerCase: (value: string) => /[a-z]/.test(value) || traduction.password.hasLowerCase,
-    hasNumber: (value: string) => /\d/.test(value) || traduction.password.hasNumber,
-    hasSpecialChar: (value: string) => /[!@#$%^&*(),.?":{}|<>_]/.test(value) || traduction.password.hasSpecialChar,
-    minLength: (value: string) => /^.{8,}$/.test(value) || traduction.password.minLength
+    hasUpperCase: (value?: string) => (value?.match(/[A-Z]/) ? true : 'Debe contener al menos una letra mayúscula.'),
+    hasLowerCase: (value?: string) => (value?.match(/[a-z]/) ? true : 'Debe contener al menos una letra minúscula.'),
+    hasNumber: (value?: string) => (value?.match(/[0-9]/) ? true : 'Debe contener al menos un número.'),
+    hasSpecialChar: (value?: string) =>
+      value?.match(/[!@#$%^&*(),.?":{}|<>_-]/) ? true : 'Debe contener al menos un carácter especial.',
+    minLength: (value?: string) => (value && value.length >= 8 ? true : 'Debe tener al menos 8 caracteres.')
   }
 
   const validateEmail = {

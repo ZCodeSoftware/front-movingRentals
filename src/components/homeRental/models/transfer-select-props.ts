@@ -1,3 +1,5 @@
+import { ITransfers } from '../../../services/transfers/models/transfers.interface'
+
 export interface ITransferSelectProps {
-  onTransferChange: (transfer: string) => void
+  onTransferChange: (transfer: ITransfers[]) => void
 }

@@ -26,9 +26,9 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({ onTransferChange }) 
       style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
       label={t('HomeRental.transfers.title')}
       onChange={e => {
-        const selectedTransfer = transfers.find(t => t._id === e.target.value)
+        const selectedTransfer = transfers.filter(t => t._id === e.target.value)
         if (selectedTransfer) {
-          onTransferChange(selectedTransfer._id)
+          onTransferChange(selectedTransfer)
         }
       }}
     >

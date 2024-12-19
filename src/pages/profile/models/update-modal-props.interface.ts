@@ -3,6 +3,7 @@ interface IUserUpdateData {
   lastName?: string
   email?: string
   cellphone?: string
+  password?: string
 }
 
 export interface IUpdateFieldModalProps {

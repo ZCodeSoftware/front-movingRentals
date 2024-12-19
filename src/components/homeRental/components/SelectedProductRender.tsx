@@ -1,10 +1,11 @@
+import { useState } from 'react'
 import { Card, CardBody, Image } from '@nextui-org/react'
-import { HOME_CARDS_CONSTANTS } from '../../../pages/home/constants/home.constants'
 import { ISelectData, ISelectItems } from '../models/Select-data'
 import { useEffect } from 'react'
+import ProductDetailModal from '../../../pages/list-by-category/components/ProductDetailModal'
 
 const SelectedProductRender = ({ products, setSelectData, selectData }: any) => {
-
+  const [openModal, setOpenModal] = useState<{ [key: string]: boolean }>({})
   const calculatePrice = ({ vehicle, dates }: ISelectItems) => {
     if (!dates.start || !dates.end) {
       throw new Error('Las fechas de inicio y fin deben estar definidas.')
@@ -17,7 +18,7 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
     const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60)
 
     let totalPrice = 0
-    
+
     if (differenceInHours >= 24) {
       const fullDays = Math.floor(differenceInHours / 24)
       totalPrice += fullDays * pricePer24
@@ -39,7 +40,6 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
     }
 
     if (hours >= 4) {
-
       const fullBlocksOf4 = Math.floor(hours / 4)
       cost += fullBlocksOf4 * pricePer4
       hours %= 4
@@ -54,18 +54,24 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
 
   useEffect(() => {
     const updateData = selectData.selectedItem.map((item: ISelectItems) => {
+      const totalPrice = calculatePrice({ vehicle: item.vehicle, dates: item.dates })
 
-        const totalPrice = calculatePrice({vehicle: item.vehicle, dates: item.dates})
-        
-        return { ...item, total: totalPrice }
+      return { ...item, total: totalPrice }
     })
-    
+
     setSelectData((prev: ISelectData) => ({
       ...prev,
       selectedItem: updateData
     }))
-    
   }, [selectData.selectedItem.length])
+
+  const handleOpenModal = (id: string) => {
+    setOpenModal((prev: any) => ({ ...prev, [id]: true }))
+  }
+
+  const handleCloseModal = (id: string) => {
+    setOpenModal((prev: any) => ({ ...prev, [id]: false }))
+  }
 
   return (
     <>
@@ -74,25 +80,31 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
           <h1>Productos seleccionados</h1>
           {products.map((p: any) => (
             <>
-              {p.hasOwnProperty(HOME_CARDS_CONSTANTS.ITINERARY) ? (
-                <Card className='m-2'>
+              {p.tour ? (
+                <Card className='m-2' isPressable onPress={() => handleOpenModal(p.tour._id)}>
                   <CardBody className='flex flex-row justify-center items-center'>
-                    <Image src={p.images[0]} width='200px' />
+                    <Image src={p.tour.images[0] || ''} width='200px' />
                     <div className='mx-2'>
-                      <h1 className='font-bold'>{p.name}</h1>
-                      <p>${p.price}</p>
+                      <h1 className='font-bold'>{p.tour.name || ''}</h1>
+                      <p>${p.tour.price || 0}</p>
                     </div>
                   </CardBody>
+                  {openModal[p.tour._id] && (
+                    <ProductDetailModal product={p.tour} setOpenModal={() => handleCloseModal(p.tour._id)} />
+                  )}
                 </Card>
               ) : (
-                <Card className='m-2'>
+                <Card className='m-2' isPressable onPress={() => handleOpenModal(p.vehicle._id)}>
                   <CardBody className='flex flex-row justify-center items-center'>
-                    <Image src={p.vehicle.images[0]} width='200px' />
+                    <Image src={p.vehicle.images[0] || ''} width='200px' />
                     <div className='mx-2'>
-                      <h1 className='font-bold'>{p.vehicle.name}</h1>
+                      <h1 className='font-bold'>{p.vehicle.name || ''}</h1>
                       <p>${calculatePrice({ vehicle: p.vehicle, dates: p.dates })}</p>
                     </div>
                   </CardBody>
+                  {openModal[p.vehicle._id] && (
+                    <ProductDetailModal product={p.vehicle} setOpenModal={() => handleCloseModal(p.vehicle._id)} />
+                  )}
                 </Card>
               )}
             </>

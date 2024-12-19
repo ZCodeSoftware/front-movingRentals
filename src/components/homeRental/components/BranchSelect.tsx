@@ -51,7 +51,7 @@ const BranchSelector: React.FC<IBranchSelectProps> = ({ branch, onBranchChange, 
             <Skeleton className='w-[60%] h-2 rounded-lg'></Skeleton>
           </SelectItem>
         ) : data?.length > 0 ? (
-          data.map(t => <SelectItem key={String(t._id)}>{t.name}</SelectItem>)
+          data.map(t => <SelectItem key={t._id}>{t.name}</SelectItem>)
         ) : (
           <SelectItem key='no-products' className='text-gray-500 text-center'>
             {t('HomeRental.no_products_available')}

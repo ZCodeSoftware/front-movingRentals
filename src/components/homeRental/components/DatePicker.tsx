@@ -13,28 +13,30 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
 }) => {
   const { t, i18n } = useTranslation()
 
-  const [selectedDates, setSelectedDates] = useState<{ start: ZonedDateTime; end: ZonedDateTime }>({
-    start: now(getLocalTimeZone()),
-    end: now(getLocalTimeZone()).add({ hours: 4 })
-  })
+  const existingVehicleDateItem = selectData.selectedItem.find((item: ISelectItems) => item.vehicle._id === vehicle._id)
 
-  const isVehicleAlreadySelected = selectData.selectedItem.some(
-    (item: ISelectItems) => item.vehicle._id === vehicle._id
-  )
+  const [selectedDates, setSelectedDates] = useState<{ start: ZonedDateTime; end: ZonedDateTime }>({
+    start: existingVehicleDateItem ? existingVehicleDateItem.dates.start : now(getLocalTimeZone()).add({ days: 1 }),
+    end: existingVehicleDateItem
+      ? existingVehicleDateItem.dates.end
+      : now(getLocalTimeZone()).add({ days: 1, hours: 4 })
+  })
 
   useEffect(() => {
     const currentDate = now(getLocalTimeZone())
 
-    if (currentDate.hour > 20) {
-      const start = currentDate.add({ days: 1 })
-      const end = currentDate.add({days: 1, hours: 4 })
+    if (!existingVehicleDateItem) {
+      if (currentDate.hour > 20) {
+        const start = currentDate.add({ days: 1 })
+        const end = currentDate.add({ days: 2, hours: 4 })
 
-      setSelectedDates({
-        start,
-        end
-      })
+        setSelectedDates({
+          start,
+          end
+        })
+      }
     }
-  }, [])
+  }, [existingVehicleDateItem])
 
   const handleSave = () => {
     if (selectedDates.start && selectedDates.end) {
@@ -109,7 +111,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
           calendarProps={{ className: 'uppercase' }}
         />
       </NextUIProvider>
-      {!isVehicleAlreadySelected ? (
+      {!existingVehicleDateItem ? (
         <Button className='h-full ml-2' onPress={handleSave}>
           Agregar
         </Button>

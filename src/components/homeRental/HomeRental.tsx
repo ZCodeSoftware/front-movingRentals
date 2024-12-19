@@ -10,6 +10,7 @@ import BranchSelector from './components/BranchSelect'
 import TravelersDropdown from './components/TravelersDropdown'
 import SelectedProductRender from './components/SelectedProductRender'
 import TransferSelector from './components/TransferSelect'
+import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
@@ -19,7 +20,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     selectedItem: [],
     selectedTours: [],
     branch: '',
-    transfer: ''
+    transfer: []
   })
   const [isSticky, setIsSticky] = useState(false)
   const [isSubmitDisable, setIsSubmitDisable] = useState(false)
@@ -36,37 +37,66 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }
   }, [])
 
-  const handleSubmit = () => {
-    if (!selectData.branch) {
+  const handleSubmit = async () => {
+    if (!selectData.branch && (selectData.selectedItem.length > 0 || selectData.selectedTours.length > 0)) {
       alert('Por favor, selecciona una sucursal.')
       return
     }
 
-    if (selectData.selectedItem.length === 0 && selectData.selectedTours.length === 0) {
-      alert('Por favor, selecciona al menos un producto o tour.')
+    if (
+      selectData.selectedItem.length === 0 &&
+      selectData.selectedTours.length === 0 &&
+      selectData.transfer.length === 0
+    ) {
+      alert('Por favor, selecciona al menos un vehiculo, tour o traslado.')
       return
     }
     const formattedItems = selectData.selectedItem.map(item => ({
       ...item,
       dates: item.dates
         ? {
-            start: item.dates.start ? item.dates.start.toDate() : null,
+            start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
             end: item.dates.end ? item.dates.end.toDate() : null
           }
         : null,
-      vehicle: item.vehicle ? item.vehicle._id : null
+      vehicle: item.vehicle ? item.vehicle._id : null,
+      total: item.total
     }))
 
-    const formattedTours = selectData.selectedTours.map(tour => tour._id)
+    const formattedTours = selectData.selectedTours.map(item => ({
+      ...item,
+      date: item.date ? item.date.toString() : null,
+      tour: item.tour ? item.tour._id : null
+    }))
+    const formattedTransfers = selectData.transfer.map(item => ({
+      ...item,
+      transfer: item._id ? item._id : null
+    }))
 
-    const payload = {
+    const backPayload = {
       branch: selectData.branch,
       transfer: selectData.transfer,
-      travelers: selectData.travelers,
+      travelers: formattedTransfers,
       selectedItems: formattedItems,
       selectedTours: formattedTours
     }
-    console.log('Datos enviados:', payload)
+
+    const localStoragePayload = {
+      branch: selectData.branch,
+      transfer: selectData.transfer,
+      travelers: selectData.travelers,
+      selectedItems: selectData.selectedItem,
+      selectedTours: selectData.selectedTours
+    }
+    try {
+      if (localStorage.getItem('user')) {
+      } else {
+        ValidateProductInCart(localStoragePayload)
+      }
+    } catch (error: any) {}
+
+    console.log('Datos enviados:', backPayload)
+    console.log('Datos enviados:', localStoragePayload)
     alert('Datos enviados correctamente')
   }
 
@@ -80,7 +110,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     >
       <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
         <TransferSelector
-          onTransferChange={transfer => {
+          onTransferChange={(transfer: any) => {
             setSelectData(prev => ({
               ...prev,
               transfer
@@ -101,7 +131,8 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           loading={loading}
           setLoading={setLoading}
           setSelectData={setSelectData}
-          selectData={selectData.selectedTours}
+          setIsSubmitDisable={setIsSubmitDisable}
+          selectData={selectData}
         />
       </div>
       <div className='w-full flex flex-col md:flex-row justify-evenly md:p-6'>
