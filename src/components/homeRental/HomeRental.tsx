@@ -14,6 +14,8 @@ import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
 import { postCart } from '../../services/cart/POST/cart.post.service'
 import { IUser } from '../../services/users/models/user.interface'
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
+import { setLocalStorage } from '../../utils/local-storage/setLocalStorage'
+import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>()
@@ -86,12 +88,41 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       transfer: item.transfer._id ? item.transfer._id : null
     }))
 
+    const localBackCart = getLocalStorage('backCart')
+
+    const combinedVehicle = localBackCart
+      ? [
+          ...localBackCart.selectedItems,
+          ...formattedItems.filter(
+            item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
+          )
+        ]
+      : null
+
+    const combinedTours = localBackCart
+      ? [
+          ...localBackCart.selectedTours,
+          ...formattedTours.filter(
+            item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
+          )
+        ]
+      : null
+
+    const combinedTransfers = localBackCart
+      ? [
+          ...localBackCart.transfer,
+          ...formattedTransfers.filter(
+            item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
+          )
+        ]
+      : null
+
     const backPayload = {
-      branch: selectData.branch,
-      transfer: formattedTransfers,
-      travelers: selectData.travelers,
-      selectedItems: formattedItems,
-      selectedTours: formattedTours
+      branch: selectData.branch ? selectData.branch : localBackCart.branch,
+      transfer: localBackCart ? combinedTransfers : formattedTransfers,
+      travelers: selectData.travelers ? selectData.travelers : localBackCart.travelers,
+      selectedItems: localBackCart ? combinedVehicle : formattedItems,
+      selectedTours: localBackCart ? combinedTours : formattedTours
     }
 
     const localStoragePayload = {
@@ -105,14 +136,13 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       if (localStorage.getItem('user')) {
         if (userData) {
           await postCart({ cart: backPayload as any, userCartId: userData.cart })
+          setLocalStorage('backCart', backPayload)
         }
       } else {
         ValidateProductInCart(localStoragePayload)
       }
     } catch (error: any) {}
 
-    console.log('Datos enviados al back:', backPayload)
-    console.log('Datos enviados:', localStoragePayload)
     alert('Datos enviados correctamente')
   }
 

@@ -54,19 +54,50 @@ const Cart = () => {
     fetchUserAndCart()
   }, [cartVersion])
 
-  console.log(preferenceId)
+  let totalPrice = 0
+
+  const cartItemsVehicles =
+    cartData?.vehicles.map((product: ISelectItems) => {
+      totalPrice += product.total || 0
+      return {
+        title: product.vehicle.name,
+        description: product.vehicle.name + ' Rental',
+        quantity: 1,
+        currency_id: 'MXN',
+        unit_price: product.total
+      }
+    }) || []
+
+  const cartItemsTours =
+    cartData?.tours.map((product: ISelectTours) => {
+      totalPrice += product.tour.price || 0
+      return {
+        title: product.tour.name,
+        description: product.tour.name + ' Tour',
+        quantity: 1,
+        currency_id: 'MXN',
+        unit_price: product.tour.price
+      }
+    }) || []
+
+  const cartItemsTransfers =
+    cartData?.transfer.map((product: ISelectTransfers) => {
+      totalPrice += product.transfer.price || 0
+      return {
+        title: product.transfer.name,
+        description: product.transfer.name + ' Transfer',
+        quantity: 1,
+        currency_id: 'MXN',
+        unit_price: product.transfer.price
+      }
+    }) || []
 
   const createPreference = async () => {
     try {
-      const response = await AppApiGateWay.post('/payments/mercadopago', [
-        {
-          title: 'Dummy Item',
-          description: 'Multicolor Item',
-          quantity: 1,
-          currency_id: 'MXN',
-          unit_price: 100.0
-        }
-      ])
+      const response = await AppApiGateWay.post(
+        '/payments/mercadopago',
+        [...cartItemsVehicles, ...cartItemsTours, ...cartItemsTransfers].flat()
+      )
 
       setPreferenceId(response.data)
       return response.data
@@ -92,12 +123,18 @@ const Cart = () => {
           cartData.transfer.filter((product: ISelectTransfers) => product.transfer._id != productId) || []
         const newCart = {
           ...cartData,
-          selectedItems: updatedCartVehicles,
-          selectedTours: updatedCartTours,
+          vehicles: updatedCartVehicles,
+          tours: updatedCartTours,
           transfer: updateTransfer
         }
 
         await postCart({ cart: newCart, userCartId: userData.cart })
+        setLocalStorage('backCart', {
+          ...localCart,
+          selectedItems: updatedCartVehicles,
+          selectedTours: updatedCartTours,
+          transfer: updateTransfer
+        })
         setCartData(newCart)
       } else {
         const updatedCartVehicles = localCart?.selectedItems?.filter(product => product.vehicle._id != productId) || []
@@ -125,12 +162,13 @@ const Cart = () => {
       if (getLocalStorage('user') && cartData) {
         const emptyCart = {
           ...cartData,
-          selectedItems: [],
-          selectedTours: [],
+          vehicles: [],
+          tours: [],
           transfer: []
         }
 
-        await postCart({ cart: emptyCart, userCartId: userData.cart._id })
+        await postCart({ cart: emptyCart, userCartId: userData.cart })
+        localStorage.removeItem('backCart')
         setCartData(emptyCart)
       } else {
         const emptyCart = {
@@ -183,9 +221,7 @@ const Cart = () => {
               </div>
             </div>
             <div className='p-4 border border-b-0 rounded-md rounded-b-none mt-6'>
-              <h2>Subtotal: $123</h2>
-              <h2>Taxes: $123</h2>
-              <h1 className='mt-6 font-bold'>Total: ${cart.totalPrice}</h1>
+              <h1 className='mt-6 font-bold'>Total: ${totalPrice}</h1>
             </div>
             <Button
               onPress={handleBuy}

@@ -7,7 +7,7 @@ const ValidateProductInCart = (productToCart: ILocalCart) => {
     branch: '',
     selectedItems: [],
     selectedTours: [],
-    transfer: '',
+    transfer: [],
     travelers: { adults: 1, childrens: 0 }
   }
 

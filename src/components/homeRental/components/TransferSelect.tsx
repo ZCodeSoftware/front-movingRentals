@@ -15,6 +15,7 @@ import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.se
 import { ITransfers } from '../../../services/transfers/models/transfers.interface'
 import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date'
 import { ISelectData } from '../models/Select-data'
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
 
 const TransferSelector: React.FC<ITransferSelectProps> = ({
   loading,
@@ -29,6 +30,8 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectDate, setSelectDate] = useState<ZonedDateTime>(now(getLocalTimeZone()))
   const { i18n } = useTranslation()
+  const localBackCart = getLocalStorage('backCart')
+  const localCart = getLocalStorage('cart')
 
   const getData = async () => {
     if (!loading.transfer && transfers.length === 0) {
@@ -42,6 +45,13 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
         setLoading(prev => ({ ...prev, tours: false }))
       }
     }
+  }
+
+  const isAlreadySelected = (transferId: string) => {
+    const isInBackCart = localBackCart?.transfer.some((item: any) => item.transfer === transferId)
+    const isInLocalCart = localCart?.transfer.some((item: any) => item.transfer === transferId)
+
+    return isInBackCart || isInLocalCart
   }
 
   const handleDropdownOpenChange = (isOpen: boolean) => {
@@ -147,22 +157,30 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
                         />
                       </NextUIProvider>
                       <div>
-                        {selectData.transfer.some(s => s.transfer._id === transfer._id) ? (
-                          <Button
-                            className='h-full ml-2 flex items-center justify-center'
-                            onPress={() => handleRemove(transfer)}
-                            color='danger'
-                            variant='flat'
-                          >
-                            Eliminar
+                        {isAlreadySelected(transfer._id) ? (
+                          <Button className='h-full ml-2 flex items-center justify-center text-wrap' isDisabled>
+                            En el carrito
                           </Button>
                         ) : (
-                          <Button
-                            className='h-full ml-2 flex items-center justify-center'
-                            onPress={() => handleSave(transfer)}
-                          >
-                            Agregar
-                          </Button>
+                          <>
+                            {selectData.transfer.some(s => s.transfer._id === transfer._id) ? (
+                              <Button
+                                className='h-full ml-2 flex items-center justify-center'
+                                onPress={() => handleRemove(transfer)}
+                                color='danger'
+                                variant='flat'
+                              >
+                                Eliminar
+                              </Button>
+                            ) : (
+                              <Button
+                                className='h-full ml-2 flex items-center justify-center'
+                                onPress={() => handleSave(transfer)}
+                              >
+                                Agregar
+                              </Button>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>

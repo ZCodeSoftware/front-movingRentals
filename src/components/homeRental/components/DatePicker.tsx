@@ -4,6 +4,7 @@ import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date'
 import { useTranslation } from 'react-i18next'
 import { IDatePickerSectionProps } from '../models/date-picker-props'
 import { ISelectData, ISelectItems } from '../models/Select-data'
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
 
 const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   selectData,
@@ -16,6 +17,8 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   const existingVehicleDateItem = selectData.selectedItems.find(
     (item: ISelectItems) => item.vehicle._id === vehicle._id
   )
+  const localBackCart = getLocalStorage('backCart')
+  const localCart = getLocalStorage('cart')
 
   const [selectedDates, setSelectedDates] = useState<{ start: ZonedDateTime; end: ZonedDateTime }>({
     start: existingVehicleDateItem ? existingVehicleDateItem.dates.start : now(getLocalTimeZone()).add({ days: 1 }),
@@ -23,6 +26,13 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
       ? existingVehicleDateItem.dates.end
       : now(getLocalTimeZone()).add({ days: 1, hours: 4 })
   })
+
+  const isAlreadySelected = () => {
+    const isInBackCart = localBackCart?.selectedItems.some((item: any) => item.vehicle === vehicle._id)
+    const isInLocalCart = localCart?.selectedItems.some((item: any) => item.vehicle._id === vehicle._id)
+
+    return isInBackCart || isInLocalCart
+  }
 
   useEffect(() => {
     const currentDate = now(getLocalTimeZone())
@@ -113,14 +123,22 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
           calendarProps={{ className: 'uppercase' }}
         />
       </NextUIProvider>
-      {!existingVehicleDateItem ? (
-        <Button className='h-full ml-2' onPress={handleSave}>
-          Agregar
+      {isAlreadySelected() ? (
+        <Button className='h-full text-wrap ml-2' isDisabled>
+          En el carrito
         </Button>
       ) : (
-        <Button className='h-full ml-2' color='danger' variant='flat' onPress={handleRemove}>
-          Eliminar
-        </Button>
+        <>
+          {!existingVehicleDateItem ? (
+            <Button className='h-full ml-2' onPress={handleSave}>
+              Agregar
+            </Button>
+          ) : (
+            <Button className='h-full ml-2' color='danger' variant='flat' onPress={handleRemove}>
+              Eliminar
+            </Button>
+          )}
+        </>
       )}
     </div>
   )
