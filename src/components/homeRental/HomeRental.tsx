@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getLocalTimeZone, now } from '@internationalized/date'
 import { Button } from '@nextui-org/react'
 import { IHomeRentalProps } from './models/home-rental-props.interface'
 import { IVehicles } from '../../services/products/models/vehicles.interface'
@@ -8,47 +7,40 @@ import { ISelectData } from './models/Select-data'
 import CategoriesDropdown from './components/CategoriesDropdown'
 import ToursDropdown from './components/ToursDropdown'
 import BranchSelector from './components/BranchSelect'
-import DatePickerSection from './components/DatePicker'
 import TravelersDropdown from './components/TravelersDropdown'
 import SelectedProductRender from './components/SelectedProductRender'
 import TransferSelector from './components/TransferSelect'
+import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
+import { postCart } from '../../services/cart/POST/cart.post.service'
+import { IUser } from '../../services/users/models/user.interface'
+import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
+  const [userData, setUserData] = useState<IUser>()
   const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
-  const [selectedItemsByCategory, setSelectedItemsByCategory] = useState<Record<string, Set<string>>>({})
   const [loading, setLoading] = useState<Record<string, boolean>>({})
   const [selectData, setSelectData] = useState<ISelectData>({
-    dates: {
-      start: now(getLocalTimeZone()),
-      end: now(getLocalTimeZone()).add({ hours: 4 })
-    },
     travelers: { adults: 1, childrens: 0 },
-    selectedItem: [],
+    selectedItems: [],
     selectedTours: [],
     branch: '',
-    transfer: ''
+    transfer: []
   })
   const [isSticky, setIsSticky] = useState(false)
   const [isSubmitDisable, setIsSubmitDisable] = useState(false)
   const { t } = useTranslation()
 
-  useEffect(() => {
-    const currentDate = now(getLocalTimeZone())
-
-    if (currentDate.hour > 20) {
-      const start = currentDate.add({ days: 1 })
-      const end = currentDate.add({ hours: 4 })
-
-      setSelectData({
-        ...selectData,
-        dates: { start, end }
-      })
-    }
-  }, [])
-
   const handleScroll = () => {
     setIsSticky(window.pageYOffset >= 80)
   }
+
+  useEffect(() => {
+    const getData = async () => {
+      const result = await fetchUserDetail()
+      setUserData(result)
+    }
+    getData()
+  }, [])
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
@@ -57,53 +49,115 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }
   }, [])
 
+  const handleSubmit = async () => {
+    if (!selectData.branch && (selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0)) {
+      alert('Por favor, selecciona una sucursal.')
+      return
+    }
+
+    if (
+      selectData.selectedItems.length === 0 &&
+      selectData.selectedTours.length === 0 &&
+      selectData.transfer.length === 0
+    ) {
+      alert('Por favor, selecciona al menos un vehiculo, tour o traslado.')
+      return
+    }
+    const formattedItems = selectData.selectedItems.map(item => ({
+      ...item,
+      dates: item.dates
+        ? {
+            start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
+            end: item.dates.end ? item.dates.end.toDate().toISOString() : null
+          }
+        : null,
+      vehicle: item.vehicle ? item.vehicle._id : null,
+      total: item.total
+    }))
+
+    const formattedTours = selectData.selectedTours.map(item => ({
+      ...item,
+      date: item.date ? item.date.toString() : null,
+      tour: item.tour ? item.tour._id : null
+    }))
+    const formattedTransfers = selectData.transfer.map(item => ({
+      ...item,
+      date: item.date ? item.date.toDate().toISOString() : null,
+      transfer: item.transfer._id ? item.transfer._id : null
+    }))
+
+    const backPayload = {
+      branch: selectData.branch,
+      transfer: formattedTransfers,
+      travelers: selectData.travelers,
+      selectedItems: formattedItems,
+      selectedTours: formattedTours
+    }
+
+    const localStoragePayload = {
+      branch: selectData.branch,
+      transfer: selectData.transfer,
+      travelers: selectData.travelers,
+      selectedItems: selectData.selectedItems,
+      selectedTours: selectData.selectedTours
+    }
+    try {
+      if (localStorage.getItem('user')) {
+        if (userData) {
+          await postCart({ cart: backPayload as any, userCartId: userData.cart })
+        }
+      } else {
+        ValidateProductInCart(localStoragePayload)
+      }
+    } catch (error: any) {}
+
+    console.log('Datos enviados al back:', backPayload)
+    console.log('Datos enviados:', localStoragePayload)
+    alert('Datos enviados correctamente')
+  }
+
   return (
     <div
       className={`bg-backgroundWhite border border-[#EEEEEE] rounded-lg w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
-        isSticky || selectData.selectedItem.length > 0 || selectData.selectedTours.length > 0
+        isSticky || selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0
           ? 'md:w-full'
           : 'md:w-11/12'
       }`}
     >
       <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
         <TransferSelector
-          onTransferChange={transfer => {
-            setSelectData(prev => ({
-              ...prev,
-              transfer
-            }))
-          }}
+          loading={loading}
+          setLoading={setLoading}
+          setSelectData={setSelectData}
+          setIsSubmitDisable={setIsSubmitDisable}
+          selectData={selectData}
         />
         <CategoriesDropdown
           categoriesData={categoriesData}
           vehiclesByCategory={vehiclesByCategory}
-          selectedItemsByCategory={selectedItemsByCategory}
           loading={loading}
           setVehiclesByCategory={setVehiclesByCategory}
-          setSelectedItemsByCategory={setSelectedItemsByCategory}
           setLoading={setLoading}
           setSelectData={setSelectData}
+          selectData={selectData}
+          setIsSubmitDisable={setIsSubmitDisable}
         />
         <ToursDropdown
           loading={loading}
           setLoading={setLoading}
           setSelectData={setSelectData}
-          selectData={selectData.selectedTours}
+          setIsSubmitDisable={setIsSubmitDisable}
+          selectData={selectData}
         />
       </div>
       <div className='w-full flex flex-col md:flex-row justify-evenly md:p-6'>
         <div className='flex flex-col items-center'>
-          <div className='flex flex-col md:flex-row justify-start gap-4 items-start p-2'>
+          <div className='flex flex-col md:flex-row justify-start gap-12 items-start p-2'>
             <BranchSelector
               branch={selectData.branch}
               onBranchChange={branch => setSelectData(prev => ({ ...prev, branch }))}
               loading={loading}
               setLoading={setLoading}
-            />
-            <DatePickerSection
-              selectData={selectData}
-              setSelectData={setSelectData}
-              setIsSubmitDisable={setIsSubmitDisable}
             />
             <TravelersDropdown
               travelers={selectData.travelers}
@@ -129,10 +183,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           </div>
         </div>
         <div className='flex justify-center h-full'>
-          <SelectedProductRender products={[...selectData.selectedItem, ...selectData.selectedTours]} />
+          <SelectedProductRender
+            products={[...selectData.selectedItems, ...selectData.selectedTours]}
+            setSelectData={setSelectData}
+            selectData={selectData}
+          />
         </div>
         <div className='flex justify-center items-center p-2'>
-          <Button className='p-2 bg-buttonPrimary' isDisabled={isSubmitDisable}>
+          <Button className='p-2 bg-buttonPrimary' isDisabled={isSubmitDisable} onPress={handleSubmit}>
             {t('HomeRental.add_to_cart')}
           </Button>
         </div>

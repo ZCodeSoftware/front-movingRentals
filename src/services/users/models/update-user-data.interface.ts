@@ -6,4 +6,5 @@ export interface IUserUpdateData {
   cellphone?: string
   isActive?: boolean
   newsletter?: boolean
+  changePassword?: string
 }

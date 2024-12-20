@@ -9,7 +9,7 @@ import ProductDetailModal from './components/ProductDetailModal'
 const ListByCategory = () => {
   const [data, setData] = useState<IVehicles[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState<{ [key: string]: boolean }>({})
   const { id } = useParams()
   const { t } = useTranslation()
 
@@ -29,6 +29,14 @@ const ListByCategory = () => {
     return <div>Loading...</div>
   }
 
+  const handleOpenModal = (id: string) => {
+    setOpenModal(prev => ({ ...prev, [id]: true }))
+  }
+
+  const handleCloseModal = (id: string) => {
+    setOpenModal(prev => ({ ...prev, [id]: false }))
+  }
+
   return (
     <>
       {data.length > 0 ? (
@@ -40,7 +48,7 @@ const ListByCategory = () => {
           <section className='grid md:grid-cols-4 gap-4 p-4'>
             {data.map(p => (
               <div key={p._id}>
-                <Card radius='none' className='rounded-xl' isPressable onPress={() => setOpenModal(true)}>
+                <Card radius='none' className='rounded-xl' isPressable onPress={() => handleOpenModal(p._id)}>
                   <CardHeader className='pb-0 py-2 px-4 flex-col items-start'>
                     <p className='font-extrabold'>{p.name}</p>
                   </CardHeader>
@@ -61,7 +69,7 @@ const ListByCategory = () => {
                     </div>
                   </CardFooter>
                 </Card>
-                {openModal && <ProductDetailModal product={p} setOpenModal={setOpenModal} />}
+                {openModal[p._id] && <ProductDetailModal product={p} setOpenModal={() => handleCloseModal(p._id)} />}
               </div>
             ))}
           </section>

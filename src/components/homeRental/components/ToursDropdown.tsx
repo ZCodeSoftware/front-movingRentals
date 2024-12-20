@@ -1,63 +1,181 @@
 import { useState } from 'react'
-import { Select, SelectItem, Skeleton } from '@nextui-org/react'
-import { fetchAllTours } from '../../../services/products/tours/GET/tours.get.service'
-import { ITours } from '../../../services/products/models/tours.interface'
-import { IToursDropdownProps } from '../models/tours-dropdown-props.interface'
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  Skeleton,
+  DatePicker,
+  NextUIProvider,
+  DateValue
+} from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
+import { fetchAllTours } from '../../../services/products/tours/GET/tours.get.service'
+import { IToursDropdownProps } from '../models/tours-dropdown-props.interface'
+import { ITours } from '../../../services/products/models/tours.interface'
 import { ISelectData } from '../models/Select-data'
+import { getLocalTimeZone, today } from '@internationalized/date'
+import i18n from '../../../utils/i18n'
 
-const ToursDropdown: React.FC<IToursDropdownProps> = ({ loading, setLoading, setSelectData, selectData }) => {
-  const [data, setData] = useState<ITours[]>([])
+const ToursDropdown: React.FC<IToursDropdownProps> = ({
+  loading,
+  setLoading,
+  setSelectData,
+  setIsSubmitDisable,
+  selectData
+}) => {
   const { t } = useTranslation()
+  const [data, setData] = useState<ITours[]>([])
+  const [openPickers, setOpenPickers] = useState(new Set())
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [selectDate, setSelectDate] = useState<DateValue>(today(getLocalTimeZone()))
 
   const getData = async () => {
-    setLoading(prev => ({ ...prev, tours: true }))
-    const result = await fetchAllTours()
-    setData(result)
-    setLoading(prev => ({ ...prev, tours: false }))
+    if (!loading.tours && data.length === 0) {
+      setLoading(prev => ({ ...prev, tours: true }))
+      try {
+        const result = await fetchAllTours()
+        setData(result)
+      } catch (error) {
+        console.error('Error fetching tours:', error)
+      } finally {
+        setLoading(prev => ({ ...prev, tours: false }))
+      }
+    }
+  }
+
+  const handleDropdownOpenChange = (isOpen: boolean) => {
+    setIsDropdownOpen(isOpen)
+    if (isOpen) {
+      getData()
+    }
+  }
+
+  const handleSave = (tour: ITours) => {
+    if (selectDate) {
+      setSelectData((prev: ISelectData) => {
+        const existingItemIndex = prev.selectedTours.findIndex(item => item.tour._id === tour._id)
+
+        const newItem = {
+          date: selectDate,
+          tour: tour
+        }
+
+        if (existingItemIndex > -1) {
+          const updatedSelectedTour = [...prev.selectedTours]
+          updatedSelectedTour[existingItemIndex] = newItem
+          return {
+            ...prev,
+            selectedTours: updatedSelectedTour
+          }
+        }
+
+        return {
+          ...prev,
+          selectedTours: [...prev.selectedTours, newItem]
+        }
+      })
+    }
+  }
+
+  const handleRemove = (tour: ITours) => {
+    setSelectData((prev: ISelectData) => ({
+      ...prev,
+      selectedTours: prev.selectedTours.filter(item => item.tour._id !== tour._id)
+    }))
   }
 
   return (
     <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
-      <Select
-        renderValue={() => {
-          const count = selectData?.length || 0
-          return count > 0 ? `${count} ${t('HomeRental.selected_items')}` : ''
-        }}
-        data-filled={true}
-        data-has-value={true}
-        className='md:min-w-44 min-w-28'
-        style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
-        selectionMode='multiple'
-        label='Tours'
-        onOpenChange={async isOpen => {
-          if (isOpen) {
-            await getData()
-          }
-        }}
-        onSelectionChange={selectedKeys => {
-          const selectedIds = Array.from(selectedKeys) as string[]
-          const selectedTours = data.filter(tour => selectedIds.includes(tour._id))
-          setSelectData((prev: ISelectData) => ({
-            ...prev,
-            selectedTours
-          }))
-        }}
+      <Dropdown
+        closeOnSelect={false}
+        className='max-w-full md:w-[500px]'
+        isOpen={isDropdownOpen}
+        onOpenChange={handleDropdownOpenChange}
       >
-        {loading.tours ? (
-          <SelectItem key='skeleton-1' isDisabled>
-            <Skeleton className='w-full h-2 rounded-lg mb-2'></Skeleton>
-            <Skeleton className='w-[80%] h-2 rounded-lg mb-2'></Skeleton>
-            <Skeleton className='w-[60%] h-2 rounded-lg'></Skeleton>
-          </SelectItem>
-        ) : data?.length > 0 ? (
-          data.map(t => <SelectItem key={String(t._id)}>{t.name}</SelectItem>)
-        ) : (
-          <SelectItem key='no-products' className='text-gray-500 text-center'>
-            {t('HomeRental.no_products_available')}
-          </SelectItem>
-        )}
-      </Select>
+        <DropdownTrigger>
+          <Button className='md:min-w-44 mmax-w-28 h-14' style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}>
+            Tours
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
+          {loading.tours ? (
+            <DropdownItem isReadOnly>
+              <div className='w-full'>
+                <Skeleton className='w-full h-6 rounded-lg mb-2' />
+                <Skeleton className='w-[80%] h-6 rounded-lg mb-2' />
+                <Skeleton className='w-[60%] h-6 rounded-lg' />
+              </div>
+            </DropdownItem>
+          ) : data?.length > 0 ? (
+            data.map(tour => (
+              <DropdownItem key={tour._id} className='w-full' isReadOnly>
+                <div className='w-full flex flex-col justify-center items-center'>
+                  <Button
+                    className='w-full m-2'
+                    onPress={() =>
+                      setOpenPickers(prev =>
+                        prev.has(tour._id)
+                          ? new Set([...prev].filter(id => id !== tour._id))
+                          : new Set(prev).add(tour._id)
+                      )
+                    }
+                  >
+                    {tour.name}
+                  </Button>
+                  {openPickers.has(tour._id) && (
+                    <div className='w-full h-full flex justify-center'>
+                      <NextUIProvider className='w-full flex justify-center' locale={i18n.language}>
+                        <DatePicker
+                          className='w-full'
+                          classNames={{
+                            inputWrapper: 'bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF]'
+                          }}
+                          onChange={e => setSelectDate(e)}
+                          validate={(value: any) => {
+                            if (value.day < today(getLocalTimeZone()).day) {
+                              setIsSubmitDisable(true)
+                              return t('HomeRental.date_picker.previous_day_valid')
+                            } else {
+                              setIsSubmitDisable(false)
+                            }
+                            return true
+                          }}
+                          defaultValue={selectDate}
+                          label='Fecha'
+                          calendarProps={{ className: 'uppercase' }}
+                        />
+                      </NextUIProvider>
+                      <div>
+                        {selectData.selectedTours.some(s => s.tour._id === tour._id) ? (
+                          <Button
+                            className='h-full ml-2 flex items-center justify-center'
+                            onPress={() => handleRemove(tour)}
+                            color='danger'
+                            variant='flat'
+                          >
+                            Eliminar
+                          </Button>
+                        ) : (
+                          <Button
+                            className='h-full ml-2 flex items-center justify-center'
+                            onPress={() => handleSave(tour)}
+                          >
+                            Agregar
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </DropdownItem>
+            ))
+          ) : (
+            <DropdownItem className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</DropdownItem>
+          )}
+        </DropdownMenu>
+      </Dropdown>
     </div>
   )
 }

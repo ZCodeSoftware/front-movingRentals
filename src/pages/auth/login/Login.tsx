@@ -7,8 +7,11 @@ import { ILoginForm } from './models/form.interface'
 import TextError from '../../../components/textError/TextError'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import useMergeCarts from '../../cart/utils/mergeCarts'
+import { fetchUserDetail } from '../../../services/users/GET/user-detail.get.service'
 
 const Login = () => {
+  const { mergeCarts } = useMergeCarts()
   const {
     register,
     handleSubmit,
@@ -24,6 +27,8 @@ const Login = () => {
   const onSubmit: SubmitHandler<ILoginForm> = async data => {
     const response = await login(data)
     if (response) {
+      const result = await fetchUserDetail()
+      mergeCarts(result.cart)
       navigate('/home')
     }
   }

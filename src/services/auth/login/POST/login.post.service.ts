@@ -6,7 +6,11 @@ export const login = async (body: IAuth) => {
   try {
     const response = await AppApiGateWayNoJWT.post('/auth/login', body)
     if (response) {
-      const data = response.data
+      const data = {
+        name: response.data.name,
+        role: response.data.roles._id,
+        token: response.data.token
+      }
       setLocalStorage('user', data)
     }
     return response

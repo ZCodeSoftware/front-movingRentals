@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
 import { IUser } from '../../services/users/models/user.interface'
 import UpdateFieldModal from './components/UpdateModal'
+import ChangePasswordModal from './components/ChangePasswordModal'
 
 const Profile = () => {
   const { t } = useTranslation()
   const [userData, setUserData] = useState<IUser>()
+  const [passwordModal, setPasswordModal] = useState(false)
 
   const getUserData = async () => {
     const response = await fetchUserDetail()
@@ -126,7 +128,9 @@ const Profile = () => {
             </section>
             <section className='w-full h-2/4 flex flex-col md:flex-row md:justify-around items-center md:items-start'>
               <div className='flex'>
-                <Button className='md:w-48 md:mx-[28px] bg-buttonPrimary'>{t('Profile.change_password')}</Button>
+                <Button className='md:w-48 md:mr-12 bg-buttonPrimary' onPress={() => setPasswordModal(true)}>
+                  {t('Profile.change_password')}
+                </Button>
               </div>
               <div className='w-full flex md:flex-row flex-row-reverse justify-around items-center'>
                 <Button className='md:w-48 my-6 md:my-0 bg-[#F68989]'>{t('Profile.log_out')}</Button>
@@ -136,6 +140,13 @@ const Profile = () => {
               </div>
             </section>
           </>
+        )}
+        {passwordModal && (
+          <ChangePasswordModal
+            passwordModal={passwordModal}
+            setPasswordModal={setPasswordModal}
+            onUpdate={getUserData}
+          />
         )}
       </div>
     </main>
