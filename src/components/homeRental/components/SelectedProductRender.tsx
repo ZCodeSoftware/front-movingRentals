@@ -53,7 +53,7 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
   }
 
   useEffect(() => {
-    const updateData = selectData.selectedItem.map((item: ISelectItems) => {
+    const updateData = selectData.selectedItems.map((item: ISelectItems) => {
       const totalPrice = calculatePrice({ vehicle: item.vehicle, dates: item.dates })
 
       return { ...item, total: totalPrice }
@@ -61,9 +61,9 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
 
     setSelectData((prev: ISelectData) => ({
       ...prev,
-      selectedItem: updateData
+      selectedItems: updateData
     }))
-  }, [selectData.selectedItem.length])
+  }, [selectData.selectedItems.length])
 
   const handleOpenModal = (id: string) => {
     setOpenModal((prev: any) => ({ ...prev, [id]: true }))

@@ -1,10 +1,9 @@
-import { ISelectItems, ISelectTours } from '../../../components/homeRental/models/Select-data'
-import { ITransfers } from '../../../services/transfers/models/transfers.interface'
+import { ISelectItems, ISelectTours, ISelectTransfers } from '../../../components/homeRental/models/Select-data'
 
 export interface ILocalCart {
   branch: string
   selectedItems: ISelectItems[]
   selectedTours: ISelectTours[]
-  transfer: ITransfers[]
+  transfer: ISelectTransfers[]
   travelers: { adults: number; childrens: number }
 }

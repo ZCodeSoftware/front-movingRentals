@@ -11,4 +11,5 @@ export interface IUser {
   documentation: string
   isActive: boolean
   newsletter: boolean
+  cart: string
 }

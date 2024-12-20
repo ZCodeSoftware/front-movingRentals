@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@nextui-org/react'
-import CartItemList from './components/CartItemsList'
+import LocalCartItemList from './components/LocalCartItemsList'
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 import { useTranslation } from 'react-i18next'
 import { AppApiGateWay } from '../../services/app.api.gateway'
@@ -10,8 +10,8 @@ import { setLocalStorage } from '../../utils/local-storage/setLocalStorage'
 import { fetchCart } from '../../services/cart/GET/cart.get.service'
 import { postCart } from '../../services/cart/POST/cart.post.service'
 import { ILocalCart } from './models/local-cart.interface'
-import { ISelectItems, ISelectTours } from '../../components/homeRental/models/Select-data'
-import { ITransfers } from '../../services/transfers/models/transfers.interface'
+import { ISelectItems, ISelectTours, ISelectTransfers } from '../../components/homeRental/models/Select-data'
+import BackCartItemList from './components/BackCartListItems'
 
 const Cart = () => {
   const { i18n } = useTranslation()
@@ -34,11 +34,11 @@ const Cart = () => {
     const fetchUserAndCart = async () => {
       try {
         const userResponse = await fetchUserDetail()
-        setUserData(userResponse.data)
+        setUserData(userResponse)
 
-        if (userResponse.data && userResponse.data.cart && userResponse.data.cart._id) {
-          const cartResponse = await fetchCart(userResponse.data.cart._id)
-          setCartData(cartResponse.data)
+        if (userResponse && userResponse.cart && userResponse.cart) {
+          const cartResponse = await fetchCart(userResponse.cart)
+          setCartData(cartResponse)
         }
       } catch (error: any) {
         const localCartData = getLocalStorage('cart')
@@ -86,11 +86,10 @@ const Cart = () => {
     try {
       if (getLocalStorage('user') && cartData) {
         const updatedCartVehicles =
-          cartData.selectedItems.filter((product: ISelectItems) => product.vehicle._id != productId) || []
-        const updatedCartTours =
-          cartData.selectedTours.filter((product: ISelectTours) => product.tour._id != productId) || []
-        const updateTransfer = cartData.transfer.filter((product: ITransfers) => product._id != productId) || []
-
+          cartData.vehicles.filter((product: ISelectItems) => product.vehicle._id != productId) || []
+        const updatedCartTours = cartData.tours.filter((product: ISelectTours) => product.tour._id != productId) || []
+        const updateTransfer =
+          cartData.transfer.filter((product: ISelectTransfers) => product.transfer._id != productId) || []
         const newCart = {
           ...cartData,
           selectedItems: updatedCartVehicles,
@@ -98,12 +97,12 @@ const Cart = () => {
           transfer: updateTransfer
         }
 
-        await postCart({ cart: newCart, userCartId: userData.cart._id })
+        await postCart({ cart: newCart, userCartId: userData.cart })
         setCartData(newCart)
       } else {
         const updatedCartVehicles = localCart?.selectedItems?.filter(product => product.vehicle._id != productId) || []
         const updatedCartTours = localCart?.selectedTours?.filter(product => product.tour._id != productId) || []
-        const updateTransfer = localCart?.transfer?.filter(product => product._id != productId) || []
+        const updateTransfer = localCart?.transfer?.filter(product => product.transfer._id != productId) || []
 
         const newCart = {
           ...localCart,
@@ -127,7 +126,8 @@ const Cart = () => {
         const emptyCart = {
           ...cartData,
           selectedItems: [],
-          selectedTours: []
+          selectedTours: [],
+          transfer: []
         }
 
         await postCart({ cart: emptyCart, userCartId: userData.cart._id })
@@ -136,7 +136,8 @@ const Cart = () => {
         const emptyCart = {
           ...localCart,
           selectedItems: [],
-          selectedTours: []
+          selectedTours: [],
+          transfer: []
         }
 
         setLocalCart(emptyCart)
@@ -161,7 +162,11 @@ const Cart = () => {
         <div className='mx-auto max-w-5xl justify-center md:flex md:space-x-6 xl:px-0 p-4'>
           <div className='md:w-2/3 flex flex-col'>
             <section className='rounded-lg md:overflow-auto overflow-hidden md:max-h-[80vh]'>
-              <CartItemList product={cart.products} handleRemove={handleRemoveItem} />
+              {cartData ? (
+                <BackCartItemList product={cartData} handleRemove={handleRemoveItem} />
+              ) : (
+                <LocalCartItemList product={cart.products} handleRemove={handleRemoveItem} />
+              )}
             </section>
             <div className='w-full flex justify-end md:justify-start'>
               <button onClick={handleRemoveAll} className='max-w-28 p-2'>

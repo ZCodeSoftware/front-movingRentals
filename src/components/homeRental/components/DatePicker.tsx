@@ -13,7 +13,9 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
 }) => {
   const { t, i18n } = useTranslation()
 
-  const existingVehicleDateItem = selectData.selectedItem.find((item: ISelectItems) => item.vehicle._id === vehicle._id)
+  const existingVehicleDateItem = selectData.selectedItems.find(
+    (item: ISelectItems) => item.vehicle._id === vehicle._id
+  )
 
   const [selectedDates, setSelectedDates] = useState<{ start: ZonedDateTime; end: ZonedDateTime }>({
     start: existingVehicleDateItem ? existingVehicleDateItem.dates.start : now(getLocalTimeZone()).add({ days: 1 }),
@@ -41,7 +43,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   const handleSave = () => {
     if (selectedDates.start && selectedDates.end) {
       setSelectData((prev: ISelectData) => {
-        const existingItemIndex = prev.selectedItem.findIndex(item => item.vehicle._id === vehicle._id)
+        const existingItemIndex = prev.selectedItems.findIndex(item => item.vehicle._id === vehicle._id)
 
         const newItem = {
           dates: { start: selectedDates.start, end: selectedDates.end },
@@ -49,7 +51,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
         }
 
         if (existingItemIndex > -1) {
-          const updatedSelectedItem = [...prev.selectedItem]
+          const updatedSelectedItem = [...prev.selectedItems]
           updatedSelectedItem[existingItemIndex] = newItem
           return {
             ...prev,
@@ -59,7 +61,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
 
         return {
           ...prev,
-          selectedItem: [...prev.selectedItem, newItem]
+          selectedItems: [...prev.selectedItems, newItem]
         }
       })
     }
@@ -68,7 +70,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   const handleRemove = () => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
-      selectedItem: prev.selectedItem.filter(item => item.vehicle._id !== vehicle._id)
+      selectedItems: prev.selectedItems.filter(item => item.vehicle._id !== vehicle._id)
     }))
   }
 

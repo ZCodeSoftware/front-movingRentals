@@ -1,9 +1,8 @@
 import { Image } from '@nextui-org/react'
 import trashIcon from '../../../assets/SVG/trash-icon.svg'
-import { ISelectItems, ISelectTours } from '../../../components/homeRental/models/Select-data'
-import { ITransfers } from '../../../services/transfers/models/transfers.interface'
+import { ISelectItems, ISelectTours, ISelectTransfers } from '../../../components/homeRental/models/Select-data'
 
-const CartItemList = ({ product, handleRemove }: any) => {
+const LocalCartItemList = ({ product, handleRemove }: any) => {
   return (
     <>
       {product &&
@@ -57,19 +56,19 @@ const CartItemList = ({ product, handleRemove }: any) => {
           </div>
         ))}
       {product &&
-        product.transfer.map((p: ITransfers) => (
+        product.transfer.map((p: ISelectTransfers) => (
           <div className='flex justify-between mb-6 p-4 shadow-md border'>
             <div className='flex pr-4'>
               <div className='ml-2 flex flex-col'>
                 <div>
-                  <h2 className='text-sm font-bold mb-1'>{p.name}</h2>
-                  <p className='text-sm'>Subtotal: ${p.price}</p>
+                  <h2 className='text-sm font-bold mb-1'>{p.transfer.name}</h2>
+                  <p className='text-sm'>Subtotal: ${p.transfer.price}</p>
                 </div>
                 <div className='flex flex-col'></div>
               </div>
             </div>
             <div className='flex flex-col justify-end items-end'>
-              <button onClick={() => handleRemove(p._id)}>
+              <button onClick={() => handleRemove(p.transfer._id)}>
                 <Image src={trashIcon}></Image>
               </button>
             </div>
@@ -79,4 +78,4 @@ const CartItemList = ({ product, handleRemove }: any) => {
   )
 }
 
-export default CartItemList
+export default LocalCartItemList

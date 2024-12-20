@@ -29,7 +29,7 @@ const Signin = () => {
   const { validatePassword, validateEmail } = useFormValidations()
 
   const onSubmit: SubmitHandler<ISigninForm> = async data => {
-    const response = await signin({ email: data.email, password: data.password })
+    const response = await signin({ email: data.email, password: data.password, newsletter: false })
     if (response) {
       await login({ email: data.email, password: data.password })
       navigate('/home')

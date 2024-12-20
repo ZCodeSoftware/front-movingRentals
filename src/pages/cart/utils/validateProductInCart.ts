@@ -29,7 +29,7 @@ const ValidateProductInCart = (productToCart: ILocalCart) => {
     })
   }
 
-  if (productToCart.transfer) {
+  if (productToCart.transfer.length > 0) {
     cart.transfer = productToCart.transfer
   }
 

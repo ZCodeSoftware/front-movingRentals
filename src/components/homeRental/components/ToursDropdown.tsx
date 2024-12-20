@@ -152,6 +152,8 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
                           <Button
                             className='h-full ml-2 flex items-center justify-center'
                             onPress={() => handleRemove(tour)}
+                            color='danger'
+                            variant='flat'
                           >
                             Eliminar
                           </Button>

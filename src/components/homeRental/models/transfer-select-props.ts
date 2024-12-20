@@ -1,5 +1,9 @@
-import { ITransfers } from '../../../services/transfers/models/transfers.interface'
+import { ISelectData } from './Select-data'
 
 export interface ITransferSelectProps {
-  onTransferChange: (transfer: ITransfers[]) => void
+  loading: Record<string, boolean>
+  setLoading: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+  setSelectData: React.Dispatch<React.SetStateAction<any>>
+  setIsSubmitDisable: React.Dispatch<React.SetStateAction<boolean>>
+  selectData: ISelectData
 }

@@ -16,10 +16,16 @@ export interface ISelectTours {
   date: DateValue | null
   tour: ITours
 }
+
+export interface ISelectTransfers {
+  date: ZonedDateTime | null
+  transfer: ITransfers
+}
+
 export interface ISelectData {
   travelers: { adults: number; childrens: number }
-  selectedItem: ISelectItems[]
+  selectedItems: ISelectItems[]
   selectedTours: ISelectTours[]
   branch: string
-  transfer: ITransfers[]
+  transfer: ISelectTransfers[]
 }

@@ -11,13 +11,17 @@ import TravelersDropdown from './components/TravelersDropdown'
 import SelectedProductRender from './components/SelectedProductRender'
 import TransferSelector from './components/TransferSelect'
 import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
+import { postCart } from '../../services/cart/POST/cart.post.service'
+import { IUser } from '../../services/users/models/user.interface'
+import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
+  const [userData, setUserData] = useState<IUser>()
   const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
   const [loading, setLoading] = useState<Record<string, boolean>>({})
   const [selectData, setSelectData] = useState<ISelectData>({
     travelers: { adults: 1, childrens: 0 },
-    selectedItem: [],
+    selectedItems: [],
     selectedTours: [],
     branch: '',
     transfer: []
@@ -31,6 +35,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   }
 
   useEffect(() => {
+    const getData = async () => {
+      const result = await fetchUserDetail()
+      setUserData(result)
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -38,25 +50,25 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   }, [])
 
   const handleSubmit = async () => {
-    if (!selectData.branch && (selectData.selectedItem.length > 0 || selectData.selectedTours.length > 0)) {
+    if (!selectData.branch && (selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0)) {
       alert('Por favor, selecciona una sucursal.')
       return
     }
 
     if (
-      selectData.selectedItem.length === 0 &&
+      selectData.selectedItems.length === 0 &&
       selectData.selectedTours.length === 0 &&
       selectData.transfer.length === 0
     ) {
       alert('Por favor, selecciona al menos un vehiculo, tour o traslado.')
       return
     }
-    const formattedItems = selectData.selectedItem.map(item => ({
+    const formattedItems = selectData.selectedItems.map(item => ({
       ...item,
       dates: item.dates
         ? {
             start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
-            end: item.dates.end ? item.dates.end.toDate() : null
+            end: item.dates.end ? item.dates.end.toDate().toISOString() : null
           }
         : null,
       vehicle: item.vehicle ? item.vehicle._id : null,
@@ -70,13 +82,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }))
     const formattedTransfers = selectData.transfer.map(item => ({
       ...item,
-      transfer: item._id ? item._id : null
+      date: item.date ? item.date.toDate().toISOString() : null,
+      transfer: item.transfer._id ? item.transfer._id : null
     }))
 
     const backPayload = {
       branch: selectData.branch,
-      transfer: selectData.transfer,
-      travelers: formattedTransfers,
+      transfer: formattedTransfers,
+      travelers: selectData.travelers,
       selectedItems: formattedItems,
       selectedTours: formattedTours
     }
@@ -85,17 +98,20 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       branch: selectData.branch,
       transfer: selectData.transfer,
       travelers: selectData.travelers,
-      selectedItems: selectData.selectedItem,
+      selectedItems: selectData.selectedItems,
       selectedTours: selectData.selectedTours
     }
     try {
       if (localStorage.getItem('user')) {
+        if (userData) {
+          await postCart({ cart: backPayload as any, userCartId: userData.cart })
+        }
       } else {
         ValidateProductInCart(localStoragePayload)
       }
     } catch (error: any) {}
 
-    console.log('Datos enviados:', backPayload)
+    console.log('Datos enviados al back:', backPayload)
     console.log('Datos enviados:', localStoragePayload)
     alert('Datos enviados correctamente')
   }
@@ -103,19 +119,18 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   return (
     <div
       className={`bg-backgroundWhite border border-[#EEEEEE] rounded-lg w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
-        isSticky || selectData.selectedItem.length > 0 || selectData.selectedTours.length > 0
+        isSticky || selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0
           ? 'md:w-full'
           : 'md:w-11/12'
       }`}
     >
       <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
         <TransferSelector
-          onTransferChange={(transfer: any) => {
-            setSelectData(prev => ({
-              ...prev,
-              transfer
-            }))
-          }}
+          loading={loading}
+          setLoading={setLoading}
+          setSelectData={setSelectData}
+          setIsSubmitDisable={setIsSubmitDisable}
+          selectData={selectData}
         />
         <CategoriesDropdown
           categoriesData={categoriesData}
@@ -169,7 +184,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
         </div>
         <div className='flex justify-center h-full'>
           <SelectedProductRender
-            products={[...selectData.selectedItem, ...selectData.selectedTours]}
+            products={[...selectData.selectedItems, ...selectData.selectedTours]}
             setSelectData={setSelectData}
             selectData={selectData}
           />

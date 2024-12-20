@@ -1,5 +1,5 @@
 // components/Navbar.tsx
-import React from 'react';
+import React from 'react'
 import {
   Navbar,
   NavbarBrand,
@@ -11,14 +11,18 @@ import {
   Button,
   Select,
   SelectItem
-} from '@nextui-org/react';
-import { useTranslation } from 'react-i18next';
-import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa';
+} from '@nextui-org/react'
+import { useTranslation } from 'react-i18next'
+import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa'
+import cartIcon from '../../assets/SVG/cart-icon.svg'
+import flagUse from '../../assets/SVG/flag-usa.svg'
+import logo from '../../assets/SVG/logo.svg'
+import flagMex from '../../assets/SVG/flag-mexico.svg'
 
 export default function NavbarComponent() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { t, i18n } = useTranslation();
-  const [language, setLanguage] = React.useState(i18n.language);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const { t, i18n } = useTranslation()
+  const [language, setLanguage] = React.useState(i18n.language)
 
   const menuItems = [
     'Profile',
@@ -31,12 +35,12 @@ export default function NavbarComponent() {
     'Team Settings',
     'Help & Feedback',
     'Log Out'
-  ];
+  ]
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    i18n.changeLanguage(value);
-  };
+    setLanguage(value)
+    i18n.changeLanguage(value)
+  }
 
   return (
     <>
@@ -44,21 +48,18 @@ export default function NavbarComponent() {
         <NavbarContent className='hidden sm:flex gap-4' justify='center'>
           <NavbarBrand>
             <Link color='foreground' href='/'>
-              <p className='font-bold text-inherit'>Moving Rentals</p>
+              <img src={logo} alt='Logo' />
             </Link>
           </NavbarBrand>
         </NavbarContent>
 
         <NavbarContent justify='end' className='hidden sm:flex'>
-          <NavbarItem className='hidden lg:flex'>
-            <Link href='/login'>{t('navBar.login')}</Link>
-          </NavbarItem>
           <NavbarItem>
-            <Button as={Link} color='warning' href='/signin' variant='flat'>
-              {t('navBar.signup')}
-            </Button>
+            <Link href='/cart' className='flex flex-col items-center text-white'>
+              <img src={cartIcon} alt='cart' className='w-8 h-8' />
+            </Link>
           </NavbarItem>
-          <NavbarItem className='w-4/12'>
+          <NavbarItem className='w-1/6'>
             <Select
               placeholder={t('navBar.select_language')}
               value={language}
@@ -66,13 +67,37 @@ export default function NavbarComponent() {
               className='w-full'
             >
               <SelectItem value='en' key={'en'}>
-                English
+                <div className='flex mx-auto'>
+                  <img src={flagUse} />
+                  <span className='ml-2'>En</span>
+                </div>
               </SelectItem>
               <SelectItem value='es' key={'es'}>
-                Español
+                <div className='flex mx-auto'>
+                  <img src={flagMex} />
+                  <span className='ml-2'>Es</span>
+                </div>
               </SelectItem>
             </Select>
           </NavbarItem>
+          <>
+            <NavbarItem className='hidden lg:flex mx-4'>
+              <Link href='/login' className='border border-buttonPrimary px-8 py-2 rounded-lg'>
+                {t('navBar.login')}
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color='warning'
+                href='/signin'
+                variant='flat'
+                className='bg-buttonPrimary px-8 py-2 rounded-lg'
+              >
+                {t('navBar.signup')}
+              </Button>
+            </NavbarItem>
+          </>
         </NavbarContent>
 
         <NavbarMenu>
@@ -108,5 +133,5 @@ export default function NavbarComponent() {
         </div>
       </div>
     </>
-  );
+  )
 }
