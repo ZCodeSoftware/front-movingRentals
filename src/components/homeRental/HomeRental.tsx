@@ -143,8 +143,6 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       }
     } catch (error: any) {}
 
-    console.log('Datos enviados al back:', backPayload)
-    console.log('Datos enviados:', localStoragePayload)
     alert('Datos enviados correctamente')
   }
 
