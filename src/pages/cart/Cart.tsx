@@ -92,12 +92,18 @@ const Cart = () => {
           cartData.transfer.filter((product: ISelectTransfers) => product.transfer._id != productId) || []
         const newCart = {
           ...cartData,
-          selectedItems: updatedCartVehicles,
-          selectedTours: updatedCartTours,
+          vehicles: updatedCartVehicles,
+          tours: updatedCartTours,
           transfer: updateTransfer
         }
 
         await postCart({ cart: newCart, userCartId: userData.cart })
+        setLocalStorage('backCart', {
+          ...localCart,
+          selectedItems: updatedCartVehicles,
+          selectedTours: updatedCartTours,
+          transfer: updateTransfer
+        })
         setCartData(newCart)
       } else {
         const updatedCartVehicles = localCart?.selectedItems?.filter(product => product.vehicle._id != productId) || []
@@ -125,12 +131,13 @@ const Cart = () => {
       if (getLocalStorage('user') && cartData) {
         const emptyCart = {
           ...cartData,
-          selectedItems: [],
-          selectedTours: [],
+          vehicles: [],
+          tours: [],
           transfer: []
         }
 
-        await postCart({ cart: emptyCart, userCartId: userData.cart._id })
+        await postCart({ cart: emptyCart, userCartId: userData.cart })
+        localStorage.removeItem('backCart')
         setCartData(emptyCart)
       } else {
         const emptyCart = {

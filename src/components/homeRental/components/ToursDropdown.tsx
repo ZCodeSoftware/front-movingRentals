@@ -17,6 +17,7 @@ import { ITours } from '../../../services/products/models/tours.interface'
 import { ISelectData } from '../models/Select-data'
 import { getLocalTimeZone, today } from '@internationalized/date'
 import i18n from '../../../utils/i18n'
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
 
 const ToursDropdown: React.FC<IToursDropdownProps> = ({
   loading,
@@ -30,6 +31,8 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
   const [openPickers, setOpenPickers] = useState(new Set())
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectDate, setSelectDate] = useState<DateValue>(today(getLocalTimeZone()))
+  const localBackCart = getLocalStorage('backCart')
+  const localCart = getLocalStorage('cart')
 
   const getData = async () => {
     if (!loading.tours && data.length === 0) {
@@ -43,6 +46,13 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
         setLoading(prev => ({ ...prev, tours: false }))
       }
     }
+  }
+
+  const isAlreadySelected = (tourId: string) => {
+    const isInBackCart = localBackCart?.selectedTours.some((item: any) => item.tour === tourId)
+    const isInLocalCart = localCart?.selectedTours.some((item: any) => item.tour === tourId)
+
+    return isInBackCart || isInLocalCart
   }
 
   const handleDropdownOpenChange = (isOpen: boolean) => {
@@ -148,22 +158,30 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
                         />
                       </NextUIProvider>
                       <div>
-                        {selectData.selectedTours.some(s => s.tour._id === tour._id) ? (
-                          <Button
-                            className='h-full ml-2 flex items-center justify-center'
-                            onPress={() => handleRemove(tour)}
-                            color='danger'
-                            variant='flat'
-                          >
-                            Eliminar
+                        {isAlreadySelected(tour._id) ? (
+                          <Button className='h-full ml-2 flex items-center justify-center text-wrap' isDisabled>
+                            En el carrito
                           </Button>
                         ) : (
-                          <Button
-                            className='h-full ml-2 flex items-center justify-center'
-                            onPress={() => handleSave(tour)}
-                          >
-                            Agregar
-                          </Button>
+                          <>
+                            {selectData.selectedTours.some(s => s.tour._id === tour._id) ? (
+                              <Button
+                                className='h-full ml-2 flex items-center justify-center'
+                                onPress={() => handleRemove(tour)}
+                                color='danger'
+                                variant='flat'
+                              >
+                                Eliminar
+                              </Button>
+                            ) : (
+                              <Button
+                                className='h-full ml-2 flex items-center justify-center'
+                                onPress={() => handleSave(tour)}
+                              >
+                                Agregar
+                              </Button>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
