@@ -32,7 +32,7 @@ const Signin = () => {
     const response = await signin({ email: data.email, password: data.password, newsletter: false })
     if (response) {
       await login({ email: data.email, password: data.password })
-      navigate('/home')
+      navigate('/')
     }
   }
 

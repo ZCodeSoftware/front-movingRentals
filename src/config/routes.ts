@@ -1,5 +1,5 @@
 // Home
-export const HOME_ROUTE = '/home'
+export const HOME_ROUTE = '/'
 // list-by-category
 export const LIST_BY_CATEGORY_ROUTE = '/list-by-category/:id'
 // Cart
@@ -12,3 +12,5 @@ export const SIGNIN_ROUTE = '/signin'
 export const PROFILE_ROUTE = '/profile'
 // Dashboard
 export const DASHBOARD_ROUTE = '/dashboard'
+// SuccessPayment
+export const SUCCESS_PAYMENT_ROUTE = '/successPayment'

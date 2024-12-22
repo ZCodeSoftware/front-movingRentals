@@ -18,13 +18,22 @@
     "select_language": "Select Language",
     "features": "Features",
     "customers": "Customers",
-    "integrations": "Integrations"
+    "integrations": "Integrations",
+    "signedInAs": "Signed in as",
+    "myProfile": "My profile",
+    "logout": "Log out"
   },
   "footer": {
     "footer_copyright": "© 2024 Mooving. All rights reserved."
   },
   "listByCategory": {
     "not_products_available": "No products available."
+  },
+  "payment": {
+    "successMessage": "Thank you, we have received your reservation.",
+    "errorMessage": "An error occurred.",
+    "redirectMessage": "You will be redirected to home in about 3 seconds.",
+    "redirectCountdown": "You will be redirected in {{seconds}} seconds."
   },
   "logIn": {
     "log_in_title": "Access to your account",

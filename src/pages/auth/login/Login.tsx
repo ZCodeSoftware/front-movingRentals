@@ -29,7 +29,7 @@ const Login = () => {
     if (response) {
       const result = await fetchUserDetail()
       mergeCarts(result.cart)
-      navigate('/home')
+      navigate('/')
     }
   }
 
