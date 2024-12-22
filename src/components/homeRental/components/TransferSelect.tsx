@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
@@ -8,14 +8,15 @@ import {
   Button,
   NextUIProvider,
   DatePicker
-} from '@nextui-org/react'
-import { useTranslation } from 'react-i18next'
-import { ITransferSelectProps } from '../models/transfer-select-props'
-import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.service'
-import { ITransfers } from '../../../services/transfers/models/transfers.interface'
-import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date'
-import { ISelectData } from '../models/Select-data'
-import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
+} from '@nextui-org/react';
+import { useTranslation } from 'react-i18next';
+import { FaBus, FaChevronDown } from 'react-icons/fa';
+import { ITransferSelectProps } from '../models/transfer-select-props';
+import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.service';
+import { ITransfers } from '../../../services/transfers/models/transfers.interface';
+import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date';
+import { ISelectData } from '../models/Select-data';
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage';
 
 const TransferSelector: React.FC<ITransferSelectProps> = ({
   loading,
@@ -24,88 +25,90 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
   setIsSubmitDisable,
   selectData
 }) => {
-  const { t } = useTranslation()
-  const [transfers, setTransfers] = useState<ITransfers[]>([])
-  const [openPickers, setOpenPickers] = useState(new Set())
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [selectDate, setSelectDate] = useState<ZonedDateTime>(now(getLocalTimeZone()))
-  const { i18n } = useTranslation()
-  const localBackCart = getLocalStorage('backCart')
-  const localCart = getLocalStorage('cart')
+  const { t } = useTranslation();
+  const [transfers, setTransfers] = useState<ITransfers[]>([]);
+  const [openPickers, setOpenPickers] = useState(new Set());
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectDate, setSelectDate] = useState<ZonedDateTime>(now(getLocalTimeZone()));
+  const { i18n } = useTranslation();
+  const localBackCart = getLocalStorage('backCart');
+  const localCart = getLocalStorage('cart');
 
   const getData = async () => {
     if (!loading.transfer && transfers.length === 0) {
-      setLoading(prev => ({ ...prev, transfers: true }))
+      setLoading(prev => ({ ...prev, transfers: true }));
       try {
-        const result = await fetchTransfers()
-        setTransfers(result)
+        const result = await fetchTransfers();
+        setTransfers(result);
       } catch (error) {
-        console.error('Error fetching tours:', error)
+        console.error('Error fetching tours:', error);
       } finally {
-        setLoading(prev => ({ ...prev, tours: false }))
+        setLoading(prev => ({ ...prev, tours: false }));
       }
     }
-  }
+  };
 
   const isAlreadySelected = (transferId: string) => {
-    const isInBackCart = localBackCart?.transfer.some((item: any) => item.transfer === transferId)
-    const isInLocalCart = localCart?.transfer.some((item: any) => item.transfer === transferId)
+    const isInBackCart = localBackCart?.transfer.some((item: any) => item.transfer === transferId);
+    const isInLocalCart = localCart?.transfer.some((item: any) => item.transfer === transferId);
 
-    return isInBackCart || isInLocalCart
-  }
+    return isInBackCart || isInLocalCart;
+  };
 
   const handleDropdownOpenChange = (isOpen: boolean) => {
-    setIsDropdownOpen(isOpen)
+    setIsDropdownOpen(isOpen);
     if (isOpen) {
-      getData()
+      getData();
     }
-  }
+  };
 
   const handleSave = (transfer: ITransfers) => {
     if (selectDate) {
       setSelectData((prev: ISelectData) => {
-        const existingItemIndex = prev.transfer.findIndex(item => item.transfer._id === transfer._id)
+        const existingItemIndex = prev.transfer.findIndex(item => item.transfer._id === transfer._id);
 
         const newItem = {
           date: selectDate,
           transfer: transfer
-        }
+        };
 
         if (existingItemIndex > -1) {
-          const updatedTransfer = [...prev.transfer]
-          updatedTransfer[existingItemIndex] = newItem
+          const updatedTransfer = [...prev.transfer];
+          updatedTransfer[existingItemIndex] = newItem;
           return {
             ...prev,
             transfer: updatedTransfer
-          }
+          };
         }
 
         return {
           ...prev,
           transfer: [...prev.transfer, newItem]
-        }
-      })
+        };
+      });
     }
-  }
+  };
 
   const handleRemove = (transfer: ITransfers) => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
       transfer: prev.transfer.filter(item => item.transfer._id !== transfer._id)
-    }))
-  }
+    }));
+  };
 
   return (
-    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
+    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden w-full md:w-auto'>
       <Dropdown
         closeOnSelect={false}
-        className='max-w-full md:w-[500px]'
+        className='w-full'
         isOpen={isDropdownOpen}
         onOpenChange={handleDropdownOpenChange}
       >
         <DropdownTrigger>
-          <Button className='md:min-w-44 mmax-w-28 h-14' style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}>
-            Traslados
+          <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
+            <FaBus className='ml-2' />
+            <span>Traslados</span>
+            <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
@@ -144,12 +147,12 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
                           onChange={e => setSelectDate(e)}
                           validate={(value: any) => {
                             if (value.day < now(getLocalTimeZone()).day) {
-                              setIsSubmitDisable(true)
-                              return t('HomeRental.date_picker.previous_day_valid')
+                              setIsSubmitDisable(true);
+                              return t('HomeRental.date_picker.previous_day_valid');
                             } else {
-                              setIsSubmitDisable(false)
+                              setIsSubmitDisable(false);
                             }
-                            return true
+                            return true;
                           }}
                           defaultValue={selectDate}
                           label='Fecha'
@@ -194,7 +197,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
         </DropdownMenu>
       </Dropdown>
     </div>
-  )
-}
+  );
+};
 
-export default TransferSelector
+export default TransferSelector;

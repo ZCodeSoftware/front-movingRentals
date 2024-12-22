@@ -1,9 +1,10 @@
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@nextui-org/react'
-import { useTranslation } from 'react-i18next'
-import { ITravelersDropdownProps } from '../models/travelers-dropdown-props'
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@nextui-org/react';
+import { useTranslation } from 'react-i18next';
+import { FaUsers, FaChevronDown } from 'react-icons/fa';
+import { ITravelersDropdownProps } from '../models/travelers-dropdown-props';
 
 const TravelersDropdown: React.FC<ITravelersDropdownProps> = ({ travelers, onIncrement, onDecrement }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className='flex w-full'>
@@ -12,10 +13,13 @@ const TravelersDropdown: React.FC<ITravelersDropdownProps> = ({ travelers, onInc
           <Button
             data-hover={false}
             style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}
-            className='flex flex-col items-start bg-gray-100 hover:bg-gray-200 gap-1'
+            className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'
           >
-            <h1 className='text-xs m-0'>{t('HomeRental.travelers.title')}</h1>
-            <p>{t('HomeRental.travelers.subtitle')}</p>
+            <FaUsers className='ml-2' />
+            <div className='flex flex-col items-start'>
+              <p>{t('HomeRental.travelers.subtitle')}</p>
+            </div>
+            <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>
         <DropdownMenu className='p-2 min-w-full'>
@@ -66,7 +70,7 @@ const TravelersDropdown: React.FC<ITravelersDropdownProps> = ({ travelers, onInc
         </DropdownMenu>
       </Dropdown>
     </div>
-  )
-}
+  );
+};
 
-export default TravelersDropdown
+export default TravelersDropdown;

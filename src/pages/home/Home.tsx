@@ -15,6 +15,19 @@ const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
   const [toursData, setToursData] = useState<ITours[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [isSticky, setIsSticky] = useState(false);
+
+  const handleScroll = () => {
+    setIsSticky(window.pageYOffset >= 80);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
 
   interface WeatherData {
     main: {
@@ -46,8 +59,7 @@ const Home = () => {
       try {
         const units = i18n.language === 'en' ? 'imperial' : 'metric'
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=Tulum,mx&units=${units}&appid=${
-            import.meta.env.VITE_WEATHER_API_KEY
+          `https://api.openweathermap.org/data/2.5/weather?q=Tulum,mx&units=${units}&appid=${import.meta.env.VITE_WEATHER_API_KEY
           }&lang=${i18n.language}`
         )
         const weatherData = await response.json()
@@ -90,16 +102,15 @@ const Home = () => {
   return (
     <main className='w-full bg-backgroundWhite'>
       <div
-        className='absolute top-0 left-0 w-full h-96 object-cover bg-top'
+        className='absolute top-0 left-0 w-full h-[30rem] md:h-[25rem] bg-cover bg-center'
         style={{
           backgroundImage:
-            'url(https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)'
+            'url(https://images.pexels.com/photos/716421/pexels-photo-716421.jpeg)'
         }}
       ></div>
-      <div className='block md:sticky top-16 z-20'>
+      <div className={`block md:sticky z-20 ${isSticky ? 'top-16' : 'top-32'}`}>
         <HomeRental categoriesData={data} />
       </div>
-
       {weather && (
         <motion.div
           className='fixed bottom-14 right-6 hidden bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
@@ -116,7 +127,7 @@ const Home = () => {
       )}
 
       <motion.section
-        className='flex flex-col md:items-center md:mt-24'
+        className='flex flex-col md:items-center md:mt-28'
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

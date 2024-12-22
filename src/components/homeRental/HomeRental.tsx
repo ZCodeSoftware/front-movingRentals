@@ -16,6 +16,7 @@ import { IUser } from '../../services/users/models/user.interface'
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
 import { setLocalStorage } from '../../utils/local-storage/setLocalStorage'
 import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
+import { FaShoppingCart } from 'react-icons/fa'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>()
@@ -69,9 +70,9 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       ...item,
       dates: item.dates
         ? {
-            start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
-            end: item.dates.end ? item.dates.end.toDate().toISOString() : null
-          }
+          start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
+          end: item.dates.end ? item.dates.end.toDate().toISOString() : null
+        }
         : null,
       vehicle: item.vehicle ? item.vehicle._id : null,
       total: item.total
@@ -92,29 +93,29 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
 
     const combinedVehicle = localBackCart
       ? [
-          ...localBackCart.selectedItems,
-          ...formattedItems.filter(
-            item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
-          )
-        ]
+        ...localBackCart.selectedItems,
+        ...formattedItems.filter(
+          item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
+        )
+      ]
       : null
 
     const combinedTours = localBackCart
       ? [
-          ...localBackCart.selectedTours,
-          ...formattedTours.filter(
-            item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
-          )
-        ]
+        ...localBackCart.selectedTours,
+        ...formattedTours.filter(
+          item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
+        )
+      ]
       : null
 
     const combinedTransfers = localBackCart
       ? [
-          ...localBackCart.transfer,
-          ...formattedTransfers.filter(
-            item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
-          )
-        ]
+        ...localBackCart.transfer,
+        ...formattedTransfers.filter(
+          item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
+        )
+      ]
       : null
 
     const backPayload = {
@@ -141,88 +142,100 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       } else {
         ValidateProductInCart(localStoragePayload)
       }
-    } catch (error: any) {}
+    } catch (error: any) { }
 
     alert('Datos enviados correctamente')
   }
 
   return (
     <div
-      className={`bg-backgroundWhite border border-[#EEEEEE] rounded-lg w-full mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${
-        isSticky || selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0
-          ? 'md:w-full'
-          : 'md:w-11/12'
-      }`}
+      className={`bg-backgroundWhite p-0 md:p-2 md:bg-transparent md:backdrop-blur-lg border border-[#eeeeee] rounded-lg w-full shadow-xl mx-auto block md:sticky top-16 z-20 mt-8 transition-all duration-150 ${isSticky || selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0
+        ? 'md:w-full'
+        : 'md:w-11/12'
+        }`}
     >
-      <div className='flex flex-row w-full md:p-4 gap-4 justify-center items-center border-b border-[#EEEEEE]'>
-        <TransferSelector
-          loading={loading}
-          setLoading={setLoading}
-          setSelectData={setSelectData}
-          setIsSubmitDisable={setIsSubmitDisable}
-          selectData={selectData}
-        />
-        <CategoriesDropdown
-          categoriesData={categoriesData}
-          vehiclesByCategory={vehiclesByCategory}
-          loading={loading}
-          setVehiclesByCategory={setVehiclesByCategory}
-          setLoading={setLoading}
-          setSelectData={setSelectData}
-          selectData={selectData}
-          setIsSubmitDisable={setIsSubmitDisable}
-        />
-        <ToursDropdown
-          loading={loading}
-          setLoading={setLoading}
-          setSelectData={setSelectData}
-          setIsSubmitDisable={setIsSubmitDisable}
-          selectData={selectData}
-        />
-      </div>
-      <div className='w-full flex flex-col md:flex-row justify-evenly md:p-6'>
-        <div className='flex flex-col items-center'>
-          <div className='flex flex-col md:flex-row justify-start gap-12 items-start p-2'>
-            <BranchSelector
-              branch={selectData.branch}
-              onBranchChange={branch => setSelectData(prev => ({ ...prev, branch }))}
-              loading={loading}
-              setLoading={setLoading}
-            />
-            <TravelersDropdown
-              travelers={selectData.travelers}
-              onIncrement={type => {
-                setSelectData(prev => ({
-                  ...prev,
-                  travelers: {
-                    ...prev.travelers,
-                    [type]: prev.travelers[type] + 1
-                  }
-                }))
-              }}
-              onDecrement={type => {
-                setSelectData(prev => ({
-                  ...prev,
-                  travelers: {
-                    ...prev.travelers,
-                    [type]: Math.max(0, prev.travelers[type] - 1)
-                  }
-                }))
-              }}
-            />
-          </div>
-        </div>
-        <div className='flex justify-center h-full'>
-          <SelectedProductRender
-            products={[...selectData.selectedItems, ...selectData.selectedTours]}
+      <div className='flex flex-col md:flex-row w-full md:p-2 gap-0 md:gap-4 justify-center items-center border-b border-[#EEEEEE]'>
+        <div className='w-full md:w-1/3'>
+          <TransferSelector
+            loading={loading}
+            setLoading={setLoading}
             setSelectData={setSelectData}
+            setIsSubmitDisable={setIsSubmitDisable}
             selectData={selectData}
           />
         </div>
-        <div className='flex justify-center items-center p-2'>
-          <Button className='p-2 bg-buttonPrimary' isDisabled={isSubmitDisable} onPress={handleSubmit}>
-            {t('HomeRental.add_to_cart')}
-          </Button>
+        <div className='w-full md:w-1/3'>
+          <CategoriesDropdown
+            categoriesData={categoriesData}
+            vehiclesByCategory={vehiclesByCategory}
+            loading={loading}
+            setVehiclesByCategory={setVehiclesByCategory}
+            setLoading={setLoading}
+            setSelectData={setSelectData}
+            selectData={selectData}
+            setIsSubmitDisable={setIsSubmitDisable}
+          />
+        </div>
+        <div className='w-full md:w-1/3'>
+          <ToursDropdown
+            loading={loading}
+            setLoading={setLoading}
+            setSelectData={setSelectData}
+            setIsSubmitDisable={setIsSubmitDisable}
+            selectData={selectData}
+          />
+        </div>
+      </div>
+      <div className='w-full flex flex-col md:flex-row justify-evenly md:p-2'>
+        <div className='flex flex-col items-center w-full md:w-1/2'>
+          <div className='flex flex-col md:flex-row justify-start gap-4 items-start p-2 w-full'>
+            <div className='w-full md:w-1/2'>
+              <BranchSelector
+                branch={selectData.branch}
+                onBranchChange={branch => setSelectData(prev => ({ ...prev, branch }))}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </div>
+            <div className='w-full md:w-1/2'>
+              <TravelersDropdown
+                travelers={selectData.travelers}
+                onIncrement={type => {
+                  setSelectData(prev => ({
+                    ...prev,
+                    travelers: {
+                      ...prev.travelers,
+                      [type]: prev.travelers[type] + 1
+                    }
+                  }))
+                }}
+                onDecrement={type => {
+                  setSelectData(prev => ({
+                    ...prev,
+                    travelers: {
+                      ...prev.travelers,
+                      [type]: Math.max(0, prev.travelers[type] - 1)
+                    }
+                  }))
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className='flex flex-col items-center w-full md:w-1/2'>
+          <div className='flex justify-center h-full w-full'>
+            <SelectedProductRender
+              products={[...selectData.selectedItems, ...selectData.selectedTours]}
+              setSelectData={setSelectData}
+              selectData={selectData}
+            />
+          </div>
+          <div className='flex justify-center items-center p-2 w-full'>
+            <Button className='w-full p-2 h-14 bg-buttonPrimary flex justify-center items-center text-sm' isDisabled={isSubmitDisable} onPress={handleSubmit}>
+              <FaShoppingCart className='mr-2' />
+              {t('HomeRental.add_to_cart')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

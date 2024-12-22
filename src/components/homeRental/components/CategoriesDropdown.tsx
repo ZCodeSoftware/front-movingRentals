@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
@@ -8,12 +8,13 @@ import {
   Skeleton,
   Accordion,
   AccordionItem
-} from '@nextui-org/react'
-import { useTranslation } from 'react-i18next'
-import { fetchVehicles } from '../../../services/products/vehicles/GET/vehicles.get.service'
-import { ICategoriesDropdownProps } from '../models/categories-dropdown-props'
-import { CATEGORIES } from '../constants/homeRental.constants'
-import DatePickerSection from './DatePicker'
+} from '@nextui-org/react';
+import { useTranslation } from 'react-i18next';
+import { FaCar, FaChevronDown } from 'react-icons/fa';
+import { fetchVehicles } from '../../../services/products/vehicles/GET/vehicles.get.service';
+import { ICategoriesDropdownProps } from '../models/categories-dropdown-props';
+import { CATEGORIES } from '../constants/homeRental.constants';
+import DatePickerSection from './DatePicker';
 
 const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
   categoriesData,
@@ -25,27 +26,29 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
   selectData,
   setIsSubmitDisable
 }) => {
-  const { t } = useTranslation()
-  const [openPickers, setOpenPickers] = useState(new Set())
+  const { t } = useTranslation();
+  const [openPickers, setOpenPickers] = useState(new Set());
 
   const getData = async (categoryId: string) => {
     if (categoryId && !vehiclesByCategory[categoryId]) {
-      setLoading(prev => ({ ...prev, [categoryId]: true }))
-      const result = await fetchVehicles(categoryId)
+      setLoading(prev => ({ ...prev, [categoryId]: true }));
+      const result = await fetchVehicles(categoryId);
       setVehiclesByCategory(prev => ({
         ...prev,
         [categoryId]: result
-      }))
-      setLoading(prev => ({ ...prev, [categoryId]: false }))
+      }));
+      setLoading(prev => ({ ...prev, [categoryId]: false }));
     }
-  }
+  };
 
   return (
-    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
-      <Dropdown closeOnSelect={false} className='max-w-full md:w-[500px]'>
+    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden w-full md:w-auto'>
+      <Dropdown closeOnSelect={false} className='w-full'>
         <DropdownTrigger>
-          <Button className='md:max-w-44 mmax-w-28 h-14' style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}>
-            {t('HomeRental.vehicles')}
+          <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
+            <FaCar className='ml-2' />
+            <span>{t('HomeRental.vehicles')}</span>
+            <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
@@ -102,7 +105,7 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
         </DropdownMenu>
       </Dropdown>
     </div>
-  )
-}
+  );
+};
 
-export default CategoriesDropdown
+export default CategoriesDropdown;

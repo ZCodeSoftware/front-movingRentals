@@ -122,7 +122,7 @@ export default function NavbarComponent() {
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <button className="transition-transform p-2">
-                    <FaUser className="text-3xl text-primary border-2 border-primary rounded-full" />
+                    <FaUser className="text-3xl text-[#226491] border-2 border-[#45a5e9] rounded-full p-0.5" />
                   </button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -179,17 +179,17 @@ export default function NavbarComponent() {
         </NavbarMenu>
       </Navbar>
 
-      <div className='fixed bottom-0 left-0 right-0 bg-warning-500 shadow-lg sm:hidden z-50'>
+      <div className='fixed bottom-0 left-0 right-0 bg-[#D4EDFF] shadow-lg sm:hidden z-50'>
         <div className='flex justify-around py-2'>
-          <Link href='/' className='flex flex-col items-center text-white'>
+          <Link href='/' className='flex flex-col items-center text-gray-700'>
             <FaHome className='text-xl' />
             <span className='text-xs'>{t('navBar.home')}</span>
           </Link>
-          <Link href='/cart' className='flex flex-col items-center text-white'>
+          <Link href='/cart' className='flex flex-col items-center text-gray-700'>
             <FaShoppingCart className='text-xl' />
             <span className='text-xs'>{t('navBar.cart')}</span>
           </Link>
-          <Link href='/profile' className='flex flex-col items-center text-white'>
+          <Link href='/profile' className='flex flex-col items-center text-gray-700'>
             <FaUser className='text-xl' />
             <span className='text-xs'>{t('navBar.profile')}</span>
           </Link>

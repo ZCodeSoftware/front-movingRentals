@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
@@ -9,15 +9,16 @@ import {
   DatePicker,
   NextUIProvider,
   DateValue
-} from '@nextui-org/react'
-import { useTranslation } from 'react-i18next'
-import { fetchAllTours } from '../../../services/products/tours/GET/tours.get.service'
-import { IToursDropdownProps } from '../models/tours-dropdown-props.interface'
-import { ITours } from '../../../services/products/models/tours.interface'
-import { ISelectData } from '../models/Select-data'
-import { getLocalTimeZone, today } from '@internationalized/date'
-import i18n from '../../../utils/i18n'
-import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
+} from '@nextui-org/react';
+import { useTranslation } from 'react-i18next';
+import { FaMapSigns, FaChevronDown } from 'react-icons/fa';
+import { fetchAllTours } from '../../../services/products/tours/GET/tours.get.service';
+import { IToursDropdownProps } from '../models/tours-dropdown-props.interface';
+import { ITours } from '../../../services/products/models/tours.interface';
+import { ISelectData } from '../models/Select-data';
+import { getLocalTimeZone, today } from '@internationalized/date';
+import i18n from '../../../utils/i18n';
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage';
 
 const ToursDropdown: React.FC<IToursDropdownProps> = ({
   loading,
@@ -26,87 +27,89 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
   setIsSubmitDisable,
   selectData
 }) => {
-  const { t } = useTranslation()
-  const [data, setData] = useState<ITours[]>([])
-  const [openPickers, setOpenPickers] = useState(new Set())
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [selectDate, setSelectDate] = useState<DateValue>(today(getLocalTimeZone()))
-  const localBackCart = getLocalStorage('backCart')
-  const localCart = getLocalStorage('cart')
+  const { t } = useTranslation();
+  const [data, setData] = useState<ITours[]>([]);
+  const [openPickers, setOpenPickers] = useState(new Set());
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectDate, setSelectDate] = useState<DateValue>(today(getLocalTimeZone()));
+  const localBackCart = getLocalStorage('backCart');
+  const localCart = getLocalStorage('cart');
 
   const getData = async () => {
     if (!loading.tours && data.length === 0) {
-      setLoading(prev => ({ ...prev, tours: true }))
+      setLoading(prev => ({ ...prev, tours: true }));
       try {
-        const result = await fetchAllTours()
-        setData(result)
+        const result = await fetchAllTours();
+        setData(result);
       } catch (error) {
-        console.error('Error fetching tours:', error)
+        console.error('Error fetching tours:', error);
       } finally {
-        setLoading(prev => ({ ...prev, tours: false }))
+        setLoading(prev => ({ ...prev, tours: false }));
       }
     }
-  }
+  };
 
   const isAlreadySelected = (tourId: string) => {
-    const isInBackCart = localBackCart?.selectedTours.some((item: any) => item.tour === tourId)
-    const isInLocalCart = localCart?.selectedTours.some((item: any) => item.tour === tourId)
+    const isInBackCart = localBackCart?.selectedTours.some((item: any) => item.tour === tourId);
+    const isInLocalCart = localCart?.selectedTours.some((item: any) => item.tour === tourId);
 
-    return isInBackCart || isInLocalCart
-  }
+    return isInBackCart || isInLocalCart;
+  };
 
   const handleDropdownOpenChange = (isOpen: boolean) => {
-    setIsDropdownOpen(isOpen)
+    setIsDropdownOpen(isOpen);
     if (isOpen) {
-      getData()
+      getData();
     }
-  }
+  };
 
   const handleSave = (tour: ITours) => {
     if (selectDate) {
       setSelectData((prev: ISelectData) => {
-        const existingItemIndex = prev.selectedTours.findIndex(item => item.tour._id === tour._id)
+        const existingItemIndex = prev.selectedTours.findIndex(item => item.tour._id === tour._id);
 
         const newItem = {
           date: selectDate,
           tour: tour
-        }
+        };
 
         if (existingItemIndex > -1) {
-          const updatedSelectedTour = [...prev.selectedTours]
-          updatedSelectedTour[existingItemIndex] = newItem
+          const updatedSelectedTour = [...prev.selectedTours];
+          updatedSelectedTour[existingItemIndex] = newItem;
           return {
             ...prev,
             selectedTours: updatedSelectedTour
-          }
+          };
         }
 
         return {
           ...prev,
           selectedTours: [...prev.selectedTours, newItem]
-        }
-      })
+        };
+      });
     }
-  }
+  };
 
   const handleRemove = (tour: ITours) => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
       selectedTours: prev.selectedTours.filter(item => item.tour._id !== tour._id)
-    }))
-  }
+    }));
+  };
 
   return (
-    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden'>
+    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden w-full'>
       <Dropdown
         closeOnSelect={false}
-        className='max-w-full md:w-[500px]'
+        className='w-full'
         isOpen={isDropdownOpen}
         onOpenChange={handleDropdownOpenChange}
       >
         <DropdownTrigger>
-          <Button className='md:min-w-44 mmax-w-28 h-14' style={{ backgroundColor: '#D4EDFF', borderRadius: '50' }}>
-            Tours
+          <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
+            <FaMapSigns className='ml-2' />
+            <span>Tours</span>
+            <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
@@ -145,12 +148,12 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
                           onChange={e => setSelectDate(e)}
                           validate={(value: any) => {
                             if (value.day < today(getLocalTimeZone()).day) {
-                              setIsSubmitDisable(true)
-                              return t('HomeRental.date_picker.previous_day_valid')
+                              setIsSubmitDisable(true);
+                              return t('HomeRental.date_picker.previous_day_valid');
                             } else {
-                              setIsSubmitDisable(false)
+                              setIsSubmitDisable(false);
                             }
-                            return true
+                            return true;
                           }}
                           defaultValue={selectDate}
                           label='Fecha'
@@ -195,7 +198,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
         </DropdownMenu>
       </Dropdown>
     </div>
-  )
-}
+  );
+};
 
-export default ToursDropdown
+export default ToursDropdown;
