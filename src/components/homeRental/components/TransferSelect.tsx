@@ -97,7 +97,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
   };
 
   return (
-    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden w-full md:w-auto'>
+    <div className='flex flex-row md:justify-center items-center p-2 overflow-hidden w-full md:w-auto '>
       <Dropdown
         closeOnSelect={false}
         className='w-full'
@@ -107,7 +107,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
         <DropdownTrigger>
           <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
             <FaBus className='ml-2' />
-            <span>Traslados</span>
+            <span className='font-semibold'>Traslados</span>
             <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>

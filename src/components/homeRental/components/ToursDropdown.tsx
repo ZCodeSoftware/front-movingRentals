@@ -108,7 +108,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
         <DropdownTrigger>
           <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
             <FaMapSigns className='ml-2' />
-            <span>Tours</span>
+            <span className='font-semibold'>Tours</span>
             <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>

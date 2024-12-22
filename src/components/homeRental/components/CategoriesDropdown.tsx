@@ -47,7 +47,7 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
         <DropdownTrigger>
           <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
             <FaCar className='ml-2' />
-            <span>{t('HomeRental.vehicles')}</span>
+            <span className='font-semibold'>{t('HomeRental.vehicles')}</span>
             <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>

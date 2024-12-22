@@ -17,7 +17,7 @@ const TravelersDropdown: React.FC<ITravelersDropdownProps> = ({ travelers, onInc
           >
             <FaUsers className='ml-2' />
             <div className='flex flex-col items-start'>
-              <p>{t('HomeRental.travelers.subtitle')}</p>
+              <p className='font-semibold'>{t('HomeRental.travelers.subtitle')}</p>
             </div>
             <FaChevronDown className='mr-2' />
           </Button>

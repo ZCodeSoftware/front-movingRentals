@@ -231,7 +231,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
             />
           </div>
           <div className='flex justify-center items-center p-2 w-full'>
-            <Button className='w-full p-2 h-14 bg-buttonPrimary flex justify-center items-center text-sm' isDisabled={isSubmitDisable} onPress={handleSubmit}>
+            <Button className='w-full p-2 h-14 bg-buttonPrimary flex justify-center items-center text-sm font-semibold' isDisabled={isSubmitDisable} onPress={handleSubmit}>
               <FaShoppingCart className='mr-2' />
               {t('HomeRental.add_to_cart')}
             </Button>
