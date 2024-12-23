@@ -127,5 +127,8 @@
   "Product-detail": {
     "view-more": "Ver más",
     "view-less": "Ver menos"
+  },
+  "Dashboard": {
+    "dashboard-home-eslogan": "Libertad = Aventuras"
   }
 }

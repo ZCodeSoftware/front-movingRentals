@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
         </div>
         <Sidebar dashboardItems={dashboardItems} activePage={activePage} setActivePage={setActivePage} />
         <div className='mt-auto text-center'>
-          <p className='text-sm text-gray-500'>© 2024 Mi Empresa</p>
+          <p className='text-sm text-gray-500'>© 2024 Mooving</p>
         </div>
       </div>
       <div className='flex-grow bg-white overflow-y-auto p-4'>

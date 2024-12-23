@@ -62,16 +62,33 @@ const CreateTransfer: React.FC = () => {
           fullWidth
           variant='bordered'
         />
-        <Input label='Precio' name='price' type='number' onChange={handleChange} fullWidth variant='bordered' />
+        <Input
+          label='Precio'
+          name='price'
+          type='number'
+          value={transfer.price.toString()}
+          onChange={handleChange}
+          fullWidth
+          variant='bordered'
+        />
         <div className='flex flex-row space-x-4'>
           <Input
             label='Duración estimada'
+            value={transfer.estimatedDuration}
             name='estimatedDuration'
             onChange={handleChange}
             fullWidth
             variant='bordered'
           />
-          <Input label='Capacidad' type='number' name='capacity' onChange={handleChange} fullWidth variant='bordered' />
+          <Input
+            label='Capacidad'
+            type='number'
+            name='capacity'
+            value={transfer.capacity.toString()}
+            onChange={handleChange}
+            fullWidth
+            variant='bordered'
+          />
         </div>
 
         <Button type='submit' color='primary' fullWidth className='mt-4'>

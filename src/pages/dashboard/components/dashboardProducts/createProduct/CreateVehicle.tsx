@@ -90,7 +90,15 @@ const CreateVehicle: React.FC = () => {
     <div className='max-w-fit mx-auto p-6 bg-white rounded-xl shadow-md space-y-4'>
       <h2 className='text-2xl font-bold text-center mb-4'>Crear Nuevo Vehiculo</h2>
       <form onSubmit={handleSubmit} className='space-y-4'>
-        <Input label='Nombre del Producto' name='name' onChange={handleChange} required fullWidth variant='bordered' />
+        <Input
+          label='Nombre del Producto'
+          name='name'
+          value={vehicle.name}
+          onChange={handleChange}
+          required
+          fullWidth
+          variant='bordered'
+        />
 
         <Textarea
           label='Descripción'
@@ -138,6 +146,7 @@ const CreateVehicle: React.FC = () => {
             label='Precio'
             name='price'
             type='number'
+            value={vehicle.price.toString()}
             onChange={handleChange}
             fullWidth
             min={0}
@@ -147,6 +156,7 @@ const CreateVehicle: React.FC = () => {
             label='Precio por 4 horas'
             name='pricePer4'
             type='number'
+            value={vehicle?.pricePer4?.toString()}
             onChange={handleChange}
             fullWidth
             min={0}
@@ -156,6 +166,7 @@ const CreateVehicle: React.FC = () => {
             label='Precio por 8 horas'
             name='pricePer8'
             type='number'
+            value={vehicle?.pricePer8?.toString()}
             onChange={handleChange}
             fullWidth
             min={0}
@@ -165,6 +176,7 @@ const CreateVehicle: React.FC = () => {
             label='Precio por 24 horas'
             name='pricePer24'
             type='number'
+            value={vehicle?.pricePer24?.toString()}
             onChange={handleChange}
             fullWidth
             min={0}
@@ -176,6 +188,7 @@ const CreateVehicle: React.FC = () => {
             label='Minimo de tiempo de renta'
             name='minRentalHours'
             type='number'
+            value={vehicle.minRentalHours.toString()}
             onChange={handleChange}
             fullWidth
             min={0}
@@ -185,6 +198,7 @@ const CreateVehicle: React.FC = () => {
             label='Capacidad'
             name='capacity'
             type='number'
+            value={vehicle.capacity.toString()}
             onChange={handleChange}
             fullWidth
             min={0}

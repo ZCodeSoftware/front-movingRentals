@@ -22,7 +22,7 @@ const DashboardProducts = () => {
 
   return (
     <div>
-      <Navbar isBordered className='w-full flex justify-center'>
+      <Navbar isBordered className='w-full flex justify-center z-10'>
         <NavbarContent>
           <NavbarItem className='w-full flex justify-evenly'>
             <Button
@@ -49,7 +49,7 @@ const DashboardProducts = () => {
           </NavbarItem>
         </NavbarContent>
       </Navbar>
-      <div>{renderView()}</div>;
+      <div>{renderView()}</div>
     </div>
   )
 }

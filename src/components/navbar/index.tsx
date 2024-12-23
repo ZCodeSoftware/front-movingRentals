@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Navbar,
   NavbarBrand,
@@ -13,96 +13,99 @@ import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem,
-} from '@nextui-org/react';
-import { useTranslation } from 'react-i18next';
-import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa';
-import cartIcon from '../../assets/SVG/cart-icon.svg';
-import flagUse from '../../assets/SVG/flag-usa.svg';
-import logo from '../../assets/SVG/logo.svg';
-import flagMex from '../../assets/SVG/flag-mexico.svg';
-import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
-import { fetchCart } from '../../services/cart/GET/cart.get.service';
-import { IUser } from '../../services/users/models/user.interface';
-import { getLocalStorage } from '../../utils/local-storage/getLocalStorage';
-import { removeLocalStorage } from '../../utils/local-storage/removeLocalStorage';
-import { fetchAllRoles } from '../../services/roles/GET/roles.get.service';
-import { IRoles } from '../../services/roles/models/roles.interface';
+  DropdownItem
+} from '@nextui-org/react'
+import { useTranslation } from 'react-i18next'
+import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa'
+import cartIcon from '../../assets/SVG/cart-icon.svg'
+import flagUse from '../../assets/SVG/flag-usa.svg'
+import logo from '../../assets/SVG/logo.svg'
+import flagMex from '../../assets/SVG/flag-mexico.svg'
+import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
+import { fetchCart } from '../../services/cart/GET/cart.get.service'
+import { IUser } from '../../services/users/models/user.interface'
+import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
+import { removeLocalStorage } from '../../utils/local-storage/removeLocalStorage'
+import { fetchAllRoles } from '../../services/roles/GET/roles.get.service'
+import { IRoles } from '../../services/roles/models/roles.interface'
 
 export default function NavbarComponent() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { t, i18n } = useTranslation();
-  const [language, setLanguage] = useState(i18n.language);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState<IUser | null>(null);
-  const [cartData, setCartData] = useState<any>(null);
-  const [roles, setRoles] = useState<IRoles[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { t, i18n } = useTranslation()
+  const [language, setLanguage] = useState(i18n.language)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userData, setUserData] = useState<IUser | null>(null)
+  const [cartData, setCartData] = useState<any>(null)
+  const [roles, setRoles] = useState<IRoles[]>([])
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userResponse = await fetchUserDetail();
+      const userResponse = await fetchUserDetail()
       if (userResponse) {
-        setIsLoggedIn(true);
-        setUserData(userResponse);
+        setIsLoggedIn(true)
+        setUserData(userResponse)
       }
-    };
+    }
 
-    fetchUserData();
-  }, []);
+    fetchUserData()
+  }, [])
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetchUserAndCart();
+      fetchUserAndCart()
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn])
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const rolesData = await fetchAllRoles();
-        setRoles(rolesData);
+        const rolesData = await fetchAllRoles()
+        setRoles(rolesData)
       } catch (error) {
-        console.error('Error fetching roles:', error);
+        console.error('Error fetching roles:', error)
       }
-    };
+    }
 
-    fetchRoles();
-  }, []);
+    fetchRoles()
+  }, [])
 
   const fetchUserAndCart = async () => {
     try {
-      const userResponse = await fetchUserDetail();
-      setUserData(userResponse);
+      const userResponse = await fetchUserDetail()
+      setUserData(userResponse)
 
       if (userResponse && userResponse.cart) {
-        const cartResponse = await fetchCart(userResponse.cart);
-        setCartData(cartResponse);
+        const cartResponse = await fetchCart(userResponse.cart)
+        setCartData(cartResponse)
       }
     } catch (error: any) {
-      const localCartData = getLocalStorage('cart');
+      const localCartData = getLocalStorage('cart')
       if (localCartData) {
-        setCartData(localCartData);
+        setCartData(localCartData)
       }
-      throw new Error(error);
+      throw new Error(error)
     } finally {
     }
-  };
+  }
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    i18n.changeLanguage(value);
-  };
+    setLanguage(value)
+    i18n.changeLanguage(value)
+  }
 
   const handleLogout = () => {
-    removeLocalStorage('user');
-    removeLocalStorage('cart');
-    setIsLoggedIn(false);
-    setUserData(null);
-    setCartData(null);
-    window.location.href = '/login';
-  };
+    removeLocalStorage('user')
+    removeLocalStorage('cart')
+    setIsLoggedIn(false)
+    setUserData(null)
+    setCartData(null)
+    window.location.href = '/login'
+  }
 
-  const adminRole = roles.find(role => role.name === 'ADMIN');
+  const adminRole = roles.find(role => role.name === 'ADMIN')
+
+  const itemsInCart =
+    (cartData?.vehicles?.length || 0) + (cartData?.tours?.length || 0) + (cartData?.transfer?.length || 0)
 
   return (
     <>
@@ -138,39 +141,37 @@ export default function NavbarComponent() {
             </Select>
           </NavbarItem>
           {isLoggedIn ? (
-            <NavbarContent as="div" justify="end" className='flex items-center'>
+            <NavbarContent as='div' justify='end' className='flex items-center'>
               <Link href='/cart' className='flex flex-col items-center text-white mr-4 relative'>
                 <img src={cartIcon} alt='cart' className='w-8 h-8' />
-                {cartData && cartData.vehicles && cartData.vehicles.length > 0 && (
+                {itemsInCart && (
                   <div className='absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs'>
-                    {cartData.vehicles.length}
+                    {itemsInCart}
                   </div>
                 )}
               </Link>
               {userData?.role._id === adminRole?._id && (
                 <Link href='/dashboard' className='flex flex-col items-center text-white mr-4'>
-                  <Button className='bg-buttonPrimary'>
-                    Dashboard
-                  </Button>
+                  <Button className='bg-buttonPrimary'>Dashboard</Button>
                 </Link>
               )}
-              <Dropdown placement="bottom-end">
+              <Dropdown placement='bottom-end'>
                 <DropdownTrigger>
-                  <button className="transition-transform p-2">
-                    <FaUser className="text-3xl text-[#226491] border-2 border-[#45a5e9] rounded-full p-0.5" />
+                  <button className='transition-transform p-2'>
+                    <FaUser className='text-3xl text-[#226491] border-2 border-[#45a5e9] rounded-full p-0.5' />
                   </button>
                 </DropdownTrigger>
-                <DropdownMenu aria-label="Profile Actions" variant="flat">
-                  <DropdownItem key="profile" className="h-14 gap-2">
-                    <p className="font-semibold">{t('navBar.signedInAs')}</p>
-                    <p className="font-semibold">{userData?.email}</p>
+                <DropdownMenu aria-label='Profile Actions' variant='flat'>
+                  <DropdownItem key='profile' className='h-14 gap-2'>
+                    <p className='font-semibold'>{t('navBar.signedInAs')}</p>
+                    <p className='font-semibold'>{userData?.email}</p>
                   </DropdownItem>
-                  <DropdownItem key="my_profile">
-                    <Link href="/profile" className="w-full">
+                  <DropdownItem key='my_profile'>
+                    <Link href='/profile' className='w-full'>
                       {t('navBar.myProfile')}
                     </Link>
                   </DropdownItem>
-                  <DropdownItem key="logout" color="danger" onClick={handleLogout}>
+                  <DropdownItem key='logout' color='danger' onClick={handleLogout}>
                     {t('navBar.logout')}
                   </DropdownItem>
                 </DropdownMenu>
@@ -199,7 +200,18 @@ export default function NavbarComponent() {
         </NavbarContent>
 
         <NavbarMenu>
-          {['Profile', 'Dashboard', 'Activity', 'Analytics', 'System', 'Deployments', 'My Settings', 'Team Settings', 'Help & Feedback', 'Log Out'].map((item, index) => (
+          {[
+            'Profile',
+            'Dashboard',
+            'Activity',
+            'Analytics',
+            'System',
+            'Deployments',
+            'My Settings',
+            'Team Settings',
+            'Help & Feedback',
+            'Log Out'
+          ].map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
                 className='w-full'
@@ -252,5 +264,5 @@ export default function NavbarComponent() {
         </div>
       </div>
     </>
-  );
+  )
 }

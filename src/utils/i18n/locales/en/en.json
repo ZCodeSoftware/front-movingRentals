@@ -127,5 +127,8 @@
   "Product-detail": {
     "view-more": "View more",
     "view-less": "view less"
+  },
+  "Dashboard": {
+    "dashboard-home-eslogan": "Freedom = Adventures"
   }
 }
