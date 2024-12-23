@@ -84,18 +84,48 @@ const CreateTour: React.FC = () => {
           fullWidth
           variant='bordered'
         />
-        <Textarea label='Itinerario' name='itinerary' onChange={handleChange} fullWidth variant='bordered' />
-        <Input label='Precio' name='price' type='number' onChange={handleChange} fullWidth variant='bordered' />
+        <Textarea
+          label='Itinerario'
+          name='itinerary'
+          value={tour.itinerary}
+          onChange={handleChange}
+          fullWidth
+          variant='bordered'
+        />
+        <Input
+          label='Precio'
+          name='price'
+          type='number'
+          value={tour.price.toString()}
+          onChange={handleChange}
+          fullWidth
+          variant='bordered'
+        />
         <div className='flex flex-row space-x-4'>
           <Input
             label='Duración estimada'
             name='estimatedDuration'
+            value={tour.estimatedDuration}
             onChange={handleChange}
             fullWidth
             variant='bordered'
           />
-          <Input label='Horas de inicio' name='startDates' onChange={handleChange} fullWidth variant='bordered' />
-          <Input label='Capacidad' name='capacity' onChange={handleChange} fullWidth variant='bordered' />
+          <Input
+            label='Horas de inicio'
+            name='startDates'
+            value={tour.startDates}
+            onChange={handleChange}
+            fullWidth
+            variant='bordered'
+          />
+          <Input
+            label='Capacidad'
+            name='capacity'
+            value={tour.capacity}
+            onChange={handleChange}
+            fullWidth
+            variant='bordered'
+          />
         </div>
 
         <Input
