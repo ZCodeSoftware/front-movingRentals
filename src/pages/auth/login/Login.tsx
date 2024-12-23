@@ -83,9 +83,9 @@ const Login = () => {
           <Button className='p-2 border' variant='light' type='submit' style={{}}>
             {t('logIn.log_in')}
           </Button>
-          <Button className='mt-4 bg-buttonPrimary' type='button'>
+          {/* <Button className='mt-4 bg-buttonPrimary' type='button'>
             {t('logIn.log_in_google')}
-          </Button>
+          </Button> */}
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('logIn.not_registered')}</p>

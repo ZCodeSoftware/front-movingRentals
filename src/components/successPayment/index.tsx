@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
+import { fetchCart } from '../../services/cart/GET/cart.get.service';
 import CryptoJS from 'crypto-js';
 import { AppApiGateWay } from '../../services/app.api.gateway';
 import { Spinner } from '@nextui-org/react';
@@ -17,6 +18,7 @@ const SuccessPaymentComponent = () => {
     const token = searchParams.get('token');
     const [counter, setCounter] = useState(3);
     const [userData, setUserData] = useState<any>(null);
+    const [cartData, setCartData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
 
@@ -24,7 +26,16 @@ const SuccessPaymentComponent = () => {
         try {
             const userResponse = await fetchUserDetail();
             setUserData(userResponse);
+
+            if (userResponse && userResponse.cart) {
+                const cartResponse = await fetchCart(userResponse.cart);
+                setCartData(cartResponse);
+            }
         } catch (error: any) {
+            const localCartData = getLocalStorage('cart');
+            if (localCartData) {
+                setCartData(localCartData);
+            }
             throw new Error(error);
         } finally {
             setLoading(false);
@@ -42,7 +53,7 @@ const SuccessPaymentComponent = () => {
 
     const createBooking = async () => {
         try {
-            if (!userData || !userData.cart) {
+            if (!userData || !cartData) {
                 console.error('User data or cart is null');
                 return;
             }
@@ -58,7 +69,7 @@ const SuccessPaymentComponent = () => {
                 }
 
                 const bookingData = {
-                    cart: userData.cart,
+                    cart: JSON.stringify(cartData), // Enviar el carrito como string
                     paymentMethod: paymentMethod.id
                 };
 

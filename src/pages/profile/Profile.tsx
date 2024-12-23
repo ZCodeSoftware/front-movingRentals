@@ -134,9 +134,7 @@ const Profile = () => {
               </div>
               <div className='w-full flex md:flex-row flex-row-reverse justify-around items-center'>
                 <Button className='md:w-48 my-6 md:my-0 bg-[#F68989]'>{t('Profile.log_out')}</Button>
-                <Button className='md:w-48 border border-[#FF3030] bg-transparent-'>
-                  {t('Profile.delete_account')}
-                </Button>
+                <Button className='md:w-48 border border-[#FF3030] bg-transparent-'>{t('Profile.delete_account')}</Button>
               </div>
             </section>
           </>

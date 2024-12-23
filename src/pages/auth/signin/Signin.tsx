@@ -120,9 +120,9 @@ const Signin = () => {
           <Button className='p-2' type='submit'>
             {t('SignIn.sign_in')}
           </Button>
-          <Button className='mt-4 bg-buttonPrimary' type='button'>
+          {/* <Button className='mt-4 bg-buttonPrimary' type='button'>
             {t('logIn.log_in_google')}
-          </Button>
+          </Button> */}
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('SignIn.have_an_account')}</p>

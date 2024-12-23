@@ -107,7 +107,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
         <DropdownTrigger>
           <Button className='w-full h-14 flex justify-between items-center bg-[#D4EDFF] rounded-full'>
             <FaBus className='ml-2' />
-            <span className='font-semibold'>Traslados</span>
+            <span className='font-semibold'>{t('HomeRental.transfers.title')}</span>
             <FaChevronDown className='mr-2' />
           </Button>
         </DropdownTrigger>

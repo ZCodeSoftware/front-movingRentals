@@ -8,22 +8,22 @@ interface RentalEvent {
 
 const rentalSteps: RentalEvent[] = [
     {
-        date: '01 Ene, 2024',
+        date: '01 Ene, 2025',
         title: 'Renta Realizada',
         description: 'El cliente realizó el proceso de renta y recogió el vehículo. Se registraron los datos y se generó el contrato.',
     },
     {
-        date: '03 Ene, 2024',
+        date: '03 Ene, 2025',
         title: 'Perdió el Casco',
         description: 'El cliente notificó la pérdida del casco. Se generó un cobro adicional por el equipo perdido.',
     },
     {
-        date: '05 Ene, 2024',
+        date: '05 Ene, 2025',
         title: 'Choque',
         description: 'El vehículo sufrió un accidente leve. Se activó el seguro y se documentaron los daños.',
     },
     {
-        date: '06 Ene, 2024',
+        date: '06 Ene, 2025',
         title: 'Devolución y Lavado',
         description: 'El cliente devolvió el vehículo en condiciones limpias. Se realizó la inspección final y se cerró el contrato.',
     },
@@ -38,7 +38,7 @@ export default function RentalProcess() {
 
     return (
         <>
-            <Button onPress={handleOpen}>Abrir Proceso de Renta</Button>
+            <Button onPress={handleOpen} className="bg-[#D4EDFF] font-semibold">Abrir Proceso de Renta</Button>
             <Modal size="5xl" isOpen={isOpen} onClose={onClose}>
                 <ModalContent>
                     {(onClose) => (

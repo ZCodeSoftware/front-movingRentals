@@ -1,5 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
+import RentalProcess from '../../../components/timeLine';
 
 const ReservationsModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -17,6 +18,7 @@ const ReservationsModal = () => {
               <ModalHeader className='flex flex-col gap-1'> {t('Profile.reservations.title')}</ModalHeader>
               <ModalBody>
                 <p>Reservations</p>
+                <RentalProcess />
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>

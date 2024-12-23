@@ -3,6 +3,7 @@ import { Card, CardBody, Image } from '@nextui-org/react'
 import { ISelectData, ISelectItems } from '../models/Select-data'
 import { useEffect } from 'react'
 import ProductDetailModal from '../../../pages/list-by-category/components/ProductDetailModal'
+import { t } from 'i18next'
 
 const SelectedProductRender = ({ products, setSelectData, selectData }: any) => {
   const [openModal, setOpenModal] = useState<{ [key: string]: boolean }>({})
@@ -76,8 +77,8 @@ const SelectedProductRender = ({ products, setSelectData, selectData }: any) => 
   return (
     <>
       {products.length > 0 && (
-        <div className=' overflow-y-auto max-h-52'>
-          <h1>Productos seleccionados</h1>
+        <div className=' overflow-y-auto max-h-52  scroll-container'>
+          <h1 className='bg-buttonPrimary p-1 rounded-medium pl-2'>{t('HomeRental.selected_products')}</h1>
           {products.map((p: any) => (
             <>
               {p.tour ? (

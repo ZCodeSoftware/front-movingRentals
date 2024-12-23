@@ -14,18 +14,21 @@ body {
 }
 
 body::-webkit-scrollbar {
-  width: var(--sb-size)
+  width: var(--sb-size);
 }
 
 body::-webkit-scrollbar-track {
   background: var(--sb-track-color);
-  border-radius: 5px;
+  border-radius: 2px;
+  /* Menos redondeo */
 }
 
 body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
-  border-radius: 5px;
-  border: 4px solid #232E33;
+  border-radius: 2px;
+  /* Menos redondeo */
+  border: 4px solid var(--sb-track-color);
+  /* Cambiado para que coincida con el color del track */
 }
 
 @supports not selector(::-webkit-scrollbar) {

@@ -22,9 +22,12 @@ import flagUse from '../../assets/SVG/flag-usa.svg';
 import logo from '../../assets/SVG/logo.svg';
 import flagMex from '../../assets/SVG/flag-mexico.svg';
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
-import { fetchCart } from '../../services/cart/GET/cart.get.service'; // Asegúrate de importar esta función
+import { fetchCart } from '../../services/cart/GET/cart.get.service';
 import { IUser } from '../../services/users/models/user.interface';
 import { getLocalStorage } from '../../utils/local-storage/getLocalStorage';
+import { removeLocalStorage } from '../../utils/local-storage/removeLocalStorage';
+import { fetchAllRoles } from '../../services/roles/GET/roles.get.service';
+import { IRoles } from '../../services/roles/models/roles.interface';
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,6 +36,7 @@ export default function NavbarComponent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<IUser | null>(null);
   const [cartData, setCartData] = useState<any>(null);
+  const [roles, setRoles] = useState<IRoles[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,6 +55,19 @@ export default function NavbarComponent() {
       fetchUserAndCart();
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const rolesData = await fetchAllRoles();
+        setRoles(rolesData);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const fetchUserAndCart = async () => {
     try {
@@ -76,12 +93,23 @@ export default function NavbarComponent() {
     i18n.changeLanguage(value);
   };
 
+  const handleLogout = () => {
+    removeLocalStorage('user');
+    removeLocalStorage('cart');
+    setIsLoggedIn(false);
+    setUserData(null);
+    setCartData(null);
+    window.location.href = '/login';
+  };
+
+  const adminRole = roles.find(role => role.name === 'ADMIN');
+
   return (
     <>
       <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className='hidden sm:flex'>
         <NavbarContent className='hidden sm:flex gap-4' justify='center'>
           <NavbarBrand>
-            <Link color='foreground' href='/home'>
+            <Link color='foreground' href='/'>
               <img src={logo} alt='Logo' />
             </Link>
           </NavbarBrand>
@@ -119,6 +147,13 @@ export default function NavbarComponent() {
                   </div>
                 )}
               </Link>
+              {userData?.role._id === adminRole?._id && (
+                <Link href='/dashboard' className='flex flex-col items-center text-white mr-4'>
+                  <Button className='bg-buttonPrimary'>
+                    Dashboard
+                  </Button>
+                </Link>
+              )}
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <button className="transition-transform p-2">
@@ -135,7 +170,7 @@ export default function NavbarComponent() {
                       {t('navBar.myProfile')}
                     </Link>
                   </DropdownItem>
-                  <DropdownItem key="logout" color="danger">
+                  <DropdownItem key="logout" color="danger" onClick={handleLogout}>
                     {t('navBar.logout')}
                   </DropdownItem>
                 </DropdownMenu>
@@ -189,10 +224,31 @@ export default function NavbarComponent() {
             <FaShoppingCart className='text-xl' />
             <span className='text-xs'>{t('navBar.cart')}</span>
           </Link>
-          <Link href='/profile' className='flex flex-col items-center text-gray-700'>
-            <FaUser className='text-xl' />
-            <span className='text-xs'>{t('navBar.profile')}</span>
-          </Link>
+          {isLoggedIn ? (
+            <>
+              {userData?.role._id === adminRole?._id && (
+                <Link href='/dashboard' className='flex flex-col items-center text-gray-700'>
+                  <FaUser className='text-xl' />
+                  <span className='text-xs'>Dashboard</span>
+                </Link>
+              )}
+              <Link href='/profile' className='flex flex-col items-center text-gray-700'>
+                <FaUser className='text-xl' />
+                <span className='text-xs'>{t('navBar.profile')}</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href='/login' className='flex flex-col items-center text-gray-700'>
+                <FaUser className='text-xl' />
+                <span className='text-xs'>{t('navBar.login')}</span>
+              </Link>
+              <Link href='/signin' className='flex flex-col items-center text-gray-700'>
+                <FaUser className='text-xl' />
+                <span className='text-xs'>{t('navBar.signup')}</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </>
