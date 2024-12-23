@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
 import { fetchCart } from '../../services/cart/GET/cart.get.service';
-import CryptoJS from 'crypto-js';
 import { AppApiGateWay } from '../../services/app.api.gateway';
 import { Spinner } from '@nextui-org/react';
 import { getLocalStorage } from '../../utils/local-storage/getLocalStorage';
@@ -15,8 +14,8 @@ const SuccessPaymentComponent = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const successPayment = searchParams.get('successPayment') === 'true';
-    const token = searchParams.get('token');
-    const [counter, setCounter] = useState(3);
+    const token = decodeURIComponent((searchParams.get('token') || '').replace(/ /g, '+'));
+    const [counter, setCounter] = useState(5);
     const [userData, setUserData] = useState<any>(null);
     const [cartData, setCartData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -36,7 +35,7 @@ const SuccessPaymentComponent = () => {
             if (localCartData) {
                 setCartData(localCartData);
             }
-            throw new Error(error);
+            console.error('Error fetching user or cart data:', error);
         } finally {
             setLoading(false);
         }
@@ -58,22 +57,22 @@ const SuccessPaymentComponent = () => {
                 return;
             }
 
-            const decryptedToken = CryptoJS.AES.decrypt(token!, 'secret-key').toString(CryptoJS.enc.Utf8);
             const storedToken = getLocalStorage('paymentToken');
 
-            if (decryptedToken && storedToken === token) {
-                const paymentMethod = paymentMethods.find(method => method.name === 'MercadoPago');
+            if (storedToken === token) {
+
+                const paymentMethod = paymentMethods.find(method => method.name === 'Mercado Pago');
                 if (!paymentMethod) {
                     console.error('Payment method not found');
                     return;
                 }
 
                 const bookingData = {
-                    cart: JSON.stringify(cartData), // Enviar el carrito como string
-                    paymentMethod: paymentMethod.id
+                    cart: JSON.stringify(cartData),
+                    paymentMethod: paymentMethod._id
                 };
 
-                await AppApiGateWay.post('/bookings', bookingData);
+                await AppApiGateWay.post('/booking', bookingData);
                 removeLocalStorage('paymentToken');
             } else {
                 console.error('Token verification failed');
@@ -84,12 +83,16 @@ const SuccessPaymentComponent = () => {
     };
 
     useEffect(() => {
-        fetchUserAndCart();
-        fetchPaymentMethods();
+        const initialize = async () => {
+            await fetchUserAndCart();
+            await fetchPaymentMethods();
 
-        if (successPayment && token) {
-            createBooking();
-        }
+            if (successPayment && token) {
+                await createBooking();
+            }
+        };
+
+        initialize();
 
         const timer = setInterval(() => {
             setCounter((prevCounter) => prevCounter - 1);
