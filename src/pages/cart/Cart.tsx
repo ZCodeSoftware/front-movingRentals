@@ -14,6 +14,7 @@ import { ILocalCart } from './models/local-cart.interface'
 import { ISelectItems, ISelectTours, ISelectTransfers } from '../../components/homeRental/models/Select-data'
 import BackCartItemList from './components/BackCartListItems'
 import CryptoJS from 'crypto-js'
+import LoaderComponent from '../../utils/loader'
 
 const Cart = () => {
   const { i18n } = useTranslation()
@@ -208,7 +209,7 @@ const Cart = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoaderComponent />
   }
 
   const cart = userData && cartData ? cartData : { products: localCart }

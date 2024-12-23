@@ -69,7 +69,7 @@ const SuccessPaymentComponent = () => {
 
                 const bookingData = {
                     cart: JSON.stringify(cartData),
-                    paymentMethod: paymentMethod._id
+                    paymentMethod: '675fa9793bd6a09da4eb1865'
                 };
 
                 await AppApiGateWay.post('/booking', bookingData);
@@ -99,7 +99,7 @@ const SuccessPaymentComponent = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [successPayment, token]);
+    }, [successPayment, token, userData?._id, cartData?._id]);
 
     useEffect(() => {
         if (counter === 0) {

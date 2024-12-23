@@ -5,6 +5,7 @@ import { IVehicles } from '../../services/products/models/vehicles.interface'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, CardHeader, CardFooter, Image } from '@nextui-org/react'
 import ProductDetailModal from './components/ProductDetailModal'
+import LoaderComponent from '../../utils/loader'
 
 const ListByCategory = () => {
   const [data, setData] = useState<IVehicles[]>([])
@@ -26,7 +27,7 @@ const ListByCategory = () => {
   }, [])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoaderComponent />
   }
 
   const handleOpenModal = (id: string) => {

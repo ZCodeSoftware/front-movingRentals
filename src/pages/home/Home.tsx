@@ -10,6 +10,7 @@ import { motion } from 'framer-motion'
 import { FaCloud, FaSun, FaCloudRain, FaSnowflake, FaSmog } from 'react-icons/fa'
 import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service'
 import { ITours } from '../../services/products/models/tours.interface'
+import LoaderComponent from '../../utils/loader'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
@@ -96,7 +97,7 @@ const Home = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <LoaderComponent />
   }
 
   return (

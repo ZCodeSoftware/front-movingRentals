@@ -3,6 +3,7 @@ import { fetchAllRoles } from '../../services/roles/GET/roles.get.service';
 import { IRoles } from '../../services/roles/models/roles.interface';
 import { Navigate } from 'react-router-dom';
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
+import LoaderComponent from '../loader';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [roles, setRoles] = useState<IRoles[]>([]);
@@ -28,7 +29,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoaderComponent />;
     }
 
     const adminRole = roles.find(role => role.name === 'ADMIN');
