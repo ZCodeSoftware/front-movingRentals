@@ -29,7 +29,7 @@
   "payment": {
     "successMessage": "Gracias, hemos recibido tu reserva.",
     "errorMessage": "Ocurrió un error.",
-    "redirectMessage": "Serás redirigido al inicio en unos 3 segundos.",
+    "redirectMessage": "Serás redirigido al inicio en unos 5 segundos.",
     "redirectCountdown": "Serás redirigido en {{seconds}} segundos."
   },
   "listByCategory": {

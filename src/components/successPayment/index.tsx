@@ -15,7 +15,7 @@ const SuccessPaymentComponent = () => {
     const [searchParams] = useSearchParams();
     const successPayment = searchParams.get('successPayment') === 'true';
     const token = decodeURIComponent((searchParams.get('token') || '').replace(/ /g, '+'));
-    const [counter, setCounter] = useState(10);
+    const [counter, setCounter] = useState(5);
     const [userData, setUserData] = useState<any>(null);
     const [cartData, setCartData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
