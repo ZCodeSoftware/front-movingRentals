@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@nextui-org/react'
+import { Button, Spinner } from '@nextui-org/react'
 import { IHomeRentalProps } from './models/home-rental-props.interface'
 import { IVehicles } from '../../services/products/models/vehicles.interface'
 import { ISelectData } from './models/Select-data'
@@ -232,8 +232,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           </div>
           <div className='flex justify-center items-center p-2 w-full'>
             <Button className='w-full p-2 h-14 bg-buttonPrimary flex justify-center items-center text-sm font-semibold' isDisabled={isSubmitDisable} onPress={handleSubmit}>
-              <FaShoppingCart className='mr-2' />
-              {t('HomeRental.add_to_cart')}
+              {isSubmitDisable ? (
+                <Spinner color="primary" size="sm" />
+              ) : (
+                <>
+                  <FaShoppingCart className='mr-2' />
+                  {t('HomeRental.add_to_cart')}
+                </>
+              )}
             </Button>
           </div>
         </div>

@@ -1,37 +1,43 @@
-import { useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { login } from '../../../services/auth/login/POST/login.post.service'
-import { Button, Input } from '@nextui-org/react'
-import { useTranslation } from 'react-i18next'
-import { ILoginForm } from './models/form.interface'
-import TextError from '../../../components/textError/TextError'
-import { useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import useMergeCarts from '../../cart/utils/mergeCarts'
-import { fetchUserDetail } from '../../../services/users/GET/user-detail.get.service'
+import { useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { login } from '../../../services/auth/login/POST/login.post.service';
+import { Button, Input, Spinner } from '@nextui-org/react';
+import { useTranslation } from 'react-i18next';
+import { ILoginForm } from './models/form.interface';
+import TextError from '../../../components/textError/TextError';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import useMergeCarts from '../../cart/utils/mergeCarts';
+import { fetchUserDetail } from '../../../services/users/GET/user-detail.get.service';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
-  const { mergeCarts } = useMergeCarts()
+  const { mergeCarts } = useMergeCarts();
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<ILoginForm>({ mode: 'onChange', reValidateMode: 'onChange' })
+  } = useForm<ILoginForm>({ mode: 'onChange', reValidateMode: 'onChange' });
 
-  const navigate = useNavigate()
-  const { t } = useTranslation()
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [isFocused, setIsFocused] = useState({ email: false, password: false })
-  const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible)
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState({ email: false, password: false });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
 
   const onSubmit: SubmitHandler<ILoginForm> = async data => {
-    const response = await login(data)
+    setIsLoading(true);
+    const response = await login(data);
     if (response) {
-      const result = await fetchUserDetail()
-      mergeCarts(result.cart)
-      navigate('/')
+      const result = await fetchUserDetail();
+      mergeCarts(result.cart);
+      navigate('/');
+      window.location.reload();
     }
-  }
+    setIsLoading(false);
+  };
 
   return (
     <main className='md:w-3/4 h-full'>
@@ -68,9 +74,9 @@ const Login = () => {
                 aria-label='toggle password visibility'
               >
                 {isPasswordVisible ? (
-                  <h1 className='text-2xl text-default-400 pointer-events-none'>OO</h1>
+                  <FaRegEyeSlash className='text-2xl text-default-400 pointer-events-none' />
                 ) : (
-                  <h1 className='text-2xl text-default-400 pointer-events-none'>O</h1>
+                  <FaRegEye className='text-2xl text-default-400 pointer-events-none' />
                 )}
               </button>
             }
@@ -80,12 +86,9 @@ const Login = () => {
           )}
         </section>
         <section className='flex flex-col w-3/4 md:w-2/12 m-4'>
-          <Button className='p-2 border' variant='light' type='submit' style={{}}>
-            {t('logIn.log_in')}
+          <Button className='p-2 border' variant='light' type='submit' isDisabled={isLoading}>
+            {isLoading ? <Spinner color="primary" size="sm" /> : t('logIn.log_in')}
           </Button>
-          {/* <Button className='mt-4 bg-buttonPrimary' type='button'>
-            {t('logIn.log_in_google')}
-          </Button> */}
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
           <p className='p-2'>{t('logIn.not_registered')}</p>
@@ -95,7 +98,7 @@ const Login = () => {
         </section>
       </form>
     </main>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

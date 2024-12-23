@@ -58,6 +58,7 @@ const SuccessPaymentComponent = () => {
 
                 await AppApiGateWay.post('/booking', bookingData);
                 removeLocalStorage('paymentToken');
+                removeLocalStorage('backCart');
             } else {
                 console.error('Token verification failed');
             }
