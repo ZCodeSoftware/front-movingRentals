@@ -13,6 +13,7 @@ const CreateTransfer: React.FC = () => {
     price: 0,
     category: ''
   })
+  const [submitDisable, setSubmitDisable] = useState(true)
 
   useEffect(() => {
     const getCategories = async () => {
@@ -27,6 +28,18 @@ const CreateTransfer: React.FC = () => {
     }
     getCategories()
   }, [])
+
+  const validateForm = () => {
+    const requiredFields = ['name', 'estimatedDuration', 'capacity']
+    const hasRequiredFields = requiredFields.every(field => !!transfer[field as keyof ITransferForm])
+    const hasPrices = transfer.price > 0
+
+    return hasRequiredFields && hasPrices
+  }
+
+  useEffect(() => {
+    setSubmitDisable(!validateForm())
+  }, [transfer])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -53,7 +66,15 @@ const CreateTransfer: React.FC = () => {
     <div className='max-w-fit mx-auto p-6 bg-white rounded-xl shadow-md space-y-4'>
       <h2 className='text-2xl font-bold text-center mb-4'>Crear Nuevo Traslado</h2>
       <form onSubmit={handleSubmit} className='space-y-4'>
-        <Input label='Nombre' name='name' value={transfer.name} onChange={handleChange} fullWidth variant='bordered' />
+        <Input
+          label='Nombre'
+          name='name'
+          value={transfer.name}
+          onChange={handleChange}
+          required
+          fullWidth
+          variant='bordered'
+        />
         <Textarea
           label='Descripción'
           name='description'
@@ -69,6 +90,7 @@ const CreateTransfer: React.FC = () => {
           value={transfer.price.toString()}
           onChange={handleChange}
           fullWidth
+          required
           variant='bordered'
         />
         <div className='flex flex-row space-x-4'>
@@ -78,6 +100,7 @@ const CreateTransfer: React.FC = () => {
             name='estimatedDuration'
             onChange={handleChange}
             fullWidth
+            required
             variant='bordered'
           />
           <Input
@@ -87,11 +110,12 @@ const CreateTransfer: React.FC = () => {
             value={transfer.capacity.toString()}
             onChange={handleChange}
             fullWidth
+            required
             variant='bordered'
           />
         </div>
 
-        <Button type='submit' color='primary' fullWidth className='mt-4'>
+        <Button type='submit' color='primary' fullWidth className='mt-4' isDisabled={submitDisable}>
           Crear Translado
         </Button>
       </form>

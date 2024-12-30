@@ -14,4 +14,5 @@ export interface IVehicles {
   minRentalHours: number
   description: string
   owner: IVehicleOwners
+  tag: string
 }

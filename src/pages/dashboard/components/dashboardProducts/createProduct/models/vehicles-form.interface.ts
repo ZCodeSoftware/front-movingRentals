@@ -10,4 +10,5 @@ export interface IVehicleForm {
   minRentalHours: number
   description: string
   owner: string
+  tag: string
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Input, Button, Textarea } from '@nextui-org/react'
 import { ITourForm } from './models/tour-form.interface'
-import uploadToCloudinary from '../../tempUploadImage/uploadImage'
+import uploadToCloudinary from '../../uploadImage/uploadImageToCloudinary'
 import { postTour } from '../../../../../services/products/tours/GET/POST/tours.post.service'
 import { fetchCategories } from '../../../../../services/categories/categoriesService'
+import UploadImage from '../../uploadImage/UploadImage'
+import uploadImageConstants from '../../uploadImage/constants/uploadImageConstants'
 
 const CreateTour: React.FC = () => {
   const [tour, setTour] = useState<ITourForm>({
@@ -17,7 +19,8 @@ const CreateTour: React.FC = () => {
     images: [],
     category: ''
   })
-  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imageFiles, setImageFiles] = useState<Blob[]>([])
+  const [submitDisable, setSubmitDisable] = useState(true)
 
   useEffect(() => {
     const getCategories = async () => {
@@ -33,6 +36,19 @@ const CreateTour: React.FC = () => {
     getCategories()
   }, [])
 
+  const validateForm = () => {
+    const requiredFields = ['name', 'description', 'itinerary', 'estimatedDuration', 'startDates', 'capacity']
+    const hasRequiredFields = requiredFields.every(field => !!tour[field as keyof ITourForm])
+    const hasImages = imageFiles.length > 0
+    const hasPrices = tour.price > 0
+
+    return hasRequiredFields && hasImages && hasPrices
+  }
+
+  useEffect(() => {
+    setSubmitDisable(!validateForm())
+  }, [tour, imageFiles])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setTour(prevTour => ({
@@ -41,15 +57,9 @@ const CreateTour: React.FC = () => {
     }))
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImageFiles([...e.target.files])
-    }
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const uploadedImages = await Promise.all(imageFiles.map(file => uploadToCloudinary(file)))
+    const uploadedImages = await uploadToCloudinary(imageFiles, uploadImageConstants.TOURS, tour)
     const validImages = uploadedImages.filter(url => url !== null) as string[]
     const toursData = {
       ...tour,
@@ -75,13 +85,22 @@ const CreateTour: React.FC = () => {
     <div className='max-w-fit mx-auto p-6 bg-white rounded-xl shadow-md space-y-4'>
       <h2 className='text-2xl font-bold text-center mb-4'>Crear Nuevo Tour</h2>
       <form onSubmit={handleSubmit} className='space-y-4'>
-        <Input label='Nombre' name='name' value={tour.name} onChange={handleChange} fullWidth variant='bordered' />
+        <Input
+          label='Nombre'
+          name='name'
+          value={tour.name}
+          onChange={handleChange}
+          required
+          fullWidth
+          variant='bordered'
+        />
         <Textarea
           label='Descripción'
           name='description'
           value={tour.description}
           onChange={handleChange}
           fullWidth
+          required
           variant='bordered'
         />
         <Textarea
@@ -90,6 +109,7 @@ const CreateTour: React.FC = () => {
           value={tour.itinerary}
           onChange={handleChange}
           fullWidth
+          required
           variant='bordered'
         />
         <Input
@@ -99,6 +119,7 @@ const CreateTour: React.FC = () => {
           value={tour.price.toString()}
           onChange={handleChange}
           fullWidth
+          required
           variant='bordered'
         />
         <div className='flex flex-row space-x-4'>
@@ -108,6 +129,7 @@ const CreateTour: React.FC = () => {
             value={tour.estimatedDuration}
             onChange={handleChange}
             fullWidth
+            required
             variant='bordered'
           />
           <Input
@@ -116,6 +138,7 @@ const CreateTour: React.FC = () => {
             value={tour.startDates}
             onChange={handleChange}
             fullWidth
+            required
             variant='bordered'
           />
           <Input
@@ -124,21 +147,14 @@ const CreateTour: React.FC = () => {
             value={tour.capacity}
             onChange={handleChange}
             fullWidth
+            required
             variant='bordered'
           />
         </div>
 
-        <Input
-          label='Subir Imágenes'
-          className='p-6'
-          type='file'
-          accept='image/*'
-          onChange={handleImageChange}
-          fullWidth
-          variant='bordered'
-        />
+        <UploadImage setUrl={setImageFiles} form={tour} imageFiles={imageFiles} />
 
-        <Button type='submit' color='primary' fullWidth className='mt-4'>
+        <Button type='submit' color='primary' fullWidth className='mt-4' isDisabled={submitDisable}>
           Crear Tour
         </Button>
       </form>

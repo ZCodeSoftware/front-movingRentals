@@ -34,7 +34,7 @@ const ToursList = () => {
               {toursData.map(t => (
                 <TableRow key={t._id}>
                   <TableCell>
-                    <img sizes='100px' src={t.images[0]} className='h-[100px]' />
+                    <img sizes='100px' src={t.images[0]} className='w-[100px] h-[100px]' />
                   </TableCell>
                   <TableCell>{t.name}</TableCell>
                   <TableCell>{t.price}</TableCell>

@@ -11,24 +11,24 @@ import { FaCloud, FaSun, FaCloudRain, FaSnowflake, FaSmog } from 'react-icons/fa
 import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service'
 import { ITours } from '../../services/products/models/tours.interface'
 import LoaderComponent from '../../utils/loader'
+import ContactForm from '../../components/contactForm/ContactForm'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
   const [toursData, setToursData] = useState<ITours[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [isSticky, setIsSticky] = useState(false);
+  const [isSticky, setIsSticky] = useState(false)
 
   const handleScroll = () => {
-    setIsSticky(window.pageYOffset >= 80);
-  };
+    setIsSticky(window.pageYOffset >= 80)
+  }
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   interface WeatherData {
     main: {
@@ -60,7 +60,8 @@ const Home = () => {
       try {
         const units = i18n.language === 'en' ? 'imperial' : 'metric'
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=Tulum,mx&units=${units}&appid=${import.meta.env.VITE_WEATHER_API_KEY
+          `https://api.openweathermap.org/data/2.5/weather?q=Tulum,mx&units=${units}&appid=${
+            import.meta.env.VITE_WEATHER_API_KEY
           }&lang=${i18n.language}`
         )
         const weatherData = await response.json()
@@ -105,8 +106,7 @@ const Home = () => {
       <div
         className='absolute top-0 left-0 w-full h-[30rem] md:h-[25rem] bg-cover bg-center'
         style={{
-          backgroundImage:
-            'url(https://images.pexels.com/photos/716421/pexels-photo-716421.jpeg)'
+          backgroundImage: 'url(https://images.pexels.com/photos/716421/pexels-photo-716421.jpeg)'
         }}
       ></div>
       <div className={`block md:sticky z-20 ${isSticky ? 'top-16' : 'top-32'}`}>
@@ -165,6 +165,7 @@ const Home = () => {
       >
         <ImageSlider images={images} autoplay={true} className='bg-backgroundWhite' />
       </motion.section>
+      <ContactForm />
     </main>
   )
 }

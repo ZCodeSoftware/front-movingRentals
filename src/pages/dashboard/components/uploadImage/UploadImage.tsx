@@ -1,13 +1,23 @@
-import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ImageCrop from './utils/ImageCrop'
 import { IPreset } from './models/upload-image-preset.interface'
+import { IVehicleForm } from '../dashboardProducts/createProduct/models/vehicles-form.interface'
+import { ITourForm } from '../dashboardProducts/createProduct/models/tour-form.interface'
+import { ITransferForm } from '../dashboardProducts/createProduct/models/transfer-form.interface'
 
 interface CroppedFilesState {
   croppedImages: Blob[]
 }
 
-const UploadImage: React.FC<IPreset> = ({ preset, setUrl, form, handleMouseEnter, handleMouseLeave }) => {
+type FormTypes = IVehicleForm | ITourForm | ITransferForm
+
+const UploadImage = <T extends FormTypes>({
+  setUrl,
+  form,
+  handleMouseEnter,
+  handleMouseLeave,
+  imageFiles
+}: IPreset<T>) => {
   const [isInputShow, setInputShow] = useState(false)
   const [croppingFiles, setCroppingFiles] = useState<File[]>([])
   const [croppedFiles, setCroppedFiles] = useState<CroppedFilesState>({
@@ -32,36 +42,12 @@ const UploadImage: React.FC<IPreset> = ({ preset, setUrl, form, handleMouseEnter
     e.preventDefault()
   }
 
-  const handleUpload = async (croppedImages: Blob[]) => {
-    const uploadedImageUrls: string[] = []
-
-    try {
-      await Promise.all(
-        croppedImages.map(async croppedImage => {
-          const formData = new FormData()
-          formData.append('file', croppedImage)
-          formData.append('upload_preset', preset)
-          formData.append('folder', 'products/' + form.name)
-
-          const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/usuario de cloudinary/image/upload`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            }
-          )
-
-          const imageUrl = response.data.secure_url
-          uploadedImageUrls.push(imageUrl)
-        })
-      )
-      setUrl({ ...form, images: uploadedImageUrls })
-    } catch (error: any) {
-      throw new Error(error)
+  useEffect(() => {
+    if (croppedFiles.croppedImages.length > 0) {
+      setUrl(prev => [...prev, ...croppedFiles.croppedImages])
+      setCroppedFiles({ croppedImages: [] })
     }
-  }
+  }, [croppedFiles.croppedImages])
 
   const handleCropComplete = (croppedImages: Blob[]) => {
     setCroppedFiles(prevState => ({
@@ -70,19 +56,13 @@ const UploadImage: React.FC<IPreset> = ({ preset, setUrl, form, handleMouseEnter
     setCroppingFiles([])
   }
 
-  const handleClickUpload = () => {
-    if (croppedFiles.croppedImages.length > 0) {
-      handleUpload(croppedFiles.croppedImages)
-      setCroppedFiles({ croppedImages: [] })
-    }
-  }
-
   const handleCropCancel = () => {
     setCroppingFiles([])
   }
 
   const handleImageChargeCancel = () => {
     setCroppedFiles({ croppedImages: [] })
+    setUrl([])
     setInputShow(false)
   }
 
@@ -90,7 +70,7 @@ const UploadImage: React.FC<IPreset> = ({ preset, setUrl, form, handleMouseEnter
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='w-full flex justify-center'>
       <button
         type='button'
-        className={`bg-dymBlack text-dymAntiPop h-12 w-36 rounded-md border ${isInputShow && 'hidden'}`}
+        className={`bg-dymBlack text-dymAntiPop h-12 w-38 rounded-md border p-2 ${isInputShow && 'hidden'}`}
         onClick={() => setInputShow(!isInputShow)}
       >
         Cargar imágenes
@@ -127,18 +107,11 @@ const UploadImage: React.FC<IPreset> = ({ preset, setUrl, form, handleMouseEnter
                     <span className='font-semibold'>Click aqui para subir archivo</span> o arrastra aquí
                   </p>
                   <p className='mb-2 text-sm text-gray-500 dark:text-gray-400'>
-                    <span className='font-semibold'>Selecciono {croppedFiles.croppedImages.length} archivo/s</span>
+                    <span className='font-semibold'>Selecciono {imageFiles.length} archivo/s</span>
                   </p>
                 </div>
                 <input id='dropzone-file' type='file' className='hidden' onChange={handleFileChange} multiple />
                 <div className='w-full h-20 cursor-default flex items-end justify-around bg-dymBlack p-2'>
-                  <button
-                    type='button'
-                    onClick={handleClickUpload}
-                    className='bg-dymBlack text-dymAntiPop h-12 w-36 rounded-md border p-2'
-                  >
-                    Subir imágen
-                  </button>
                   <button
                     type='button'
                     onClick={handleImageChargeCancel}
