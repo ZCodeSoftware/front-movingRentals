@@ -38,22 +38,36 @@ const ImageCrop: React.FC<ImageCropProps> = ({ files, onCropComplete, onCancel }
   const getCroppedImg = async (file: File, pixelCrop: any): Promise<Blob> => {
     const image = await createImage(URL.createObjectURL(file))
     const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')!
 
-    canvas.width = 640
-    canvas.height = 640
+    const canvasSize = 1000
+    const maxWidth = 1000
+    const maxHeight = 1000
 
-    ctx!.drawImage(
-      image,
-      pixelCrop.x,
-      pixelCrop.y,
-      pixelCrop.width,
-      pixelCrop.height,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    )
+    let width = pixelCrop.width
+    let height = pixelCrop.height
+
+    if (width > maxWidth || height > maxHeight) {
+      const aspectRatio = width / height
+      if (width > height) {
+        width = maxWidth
+        height = maxWidth / aspectRatio
+      } else {
+        height = maxHeight
+        width = maxHeight * aspectRatio
+      }
+    }
+
+    canvas.width = canvasSize
+    canvas.height = canvasSize
+
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    const xOffset = (canvasSize - width) / 2
+    const yOffset = (canvasSize - height) / 2
+
+    ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, xOffset, yOffset, width, height)
 
     return new Promise(resolve => {
       canvas.toBlob(blob => {
@@ -104,15 +118,11 @@ const ImageCrop: React.FC<ImageCropProps> = ({ files, onCropComplete, onCancel }
             </div>
           </div>
         )}
-        <div className='rounded-b-lg p-2 flex justify-center space-x-2 bg-opacity-100 w-2/4 bg-dymBlack'>
-          <button type='button' onClick={showCroppedImage} className='bg-dymOrange text-white px-4 py-2 rounded'>
+        <div className='rounded-b-lg p-2 flex justify-center space-x-2 bg-opacity-100 w-2/4 bg-buttonPrimary'>
+          <button type='button' onClick={showCroppedImage} className='border border-black px-4 py-2 rounded'>
             Aceptar
           </button>
-          <button
-            type='button'
-            onClick={handleCancel}
-            className='border border-dymOrange text-dymOrange px-4 py-2 rounded'
-          >
+          <button type='button' onClick={handleCancel} className='text-black text-dymOrange px-4 py-2 rounded'>
             Cancelar
           </button>
         </div>

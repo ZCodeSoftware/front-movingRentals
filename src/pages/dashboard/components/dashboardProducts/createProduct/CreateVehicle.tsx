@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input, Button, Select, SelectItem, SelectSection, Skeleton, Textarea } from '@nextui-org/react'
 import { IVehicleForm } from './models/vehicles-form.interface'
 import { fetchCategories } from '../../../../../services/categories/categoriesService'
 import { ICategories } from '../../../../../services/categories/models/categories.interface'
 import { useTranslation } from 'react-i18next'
 import { postVehicle } from '../../../../../services/products/vehicles/POST/vehicles.post.service'
-import uploadToCloudinary from '../../tempUploadImage/uploadImage'
+import uploadToCloudinary from '../../uploadImage/uploadImageToCloudinary'
 import { IVehicleOwners } from '../../../../../services/owners/models/vehicle-owners.interface'
 import { fetchAllVehicleOwners } from '../../../../../services/owners/GET/vehicle-owners.get.service'
 import CreateOwnerModal from './components/CreateOwnerModal'
+import UploadImage from '../../uploadImage/UploadImage'
+import uploadImageConstants from '../../uploadImage/constants/uploadImageConstants'
 
 const CreateVehicle: React.FC = () => {
   const [vehicle, setVehicle] = useState<IVehicleForm>({
@@ -22,16 +24,18 @@ const CreateVehicle: React.FC = () => {
     pricePer8: 0,
     pricePer24: 0,
     capacity: 0,
-    minRentalHours: 0
+    minRentalHours: 0,
+    tag: ''
   })
   const [categoriesData, setCategoriesData] = useState<ICategories[]>([])
   const [vehicleOwnersData, setVehicleOwnersData] = useState<IVehicleOwners[]>([])
-  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imageFiles, setImageFiles] = useState<Blob[]>([])
   const [loading, setLoading] = useState(true)
   const [openOwnerModal, setOpenOwnerModal] = useState(false)
+  const [submitDisable, setSubmitDisable] = useState(true)
   const { t } = useTranslation()
 
-  const filterCategories = categoriesData.filter(p => p.name != 'Tours')
+  const filterCategories = categoriesData.filter(p => p.name != 'Tours' && p.name != 'Transfer')
 
   const numberFields = ['price', 'pricePer4', 'pricePer8', 'pricePer24', 'capacity', 'minRentalHours']
 
@@ -49,11 +53,18 @@ const CreateVehicle: React.FC = () => {
     }
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImageFiles([...e.target.files])
-    }
+  const validateForm = () => {
+    const requiredFields = ['name', 'category', 'owner', 'minRentalHours', 'capacity']
+    const hasRequiredFields = requiredFields.every(field => !!vehicle[field as keyof IVehicleForm])
+    const hasImages = imageFiles.length > 0
+    const hasPrices = vehicle.price > 0
+
+    return hasRequiredFields && hasImages && hasPrices
   }
+
+  useEffect(() => {
+    setSubmitDisable(!validateForm())
+  }, [vehicle, imageFiles])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -65,7 +76,7 @@ const CreateVehicle: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const uploadedImages = await Promise.all(imageFiles.map(file => uploadToCloudinary(file)))
+    const uploadedImages = await uploadToCloudinary(imageFiles, uploadImageConstants.VEHICLES, vehicle)
     const validImages = uploadedImages.filter(url => url !== null) as string[]
     const vehicleData = {
       ...vehicle,
@@ -83,7 +94,8 @@ const CreateVehicle: React.FC = () => {
       pricePer8: 0,
       pricePer24: 0,
       capacity: 0,
-      minRentalHours: 0
+      minRentalHours: 0,
+      tag: ''
     })
   }
   return (
@@ -94,6 +106,15 @@ const CreateVehicle: React.FC = () => {
           label='Nombre del Producto'
           name='name'
           value={vehicle.name}
+          onChange={handleChange}
+          required
+          fullWidth
+          variant='bordered'
+        />
+        <Input
+          label='Tag del Producto'
+          name='tag'
+          value={vehicle.tag}
           onChange={handleChange}
           required
           fullWidth
@@ -190,6 +211,7 @@ const CreateVehicle: React.FC = () => {
             type='number'
             value={vehicle.minRentalHours.toString()}
             onChange={handleChange}
+            required
             fullWidth
             min={0}
             variant='bordered'
@@ -200,6 +222,7 @@ const CreateVehicle: React.FC = () => {
             type='number'
             value={vehicle.capacity.toString()}
             onChange={handleChange}
+            required
             fullWidth
             min={0}
             variant='bordered'
@@ -260,17 +283,9 @@ const CreateVehicle: React.FC = () => {
           )}
         </Select>
 
-        <Input
-          label='Subir Imágen'
-          className='p-6'
-          type='file'
-          accept='image/*'
-          onChange={handleImageChange}
-          fullWidth
-          variant='bordered'
-        />
+        <UploadImage setUrl={setImageFiles} form={vehicle} imageFiles={imageFiles} />
 
-        <Button type='submit' color='primary' fullWidth className='mt-4'>
+        <Button type='submit' color='primary' fullWidth className='mt-4' isDisabled={submitDisable}>
           Crear Vehículo
         </Button>
       </form>

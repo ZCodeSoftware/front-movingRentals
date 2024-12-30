@@ -1,52 +1,69 @@
-import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Input, Button, Spinner } from '@nextui-org/react';
-import { useTranslation } from 'react-i18next';
-import { signin } from '../../../services/auth/signin/POST/signin.post.service';
-import { login } from '../../../services/auth/login/POST/login.post.service';
-import { useNavigate } from 'react-router-dom';
-import useFormValidations from '../../../hooks/useFormValidation';
-import { ISigninForm } from './models/form.interface';
-import TextError from '../../../components/textError/TextError';
-import { Link } from 'react-router-dom';
-import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
+import { useState } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { Input, Button, Spinner, Select, SelectItem } from '@nextui-org/react'
+import { useTranslation } from 'react-i18next'
+import { signin } from '../../../services/auth/signin/POST/signin.post.service'
+import { login } from '../../../services/auth/login/POST/login.post.service'
+import { useNavigate } from 'react-router-dom'
+import useFormValidations from '../../../hooks/useFormValidation'
+import { ISigninForm } from './models/form.interface'
+import TextError from '../../../components/textError/TextError'
+import { Link } from 'react-router-dom'
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
 
 const Signin = () => {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [isVisible, setIsVisible] = useState({ password: false, confirmPassword: false });
-  const [isFocused, setIsFocused] = useState({ email: false, password: false, confirmPassword: false });
-  const [isLoading, setIsLoading] = useState(false);
-  const togglePasswordVisibility = () => setIsVisible({ ...isVisible, password: !isVisible.password });
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const [isVisible, setIsVisible] = useState({ password: false, confirmPassword: false })
+  const [isFocused, setIsFocused] = useState({ email: false, password: false, confirmPassword: false })
+  const [isLoading, setIsLoading] = useState(false)
+  const togglePasswordVisibility = () => setIsVisible({ ...isVisible, password: !isVisible.password })
   const toggleConfirmPasswordVisibility = () =>
-    setIsVisible({ ...isVisible, confirmPassword: !isVisible.confirmPassword });
+    setIsVisible({ ...isVisible, confirmPassword: !isVisible.confirmPassword })
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch
-  } = useForm<ISigninForm>({ mode: 'onChange', reValidateMode: 'onChange' });
+  } = useForm<ISigninForm>({ mode: 'onChange', reValidateMode: 'onChange' })
 
-  const { validatePassword, validateEmail } = useFormValidations();
+  const { validatePassword, validateEmail } = useFormValidations()
 
   const onSubmit: SubmitHandler<ISigninForm> = async data => {
-    setIsLoading(true);
-    const response = await signin({ email: data.email, password: data.password, newsletter: false });
+    setIsLoading(true)
+    const response = await signin({ email: data.email, password: data.password, newsletter: false })
     if (response) {
-      await login({ email: data.email, password: data.password });
-      navigate('/');
+      await login({ email: data.email, password: data.password })
+      navigate('/')
     }
-    setIsLoading(false);
-  };
-
-  const passwordConfirm = watch('password');
+    setIsLoading(false)
+  }
+  const passwordConfirm = watch('password')
 
   return (
     <main className='md:w-3/4 h-full'>
       <form onSubmit={handleSubmit(onSubmit)} className='w-full h-full flex flex-col justify-center items-center '>
         <h1 className='text-3xl text-center p-4'>{t('SignIn.sign_in_title')}</h1>
         <section className='w-full md:w-2/5 p-4 mt-10'>
+          <Input
+            {...register('name', {
+              required: t('SignIn.validations.field-require')
+            })}
+            type='text'
+            label='Nombre'
+            name='name'
+            className='p-2'
+          />
+          <Input
+            {...register('lastName', {
+              required: t('SignIn.validations.field-require')
+            })}
+            type='text'
+            label='Apellido'
+            name='lastName'
+            className='p-2'
+          />
           <Input
             {...register('email', {
               required: t('SignIn.formValidations.requires.email_require'),
@@ -60,6 +77,20 @@ const Signin = () => {
             className='p-2'
           />
           {isFocused.email && errors.email && errors.email.message && <TextError error={errors.email.message} />}
+          <Input
+            {...register('cellphone', {
+              required: t('SignIn.validations.field-require')
+            })}
+            type='number'
+            label='Telefono'
+            name='cellphone'
+            className='p-2'
+          />
+          <Select placeholder='Seleccione un pais' className='p-2'>
+            <SelectItem key='empty' isDisabled>
+              Countries
+            </SelectItem>
+          </Select>
           <Input
             {...register('password', {
               required: t('SignIn.formValidations.requires.password_require'),
@@ -122,7 +153,7 @@ const Signin = () => {
         </section>
         <section className='flex flex-col w-3/4 md:w-2/12 m-4'>
           <Button className='p-2' type='submit' isDisabled={isLoading}>
-            {isLoading ? <Spinner color="primary" size="sm" /> : t('SignIn.sign_in')}
+            {isLoading ? <Spinner color='primary' size='sm' /> : t('SignIn.sign_in')}
           </Button>
         </section>
         <section className='flex flex-col justify-center items-center w-3/4 md:w-2/12 mt-4'>
@@ -133,7 +164,7 @@ const Signin = () => {
         </section>
       </form>
     </main>
-  );
-};
+  )
+}
 
-export default Signin;
+export default Signin
