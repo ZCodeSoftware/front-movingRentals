@@ -13,7 +13,10 @@ export default {
       colors: {
         buttonPrimary: '#B6D8FF',
         buttonSecondary: '#D4EDFF',
-        backgroundWhite: '#FBFBFB'
+        backgroundWhite: '#FBFBFB',
+        success: '#37EC1E',
+        error: '#FF3030',
+        warning: '#FF9130'
       }
     }
   },

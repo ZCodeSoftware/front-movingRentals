@@ -5,7 +5,7 @@ const ButtonLoader = ({ loadStr, loadEndStr, loadErrorStr, buttonLoad }: any) =>
         <button
           disabled
           type='button'
-          className='py-2.5 px-7 mr-2 text-sm font-bold rounded focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 inline-flex items-center'
+          className='py-2.5 px-7 mr-2 bg-buttonSecondary text-sm font-bold rounded focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 inline-flex items-center'
         >
           <svg
             aria-hidden='true'
@@ -30,7 +30,7 @@ const ButtonLoader = ({ loadStr, loadEndStr, loadErrorStr, buttonLoad }: any) =>
         <button
           disabled
           type='button'
-          className='py-2.5 px-7 mr-2 text-sm bg-green-600 font-bold rounded focus:z-10 focus:ring-4 focus:outline-none inline-flex items-center'
+          className='py-2.5 px-7 mr-2 text-sm bg-success font-bold rounded focus:z-10 focus:ring-4 focus:outline-none inline-flex items-center'
         >
           {loadEndStr}
         </button>
@@ -38,7 +38,7 @@ const ButtonLoader = ({ loadStr, loadEndStr, loadErrorStr, buttonLoad }: any) =>
         <button
           disabled
           type='button'
-          className='py-2.5 px-7 mr-2 text-sm bg-red-600 rounded font-bold focus:z-10 focus:ring-4 focus:outline-none inline-flex items-center'
+          className='py-2.5 px-7 mr-2 text-sm bg-error rounded font-bold focus:z-10 focus:ring-4 focus:outline-none inline-flex items-center'
         >
           {loadErrorStr}
         </button>
