@@ -109,7 +109,6 @@ const Signin = () => {
           />
           <Select
             onChange={e => setValue('address.countryId', e.target.value, { shouldValidate: true })}
-            isVirtualized
             label='Country'
             name='country'
             required
