@@ -1,21 +1,29 @@
-import { Table, TableBody, TableHeader, TableCell, TableColumn, TableRow, Tooltip } from '@nextui-org/react'
+import { Table, TableBody, TableHeader, TableCell, TableColumn, TableRow, Tooltip, Button } from '@nextui-org/react'
 import { useState, useEffect } from 'react'
 import { fetchAllTours } from '../../../../../services/products/tours/GET/tours.get.service'
 import { ITours } from '../../../../../services/products/models/tours.interface'
+import UpdateTour from '../updateProduct/UpdateTours'
 
 const ToursList = () => {
   const [loading, setLoading] = useState(true)
   const [toursData, setToursData] = useState<ITours[]>([])
+  const [openUpdateModal, setOpenUpdateModal] = useState(false)
+  const [selectedTour, setSelectedTour] = useState<ITours | null>(null)
 
+  const getData = async () => {
+    const toursResult = await fetchAllTours()
+    setToursData(toursResult)
+    setLoading(false)
+  }
+  
   useEffect(() => {
-    const getData = async () => {
-      const toursResult = await fetchAllTours()
-      setToursData(toursResult)
-      setLoading(false)
-    }
+  getData()
+}, [])
 
-    getData()
-  }, [])
+  const handleEditClick = (tour: ITours) => {
+    setSelectedTour(tour)
+    setOpenUpdateModal(true)
+  }
 
   return (
     <>
@@ -29,6 +37,7 @@ const ToursList = () => {
               <TableColumn>Descripcion</TableColumn>
               <TableColumn>Itinerario</TableColumn>
               <TableColumn>Capacidad máxima</TableColumn>
+              <TableColumn>Acciones</TableColumn>
             </TableHeader>
             <TableBody>
               {toursData.map(t => (
@@ -69,12 +78,30 @@ const ToursList = () => {
                     </Tooltip>
                   </TableCell>
                   <TableCell>{t.capacity}</TableCell>
+                  <TableCell>
+                    <Button
+                      onPress={() => {
+                        handleEditClick(t)
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
       )}
+      {selectedTour && openUpdateModal && (
+<UpdateTour
+  tourData={selectedTour}
+  openUpdateModal={openUpdateModal}
+  setOpenUpdateModal={setOpenUpdateModal}
+  tourId={selectedTour._id}
+  onUpdate={getData}
+/>
+)}
     </>
   )
 }
