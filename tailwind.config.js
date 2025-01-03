@@ -5,6 +5,11 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      maxHeight: {
+        '150': '150px',
+        '300': '300px',
+        '320': '320px',
+      },
       fontFamily: {
         poppins: ['"Poppins"', 'sans-serif'],
         sourGummy: ['"Sour Gummy"', 'sans-serif'],

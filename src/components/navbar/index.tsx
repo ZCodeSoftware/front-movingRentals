@@ -153,7 +153,7 @@ export default function NavbarComponent() {
             <NavbarContent as='div' justify='end' className='flex items-center'>
               <Link href='/cart' className='flex flex-col items-center text-white mr-4 relative'>
                 <img src={cartIcon} alt='cart' className='w-8 h-8' />
-                {itemsInCart && (
+                {itemsInCart > 0 && (
                   <div className='absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs'>
                     {itemsInCart}
                   </div>
@@ -210,18 +210,19 @@ export default function NavbarComponent() {
             <span>MXN $1/USD ${exchangeData}</span>
           </NavbarItem>
         </NavbarContent>
-
+        <NavbarItem>
+          <Link href='/cart' className='flex flex-col items-center text-white mr-4 relative'>
+            <img src={cartIcon} alt='cart' className='w-8 h-8' />
+            {itemsInCart > 0 && (
+              <div className='absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs transform translate-x-1/2 -translate-y-1/2'>
+                {itemsInCart}
+              </div>
+            )}
+          </Link>
+        </NavbarItem>
         <NavbarMenu>
           {[
             'Profile',
-            'Dashboard',
-            'Activity',
-            'Analytics',
-            'System',
-            'Deployments',
-            'My Settings',
-            'Team Settings',
-            'Help & Feedback',
             'Log Out'
           ].map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>

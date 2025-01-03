@@ -37,6 +37,28 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+#sticky-container {
+  transition: all 0.5s ease;
+}
+
+#sticky-container.sticky-reduced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+#right-section.full-width {
+  width: 100%;
+  transition: width 0.5s ease;
+}
+
 /* Nueva clase scroll-container */
 .scroll-container {
   --sb-track-color: #232E33;
