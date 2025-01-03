@@ -7,21 +7,17 @@ import uploadImageConstants from '../../uploadImage/constants/uploadImageConstan
 import { IUpdateTour } from './models/update-tour-props.interface'
 import { putTour } from '../../../../../services/products/tours/PUT/tours.put.service'
 
-const UpdateTour: React.FC<IUpdateTour> = ({ openUpdateModal,
-  setOpenUpdateModal,
-  tourData,
-  tourId,
-  onUpdate}) => {
+const UpdateTour: React.FC<IUpdateTour> = ({ openUpdateModal, setOpenUpdateModal, tourData, tourId, onUpdate }) => {
   const [tour, setTour] = useState<ITourForm>({
     name: tourData?.name || '',
     price: tourData?.price || 0,
-    itinerary: tourData?.itinerary ? JSON.parse(tourData.itinerary) : '' ,
+    itinerary: tourData?.itinerary ? JSON.parse(tourData.itinerary) : '',
     capacity: tourData?.capacity || '',
     estimatedDuration: tourData?.estimatedDuration || '',
     startDates: tourData?.startDates || '',
-    description: tourData?.description ? JSON.parse(tourData.description) : '' ,
+    description: tourData?.description ? JSON.parse(tourData.description) : '',
     images: tourData?.images || [],
-    category: tourData?.category._id|| ''
+    category: tourData?.category._id || ''
   })
   const [imageFiles, setImageFiles] = useState<Blob[]>([])
   const [submitDisable, setSubmitDisable] = useState(true)
@@ -61,17 +57,17 @@ const UpdateTour: React.FC<IUpdateTour> = ({ openUpdateModal,
     setOpenUpdateModal(false)
     setTour({
       name: tourData?.name || '',
-    price: tourData?.price || 0,
-    itinerary: tourData?.itinerary ||'',
-    capacity: tourData?.capacity || '',
-    estimatedDuration: tourData?.estimatedDuration ||'',
-    startDates: tourData?.startDates || '',
-    description: tourData?.description || '',
-    images: tourData?.images || [],
-    category: tourData?.category._id || ''
+      price: tourData?.price || 0,
+      itinerary: tourData?.itinerary || '',
+      capacity: tourData?.capacity || '',
+      estimatedDuration: tourData?.estimatedDuration || '',
+      startDates: tourData?.startDates || '',
+      description: tourData?.description || '',
+      images: tourData?.images || [],
+      category: tourData?.category._id || ''
     })
   }
-  
+
   return (
     <Modal
       isOpen={openUpdateModal}
@@ -84,75 +80,79 @@ const UpdateTour: React.FC<IUpdateTour> = ({ openUpdateModal,
           <h2 className='text-2xl font-bold text-center mb-4'>Crear Nuevo Vehiculo</h2>
         </ModalHeader>
         <ModalBody>
-        <form onSubmit={handleSubmit} className='space-y-4'>
-        <Input
-          label='Nombre'
-          name='name'
-          value={tour.name}
-          onChange={handleChange}
-          required
-          fullWidth
-          variant='bordered'
-        />
-        <Textarea
-          label='Descripción'
-          name='description'
-          value={tour.description}
-          onChange={handleChange}
-          fullWidth
-          required
-          variant='bordered'
-        />
-        <Textarea
-          label='Itinerario'
-          name='itinerary'
-          value={tour.itinerary}
-          onChange={handleChange}
-          fullWidth
-          required
-          variant='bordered'
-        />
-        <Input
-          label='Precio'
-          name='price'
-          type='number'
-          value={tour.price.toString()}
-          onChange={handleChange}
-          fullWidth
-          required
-          variant='bordered'
-        />
-        <div className='flex flex-row space-x-4'>
-          <Input
-            label='Duración estimada'
-            name='estimatedDuration'
-            value={tour.estimatedDuration}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant='bordered'
-          />
-          <Input
-            label='Horas de inicio'
-            name='startDates'
-            value={tour.startDates}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant='bordered'
-          />
-          <Input
-            label='Capacidad'
-            name='capacity'
-            value={tour.capacity}
-            onChange={handleChange}
-            fullWidth
-            required
-            variant='bordered'
-          />
-        </div>
-
-        <UploadImage setUrl={setImageFiles} form={tour} imageFiles={imageFiles} />
+          <form onSubmit={handleSubmit} className='space-y-4'>
+            <Input
+              label='Nombre'
+              name='name'
+              value={tour.name}
+              onChange={handleChange}
+              required
+              fullWidth
+              variant='bordered'
+            />
+            <Textarea
+              label='Descripción'
+              name='description'
+              value={tour.description}
+              onChange={handleChange}
+              fullWidth
+              required
+              variant='bordered'
+            />
+            <Textarea
+              label='Itinerario'
+              name='itinerary'
+              value={tour.itinerary}
+              onChange={handleChange}
+              fullWidth
+              required
+              variant='bordered'
+            />
+            <Input
+              label='Precio'
+              name='price'
+              type='number'
+              value={tour.price.toString()}
+              onChange={handleChange}
+              fullWidth
+              required
+              variant='bordered'
+            />
+            <div className='flex flex-row space-x-4'>
+              <Input
+                label='Duración estimada'
+                name='estimatedDuration'
+                value={tour.estimatedDuration}
+                onChange={handleChange}
+                fullWidth
+                required
+                variant='bordered'
+              />
+              <Input
+                label='Horas de inicio'
+                name='startDates'
+                value={tour.startDates}
+                onChange={handleChange}
+                fullWidth
+                required
+                variant='bordered'
+              />
+              <Input
+                label='Capacidad'
+                name='capacity'
+                value={tour.capacity}
+                onChange={handleChange}
+                fullWidth
+                required
+                variant='bordered'
+              />
+            </div>
+            <div className='flex space-x-2 border p-2'>
+              {tour.images.map((src, index) => (
+                <img key={index} src={src} alt={`preview-${index}`} className='w-16 h-16 object-cover rounded' />
+              ))}
+            </div>
+            <UploadImage setUrl={setImageFiles} form={tour} imageFiles={imageFiles} />
             <ModalFooter>
               <Button color='danger' variant='flat' type='button' onPress={() => setOpenUpdateModal(false)}>
                 Cancelar

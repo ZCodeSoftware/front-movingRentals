@@ -207,7 +207,7 @@ export default function NavbarComponent() {
             </>
           )}
           <NavbarItem className='w-12 ml-4'>
-            <span>MXN $1/USD ${exchangeData}</span>
+            <span>USD $1/MXN ${exchangeData}</span>
           </NavbarItem>
         </NavbarContent>
 
