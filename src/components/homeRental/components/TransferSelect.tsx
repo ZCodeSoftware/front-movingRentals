@@ -113,7 +113,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
           {loading.transfer ? (
-            <DropdownItem isReadOnly>
+            <DropdownItem key={"loading_skeleton"} isReadOnly>
               <div className='w-full'>
                 <Skeleton className='w-full h-6 rounded-lg mb-2' />
                 <Skeleton className='w-[80%] h-6 rounded-lg mb-2' />
@@ -127,11 +127,15 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
                   <Button
                     className='w-full m-2'
                     onPress={() =>
-                      setOpenPickers(prev =>
-                        prev.has(transfer._id)
-                          ? new Set([...prev].filter(id => id !== transfer._id))
-                          : new Set(prev).add(transfer._id)
-                      )
+                      setOpenPickers(prev => {
+                        const newSet = new Set(prev);
+                        if (newSet.has(transfer._id)) {
+                          newSet.delete(transfer._id);
+                        } else {
+                          newSet.add(transfer._id);
+                        }
+                        return newSet;
+                      })
                     }
                   >
                     {transfer.name}
@@ -140,11 +144,12 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
                     <div className='w-full h-full flex justify-center'>
                       <NextUIProvider className='w-full flex justify-center' locale={i18n.language}>
                         <DatePicker
-                          className='w-full'
+                          onChange={e => {
+                            if (e) setSelectDate(e);
+                          }}
                           classNames={{
                             inputWrapper: 'bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF]'
                           }}
-                          onChange={e => setSelectDate(e)}
                           validate={(value: any) => {
                             if (value.day < now(getLocalTimeZone()).day) {
                               setIsSubmitDisable(true);
@@ -192,7 +197,7 @@ const TransferSelector: React.FC<ITransferSelectProps> = ({
               </DropdownItem>
             ))
           ) : (
-            <DropdownItem className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</DropdownItem>
+            <DropdownItem key={"no_products"} className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</DropdownItem>
           )}
         </DropdownMenu>
       </Dropdown>

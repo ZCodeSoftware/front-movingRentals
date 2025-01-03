@@ -100,7 +100,7 @@ const CategoriesDropdown: React.FC<ICategoriesDropdownProps> = ({
                 </DropdownItem>
               ))
           ) : (
-            <DropdownItem className='text-center text-gray-500'>{t('HomeRental.no_categories_available')}</DropdownItem>
+            <DropdownItem key={"no category"} className='text-center text-gray-500'>{t('HomeRental.no_categories_available')}</DropdownItem>
           )}
         </DropdownMenu>
       </Dropdown>

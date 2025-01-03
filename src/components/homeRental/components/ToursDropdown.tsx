@@ -31,7 +31,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
   const [data, setData] = useState<ITours[]>([]);
   const [openPickers, setOpenPickers] = useState(new Set());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectDate, setSelectDate] = useState<DateValue>(today(getLocalTimeZone()));
+  const [selectDate, setSelectDate] = useState<DateValue | null>(today(getLocalTimeZone()));
   const localBackCart = getLocalStorage('backCart');
   const localCart = getLocalStorage('cart');
 
@@ -114,7 +114,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
         </DropdownTrigger>
         <DropdownMenu className='w-full p-4 bg-white shadow-lg rounded-lg'>
           {loading.tours ? (
-            <DropdownItem isReadOnly>
+            <DropdownItem key={"loading_skeleton"} isReadOnly>
               <div className='w-full'>
                 <Skeleton className='w-full h-6 rounded-lg mb-2' />
                 <Skeleton className='w-[80%] h-6 rounded-lg mb-2' />
@@ -193,7 +193,7 @@ const ToursDropdown: React.FC<IToursDropdownProps> = ({
               </DropdownItem>
             ))
           ) : (
-            <DropdownItem className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</DropdownItem>
+            <DropdownItem key={"o_products"} className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</DropdownItem>
           )}
         </DropdownMenu>
       </Dropdown>
