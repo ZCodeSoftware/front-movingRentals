@@ -28,6 +28,7 @@ import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
 import { removeLocalStorage } from '../../utils/local-storage/removeLocalStorage'
 import { fetchAllRoles } from '../../services/roles/GET/roles.get.service'
 import { IRoles } from '../../services/roles/models/roles.interface'
+import { getExchange } from '../../services/exchange/GET/exchange.get.service'
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -36,6 +37,7 @@ export default function NavbarComponent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userData, setUserData] = useState<IUser | null>(null)
   const [cartData, setCartData] = useState<any>(null)
+  const [exchangeData, setExchangeData] = useState<any>(null)
   const [roles, setRoles] = useState<IRoles[]>([])
 
   useEffect(() => {
@@ -46,8 +48,15 @@ export default function NavbarComponent() {
         setUserData(userResponse)
       }
     }
+    const fetchExchange = async () => {
+      const exchangeData = await getExchange()
+      if (exchangeData) {
+        setExchangeData(exchangeData.conversionRate)
+      }
+    }
 
     fetchUserData()
+    fetchExchange()
   }, [])
 
   useEffect(() => {
@@ -197,6 +206,9 @@ export default function NavbarComponent() {
               </NavbarItem>
             </>
           )}
+          <NavbarItem className='w-12 ml-4'>
+            <span>MXN $1/USD ${exchangeData}</span>
+          </NavbarItem>
         </NavbarContent>
 
         <NavbarMenu>
