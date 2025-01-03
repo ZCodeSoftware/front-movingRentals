@@ -12,6 +12,8 @@ import { fetchAllTours } from '../../services/products/tours/GET/tours.get.servi
 import { ITours } from '../../services/products/models/tours.interface'
 import LoaderComponent from '../../utils/loader'
 import ContactForm from '../../components/contactForm/ContactForm'
+import { Button } from '@nextui-org/react'
+import { FaWhatsapp } from 'react-icons/fa'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
@@ -112,20 +114,30 @@ const Home = () => {
       <div className={`block md:sticky z-20 ${isSticky ? 'top-16' : 'top-32'}`}>
         <HomeRental categoriesData={data} />
       </div>
-      {weather && (
-        <motion.div
-          className='fixed bottom-14 right-6 hidden bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+      <div>
+        {weather && (
+          <motion.div
+            className='fixed bottom-14 right-6 hidden bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {getWeatherIcon(weather.weather[0].main)}
+            <div>
+              <p className='font-semibold text-gray-800'>Tulum MX</p>
+              <p className='text-gray-600 text-sm'>{`${weather.main.temp} ${getTemperatureUnit()}`}</p>
+            </div>
+          </motion.div>
+        )}
+        <Button
+          onClick={() => {
+            window.open(`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}`, '_blank')
+          }}
+          className='fixed bottom-14 right-52 hidden w-16 h-16 bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
         >
-          {getWeatherIcon(weather.weather[0].main)}
-          <div>
-            <p className='font-semibold text-gray-800'>Tulum MX</p>
-            <p className='text-gray-600 text-sm'>{`${weather.main.temp} ${getTemperatureUnit()}`}</p>
-          </div>
-        </motion.div>
-      )}
+          <FaWhatsapp className='w-24 h-24' />
+        </Button>
+      </div>
 
       <motion.section
         className='flex flex-col md:items-center md:mt-28'

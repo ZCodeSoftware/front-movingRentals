@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Input, Textarea } from '@nextui-org/react'
 import ButtonLoader from './components/ButtonLoader'
+import { postContactForm } from '../../services/contact-form/POST/contact-form.post.service'
 const ContactForm = () => {
   const [message, setMessage] = useState({
     name: '',
     email: '',
     subject: '',
-    message: ''
+    text: ''
   })
   const [buttonLoad, setButtonLoad] = useState({
     error: false,
@@ -26,13 +27,13 @@ const ContactForm = () => {
     e.preventDefault()
     setButtonLoad({ ...buttonLoad, load: true })
     try {
-      //enviar message al back
+      await postContactForm(message)
       setButtonLoad({ ...buttonLoad, load: false })
       setButtonLoad({ ...buttonLoad, confirm: true })
       setTimeout(() => {
         setButtonLoad({ ...buttonLoad, confirm: false })
       }, 3000)
-      setMessage({ name: '', email: '', message: '', subject: '' })
+      setMessage({ name: '', email: '', text: '', subject: '' })
     } catch (error) {
       setButtonLoad({ ...buttonLoad, error: true })
       console.error('Error al enviar el correo electrónico:', error)
@@ -43,8 +44,6 @@ const ContactForm = () => {
       }, 3000)
     }
   }
-
-  console.log(message)
 
   return (
     <div className='w-full h-screen flex md:flex-row flex-col justify-center items-center p-4 md:space-x-24'>

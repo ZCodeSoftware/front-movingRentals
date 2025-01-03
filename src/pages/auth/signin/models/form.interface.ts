@@ -5,4 +5,8 @@ export interface ISigninForm {
   cellphone: number
   password: string
   confirmPassword: string
+  country: string
+  address: {
+    countryId: string
+  }
 }

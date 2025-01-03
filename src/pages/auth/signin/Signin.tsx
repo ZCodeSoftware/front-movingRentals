@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { Input, Button, Spinner, Select, SelectItem } from '@nextui-org/react'
+import { Input, Button, Spinner, Select, SelectItem, Skeleton } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
 import { signin } from '../../../services/auth/signin/POST/signin.post.service'
 import { login } from '../../../services/auth/login/POST/login.post.service'
@@ -10,29 +10,50 @@ import { ISigninForm } from './models/form.interface'
 import TextError from '../../../components/textError/TextError'
 import { Link } from 'react-router-dom'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
+import { ICountries } from '../../../services/countries/models/countries.interface'
+import { getCountries } from '../../../services/countries/GET/countries.get.service'
 
 const Signin = () => {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isVisible, setIsVisible] = useState({ password: false, confirmPassword: false })
   const [isFocused, setIsFocused] = useState({ email: false, password: false, confirmPassword: false })
   const [isLoading, setIsLoading] = useState(false)
   const togglePasswordVisibility = () => setIsVisible({ ...isVisible, password: !isVisible.password })
   const toggleConfirmPasswordVisibility = () =>
     setIsVisible({ ...isVisible, confirmPassword: !isVisible.confirmPassword })
-
+  const [loading, setLoading] = useState(true)
+  const [countriesData, setCountriesData] = useState<ICountries[]>([])
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
     watch
   } = useForm<ISigninForm>({ mode: 'onChange', reValidateMode: 'onChange' })
 
   const { validatePassword, validateEmail } = useFormValidations()
 
+  const getCountriesData = async () => {
+    const response = await getCountries()
+    if (response) {
+      const data = Array.isArray(response) ? response : [response]
+      setCountriesData(data)
+      setLoading(false)
+    }
+  }
+
   const onSubmit: SubmitHandler<ISigninForm> = async data => {
     setIsLoading(true)
-    const response = await signin({ email: data.email, password: data.password, newsletter: false })
+    const response = await signin({
+      email: data.email,
+      password: data.password,
+      newsletter: false,
+      name: data.name,
+      lastName: data.lastName,
+      cellphone: data.cellphone,
+      address: { countryId: data.address.countryId }
+    })
     if (response) {
       await login({ email: data.email, password: data.password })
       navigate('/')
@@ -86,10 +107,46 @@ const Signin = () => {
             name='cellphone'
             className='p-2'
           />
-          <Select placeholder='Seleccione un pais' className='p-2'>
-            <SelectItem key='empty' isDisabled>
-              Countries
-            </SelectItem>
+          <Select
+            onChange={e => setValue('address.countryId', e.target.value, { shouldValidate: true })}
+            isVirtualized
+            label='Country'
+            name='country'
+            required
+            className='h-auto'
+            variant='bordered'
+            onOpenChange={async isOpen => {
+              if (isOpen && countriesData.length === 0) {
+                await getCountriesData()
+              }
+            }}
+          >
+            {loading ? (
+              <SelectItem key='skeleton-1' isDisabled>
+                <Skeleton className='w-full h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[80%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[60%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-full h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[80%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[60%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-full h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[80%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[60%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-full h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[80%] h-6 rounded-lg mb-4'></Skeleton>
+                <Skeleton className='w-[60%] h-6 rounded-lg'></Skeleton>
+              </SelectItem>
+            ) : countriesData.length > 0 ? (
+              countriesData.map(country => (
+                <SelectItem key={country._id} className='text-center'>
+                  {i18n.language === 'en' ? country.nameEn : country.nameEs}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem key='no-data' className='text-gray-500 text-center'>
+                {t('HomeRental.no_products_available')}
+              </SelectItem>
+            )}
           </Select>
           <Input
             {...register('password', {
