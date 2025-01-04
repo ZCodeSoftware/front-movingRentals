@@ -9,4 +9,5 @@ export interface ICategoriesDropdownProps {
   setSelectData: React.Dispatch<React.SetStateAction<any>>
   selectData: any
   setIsSubmitDisable: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedVehicle: React.Dispatch<React.SetStateAction<any>>
 }

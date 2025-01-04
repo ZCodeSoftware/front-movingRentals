@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { AccordionItem, Button, Skeleton } from '@nextui-org/react';
+import { Button, Skeleton } from '@nextui-org/react';
 import { useTranslation } from 'react-i18next';
 import { ITransfers } from '../../../services/transfers/models/transfers.interface';
 import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.service';
 import { ISelectData } from '../models/Select-data';
-import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage';
 
 interface TransfersAccordionItemProps {
   selectData: ISelectData;
@@ -34,20 +33,12 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
     getTransfersData();
   }, [loading, transfers]);
 
-  const isAlreadySelected = (id: string) => {
-    const localBackCart = getLocalStorage('backCart');
-    const localCart = getLocalStorage('cart');
-    const isInBackCart = localBackCart?.transfer?.some((item: any) => item.transfer === id);
-    const isInLocalCart = localCart?.transfer?.some((item: any) => item.transfer === id);
-
-    return isInBackCart || isInLocalCart;
-  };
-
   const handleSave = (transfer: ITransfers) => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
       transfer: [...prev.transfer, { transfer, date: new Date() }]
     }));
+    setSelectedTransfer(transfer);
   };
 
   const handleRemove = (transfer: ITransfers) => {
@@ -55,56 +46,44 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
       ...prev,
       transfer: prev.transfer.filter((item: any) => item.transfer._id !== transfer._id)
     }));
+    setSelectedTransfer(null);
   };
 
   return (
-    <AccordionItem key='1' aria-label='Traslados' title={t('HomeRental.transfers.title')}>
-      <div className='w-full h-[30rem] overflow-auto p-4'>
-        {loading ? (
-          <Skeleton className='w-full h-6 rounded-lg mb-2' />
-        ) : transfers?.length > 0 ? (
-          transfers.map(transfer => (
-            <div key={transfer._id} className='w-full flex flex-col justify-center items-center'>
+    <div className='w-full overflow-auto p-4'>
+      {loading ? (
+        <Skeleton className='w-full h-6 rounded-lg mb-2' />
+      ) : transfers?.length > 0 ? (
+        transfers.map(transfer => (
+          <div key={transfer._id} className='w-full flex flex-col justify-center items-center'>
+            <Button
+              className='w-full m-2'
+              onPress={() => {
+                if (selectData.transfer.some(s => s.transfer._id === transfer._id)) {
+                  handleRemove(transfer);
+                } else {
+                  handleSave(transfer);
+                }
+              }}
+            >
+              {transfer.name}
+            </Button>
+            {selectData.transfer.some(s => s.transfer._id === transfer._id) && (
               <Button
-                className='w-full m-2'
-                onPress={() => setSelectedTransfer(transfer)}
+                className='h-full ml-2 flex items-center justify-center'
+                onPress={() => handleRemove(transfer)}
+                color='danger'
+                variant='flat'
               >
-                {transfer.name}
+                Eliminar
               </Button>
-              <div>
-                {isAlreadySelected(transfer._id) ? (
-                  <Button className='h-full ml-2 flex items-center justify-center text-wrap' isDisabled>
-                    En el carrito
-                  </Button>
-                ) : (
-                  <>
-                    {selectData.transfer.some(s => s.transfer._id === transfer._id) ? (
-                      <Button
-                        className='h-full ml-2 flex items-center justify-center'
-                        onPress={() => handleRemove(transfer)}
-                        color='danger'
-                        variant='flat'
-                      >
-                        Eliminar
-                      </Button>
-                    ) : (
-                      <Button
-                        className='h-full ml-2 flex items-center justify-center'
-                        onPress={() => handleSave(transfer)}
-                      >
-                        Agregar
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</div>
-        )}
-      </div>
-    </AccordionItem>
+            )}
+          </div>
+        ))
+      ) : (
+        <div className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</div>
+      )}
+    </div>
   );
 };
 

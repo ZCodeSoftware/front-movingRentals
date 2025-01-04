@@ -5,4 +5,5 @@ export interface IDatePickerSectionProps {
   setSelectData: React.Dispatch<React.SetStateAction<any>>
   setIsSubmitDisable: React.Dispatch<React.SetStateAction<boolean>>
   vehicle: IVehicles
+  initialDate: { start: any, end: any }  
 }

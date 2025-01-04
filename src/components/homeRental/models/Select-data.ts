@@ -18,9 +18,10 @@ export interface ISelectTours {
 }
 
 export interface ISelectTransfers {
-  date: ZonedDateTime | null
-  transfer: ITransfers
+  transfer: ITransfers;
+  date: Date;
 }
+
 
 export interface ISelectData {
   travelers: { adults: number; childrens: number }

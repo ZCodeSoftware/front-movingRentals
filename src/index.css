@@ -89,7 +89,7 @@ body::-webkit-scrollbar-thumb {
 
 .jumping-text {
   font-weight: 600;
-  animation: jump 1s 10;
+  animation: jump 1s infinite;
 }
 
 @keyframes jump {

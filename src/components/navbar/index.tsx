@@ -207,12 +207,12 @@ export default function NavbarComponent() {
             </>
           )}
           <NavbarItem className='w-12 ml-4'>
-            <span>USD $1/MXN ${exchangeData}</span>
+            <span>USD $1/MXN ${exchangeData?.toFixed(2)}</span>
           </NavbarItem>
         </NavbarContent>
         <NavbarItem>
           <Link href='/cart' className='flex flex-col items-center text-white mr-4 relative'>
-            <img src={cartIcon} alt='cart' className='w-8 h-8' />
+            {/* <img src={cartIcon} alt='cart' className='w-8 h-8' /> */}
             {itemsInCart > 0 && (
               <div className='absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs transform translate-x-1/2 -translate-y-1/2'>
                 {itemsInCart}

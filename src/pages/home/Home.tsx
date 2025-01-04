@@ -122,7 +122,7 @@ const Home = () => {
           }}
           className='fixed bottom-14 right-52 hidden w-16 h-16 bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
         >
-          <FaWhatsapp className='w-24 h-24' />
+          <FaWhatsapp className='w-24 h-24 text-green-500' />
         </Button>
       </div>
 

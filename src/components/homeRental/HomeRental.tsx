@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Spinner, Accordion, AccordionItem, Skeleton, NextUIProvider, DatePicker } from '@nextui-org/react';
-import { today, getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date';
+import { Accordion, AccordionItem, Button } from '@nextui-org/react';
 import { IHomeRentalProps } from './models/home-rental-props.interface';
 import { IVehicles } from '../../services/products/models/vehicles.interface';
 import { ISelectData } from './models/Select-data';
-import CategoriesDropdown from './components/CategoriesDropdown';
 import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart';
 import { postCart } from '../../services/cart/POST/cart.post.service';
 import { IUser } from '../../services/users/models/user.interface';
 import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
 import { setLocalStorage } from '../../utils/local-storage/setLocalStorage';
 import { getLocalStorage } from '../../utils/local-storage/getLocalStorage';
-import { FaShoppingCart } from 'react-icons/fa';
 import { fetchTransfers } from '../../services/transfers/GET/transfers.get.service';
 import { ITransfers } from '../../services/transfers/models/transfers.interface';
 import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service';
 import { ITours } from '../../services/products/models/tours.interface';
+import ToursAccordionItem from './components/ToursAccordionItem';
+import TransfersAccordionItem from './components/TransfersAccordionItem';
+import VehiclesAccordionItem from './components/VehiclesAccordionItem';
+import SelectedItemDetails from './components/SelectedItemDetails';
+import { DatePicker } from '@nextui-org/react';
+import { now, getLocalTimeZone } from '@internationalized/date';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>();
@@ -29,14 +32,13 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     branch: '',
     transfer: []
   });
-  const [isSubmitDisable, setIsSubmitDisable] = useState(false);
-  const [selectDate, setSelectDate] = useState<any>(null);
-  const [transfers, setTransfers] = useState<ITransfers[]>([]);
   const [tours, setTours] = useState<ITours[]>([]);
+  const [isSubmitDisable, setIsSubmitDisable] = useState(false);
+  const [transfers, setTransfers] = useState<ITransfers[]>([]);
+  const [selectDate, setSelectDate] = useState<any>(now(getLocalTimeZone()));
   const [selectedTransfer, setSelectedTransfer] = useState<ITransfers | null>(null);
   const [selectedTour, setSelectedTour] = useState<ITours | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<IVehicles | null>(null);
-  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const getData = async () => {
@@ -108,7 +110,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }));
     const formattedTransfers = selectData.transfer.map(item => ({
       ...item,
-      date: item.date ? item.date.toDate().toISOString() : null,
+      date: item.date ? item.date.toISOString() : null,
       transfer: item.transfer._id ? item.transfer._id : null
     }));
 
@@ -198,206 +200,114 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }
   };
 
-  const isAlreadySelected = (id: string, type: 'transfer' | 'tour') => {
-    const localBackCart = getLocalStorage('backCart');
-    const localCart = getLocalStorage('cart');
-    const isInBackCart = localBackCart?.[type]?.some((item: any) => item[type] === id);
-    const isInLocalCart = localCart?.[type]?.some((item: any) => item[type] === id);
-
-    return isInBackCart || isInLocalCart;
+  const clearSelection = () => {
+    setSelectedTransfer(null);
+    setSelectedTour(null);
+    setSelectedVehicle(null);
+    setSelectDate(null);
+    setIsSubmitDisable(false);
   };
 
-  const handleSave = (item: ITransfers | ITours, type: 'transfer' | 'tour') => {
-    if (selectDate) {
-      setSelectData((prev: ISelectData) => {
-        const existingItemIndex = prev[type].findIndex((i: any) => i[type]._id === item._id);
-
-        const newItem = {
-          date: selectDate,
-          [type]: item
-        };
-
-        if (existingItemIndex > -1) {
-          const updatedItems = [...prev[type]];
-          updatedItems[existingItemIndex] = newItem;
-          return {
-            ...prev,
-            [type]: updatedItems
-          };
-        }
-
-        return {
-          ...prev,
-          [type]: [...prev[type], newItem]
-        };
-      });
-    }
-  };
-
-  const handleRemove = (item: ITransfers | ITours, type: 'transfer' | 'tour') => {
-    setSelectData((prev: ISelectData) => ({
-      ...prev,
-      [type]: prev[type].filter((i: any) => i[type]._id !== item._id)
+  const handleTravelersChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    setSelectData(prevState => ({
+      ...prevState,
+      travelers: { ...prevState.travelers, adults: parseInt(value, 10) }
     }));
   };
 
+  const handleDateChange = (date: any) => {
+    setSelectDate(date);
+  };
+
   return (
-    <div className='flex flex-col md:flex-row w-full bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg'>
-      <div id='sticky-container' className='w-full md:w-1/4 p-4 sticky top-0 z-50 transition-all duration-500'>
-        <Accordion >
-          <AccordionItem key='1' aria-label='Traslados' title={t('HomeRental.transfers.title')}>
-            <div className='w-full h-[30rem] overflow-auto p-4'>
-              {loading.transfer ? (
-                <Skeleton className='w-full h-6 rounded-lg mb-2' />
-              ) : transfers?.length > 0 ? (
-                transfers.map(transfer => (
-                  <div key={transfer._id} className='w-full flex flex-col justify-center items-center'>
-                    <Button
-                      className='w-full m-2'
-                      onPress={() => setSelectedTransfer(transfer)}
-                    >
-                      {transfer.name}
-                    </Button>
-                    <div>
-                      {isAlreadySelected(transfer._id, 'transfer') ? (
-                        <Button className='h-full ml-2 flex items-center justify-center text-wrap' isDisabled>
-                          En el carrito
-                        </Button>
-                      ) : (
-                        <>
-                          {selectData.transfer.some(s => s.transfer._id === transfer._id) ? (
-                            <Button
-                              className='h-full ml-2 flex items-center justify-center'
-                              onPress={() => handleRemove(transfer, 'transfer')}
-                              color='danger'
-                              variant='flat'
-                            >
-                              Eliminar
-                            </Button>
-                          ) : (
-                            <Button
-                              className='h-full ml-2 flex items-center justify-center'
-                              onPress={() => handleSave(transfer, 'transfer')}
-                            >
-                              Agregar
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</div>
-              )}
-            </div>
-          </AccordionItem>
-          <AccordionItem key='2' aria-label='Vehículos' title={t('HomeRental.vehicles')}>
-            <CategoriesDropdown categoriesData={categoriesData} vehiclesByCategory={vehiclesByCategory} loading={loading} setVehiclesByCategory={setVehiclesByCategory} setLoading={setLoading} setSelectData={setSelectData} selectData={selectData} setIsSubmitDisable={setIsSubmitDisable} />
-          </AccordionItem>
-          <AccordionItem key='3' aria-label='Tours/Tickets' title='Tours | Tickets'>
-            <div className='w-full h-[30rem] overflow-auto p-4'>
-              {loading.tours ? (
-                <Skeleton className='w-full h-6 rounded-lg mb-2' />
-              ) : tours?.length > 0 ? (
-                tours.map(tour => (
-                  <div key={tour._id} className='w-full flex flex-col justify-center items-center'>
-                    <Button
-                      className='w-full m-2'
-                      onPress={() => setSelectedTour(tour)}
-                    >
-                      {tour.name}
-                    </Button>
-                    <div>
-                      {isAlreadySelected(tour._id, 'tour') ? (
-                        <Button className='h-full ml-2 flex items-center justify-center text-wrap' isDisabled>
-                          En el carrito
-                        </Button>
-                      ) : (
-                        <>
-                          {selectData.selectedTours.some(s => s.tour._id === tour._id) ? (
-                            <Button
-                              className='h-full ml-2 flex items-center justify-center'
-                              onPress={() => handleRemove(tour, 'tour')}
-                              color='danger'
-                              variant='flat'
-                            >
-                              Eliminar
-                            </Button>
-                          ) : (
-                            <Button
-                              className='h-full ml-2 flex items-center justify-center'
-                              onPress={() => handleSave(tour, 'tour')}
-                            >
-                              Agregar
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className='text-center text-gray-500'>{t('HomeRental.no_products_available')}</div>
-              )}
-            </div>
-          </AccordionItem>
-        </Accordion>
+    <div className='flex flex-col w-full bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg h-full md:max-h-[37rem]'>
+      <div className='w-full text-center mb-4'>
+        <h1 className='text-3xl font-bold'>Reservas</h1>
       </div>
-      {(selectedTransfer || selectedTour || selectedVehicle) && (
-        <div id='right-section' className='w-full md:w-3/4 p-4 transition-all duration-500'>
-          <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div className='col-span-1'>
-              <img src='https://res.cloudinary.com/dxn97o78r/image/upload/v1734914271/jmkcls0uge7hiepr322a.png' alt='Placeholder' className='w-16 h-auto rounded-lg mt-4' />
-            </div>
-            <div className='col-span-1'>
-              <NextUIProvider className='w-full flex justify-center mt-3' locale={i18n.language}>
-                <DatePicker
-                  className='w-full'
-                  classNames={{
-                    inputWrapper: 'bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF]'
-                  }}
-                  onChange={e => setSelectDate(e)}
-                  validate={(value: any) => {
-                    if (value && value.day < today(getLocalTimeZone()).day) {
-                      setIsSubmitDisable(true);
-                      return t('HomeRental.date_picker.previous_day_valid');
-                    } else {
-                      setIsSubmitDisable(false);
-                    }
-                    return true;
-                  }}
-                  defaultValue={selectDate}
-                  label='Fecha'
-                  calendarProps={{ className: 'uppercase' }}
+      <div className='flex flex-col md:flex-row w-full'>
+        <div className='w-full md:w-1/2 p-4 sticky top-0 z-50 transition-all duration-500 overflow-auto max-h-[25rem] scroll-container'>
+          <div className='overflow-auto max-h-full scroll-container'>
+            <Accordion>
+              <AccordionItem key='1' aria-label='Traslados' title='Traslados'>
+                <TransfersAccordionItem
+                  selectData={selectData}
+                  setSelectData={setSelectData}
+                  setSelectedTransfer={setSelectedTransfer}
                 />
-              </NextUIProvider>
-              <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg mt-4'>
-                <p>Precio por hora: $35</p>
-                <p>Precio por 4 horas: $129</p>
-                <p>Precio por 8 horas: $129</p>
-                <p>Precio por 24 horas: $199</p>
-                <p>Capacidad: 1</p>
-              </div>
-              <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg mt-4'>
-                <p className='mt-2'>Esta es una bicicleta de alta calidad, perfecta para paseos largos y cortos. Cuenta con un marco ligero, frenos de disco y una transmisión de 21 velocidades. Ideal para todo tipo de terrenos.</p>
-              </div>
-            </div>
-            <div className='col-span-2'>
-              <Button className='w-full p-2 h-14 bg-buttonPrimary flex justify-center items-center text-sm font-semibold mt-4' isDisabled={isSubmitDisable} onPress={handleSubmit}>
-                {isSubmitDisable ? (
-                  <Spinner color='primary' size='sm' />
-                ) : (
-                  <>
-                    <FaShoppingCart className='mr-2' />
-                    {t('HomeRental.add_to_cart')}
-                  </>
-                )}
-              </Button>
-            </div>
+              </AccordionItem>
+              <AccordionItem key='2' aria-label='Vehículos' title='Vehículos'>
+                <VehiclesAccordionItem
+                  categoriesData={categoriesData}
+                  vehiclesByCategory={vehiclesByCategory}
+                  loading={loading}
+                  setVehiclesByCategory={setVehiclesByCategory}
+                  setLoading={setLoading}
+                  setSelectData={setSelectData}
+                  selectData={selectData}
+                  setIsSubmitDisable={setIsSubmitDisable}
+                  setSelectedVehicle={setSelectedVehicle}
+                />
+              </AccordionItem>
+              <AccordionItem key='3' aria-label='Tours' title='Tours'>
+                <ToursAccordionItem
+                  selectData={selectData}
+                  setSelectData={setSelectData}
+                  setSelectedTour={setSelectedTour}
+                />
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
-      )}
+        <div className='w-full md:w-1/2 p-4'>
+          {(selectedTransfer || selectedTour || selectedVehicle) ? (
+            <SelectedItemDetails
+              selectData={selectData}
+              setSelectDate={setSelectDate}
+              setIsSubmitDisable={setIsSubmitDisable}
+              handleSubmit={handleSubmit}
+              isSubmitDisable={isSubmitDisable}
+              selectedTransfer={selectedTransfer}
+              selectedTour={selectedTour}
+              selectedVehicle={selectedVehicle}
+              clearSelection={clearSelection}
+              selectDate={selectDate}
+              handleTravelersChange={handleTravelersChange}
+            />
+          ) : (
+            <div className='flex flex-col gap-4'>
+              <DatePicker
+                hideTimeZone
+                showMonthAndYearPickers
+                value={selectDate}
+                onChange={handleDateChange}
+                label="Selecciona una fecha"
+                variant="bordered"
+                className='bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF] rounded-md'
+              />
+              <div>
+                <label htmlFor="travelers" className='block text-sm font-medium text-gray-700'>
+                  Cantidad de personas
+                </label>
+                <select
+                  id="travelers"
+                  name="travelers"
+                  className='mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'
+                  value={selectData.travelers.adults}
+                  onChange={handleTravelersChange}
+                >
+                  {[...Array(10).keys()].map(num => (
+                    <option key={num + 1} value={num + 1}>
+                      {num + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+       
+        </div>
+      </div>
     </div>
   );
 };
