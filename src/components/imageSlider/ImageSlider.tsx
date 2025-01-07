@@ -1,30 +1,39 @@
 import { useState, useEffect, useRef } from 'react'
-import { Button, Card, Image, Modal, ModalContent, ModalBody } from '@nextui-org/react'
-import { IimageSliderProps, IImage } from './models/image-slider-props.interface'
+import { Button, Card, Image } from '@nextui-org/react'
+import { IimageSliderProps } from './models/image-slider-props.interface'
 import chevronLeft from '../../assets/SVG/chevron-left.svg'
 import chevronRight from '../../assets/SVG/chevron-right.svg'
 
+const placeId = 'ChIJERvDPbnXT48RrkgXPfh8ESo'
+const apiKey = 'YOUR_GOOGLE_API_KEY'
+
 const ImageCarousel: React.FC<IimageSliderProps> = ({
-  images,
   className = '',
   autoplay = false,
   autoplayInterval = 3000
 }) => {
-  const [slides, setSlides] = useState<IImage[]>([])
+  const [reviews, setReviews] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(3)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<IImage | null>(null)
   const [isPaused, setIsPaused] = useState(false)
   const autoplayTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const itemsToShow = window.innerWidth < 640 ? 2 : 3
 
   useEffect(() => {
-    if (images.length > 0) {
-      const lastItems = images.slice(-itemsToShow)
-      const firstItems = images.slice(0, itemsToShow)
-      setSlides([...lastItems, ...images, ...firstItems])
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`)
+        const data = await response.json()
+        if (data.result && data.result.reviews) {
+          setReviews(data.result.reviews)
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error)
+      }
     }
-  }, [images])
+
+    fetchReviews()
+  }, [])
 
   useEffect(() => {
     if (autoplay && !isPaused && !isTransitioning) {
@@ -43,12 +52,12 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({
   const handleTransitionEnd = () => {
     setIsTransitioning(false)
 
-    if (currentIndex >= slides.length - itemsToShow) {
+    if (currentIndex >= reviews.length - itemsToShow) {
       setCurrentIndex(itemsToShow)
     }
 
     if (currentIndex <= itemsToShow - 1) {
-      setCurrentIndex(slides.length - itemsToShow * 2)
+      setCurrentIndex(reviews.length - itemsToShow * 2)
     }
   }
 
@@ -66,10 +75,6 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({
     }
   }
 
-  const handleImageClick = (image: IImage) => {
-    setSelectedImage(image)
-  }
-
   const handleMouseEnter = () => {
     setIsPaused(true)
   }
@@ -78,83 +83,51 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({
     setIsPaused(false)
   }
 
-  if (!slides || slides.length <= itemsToShow) {
-    return <div className='text-center p-4'>No hay suficientes imágenes para mostrar</div>
+  if (!reviews || reviews.length <= itemsToShow) {
+    return <div className='text-center p-4'>No hay suficientes reseñas para mostrar</div>
   }
 
   const slideWidth = window.innerWidth < 640 ? 50 / itemsToShow : 40 / itemsToShow
 
   return (
-    <>
-      <Card
-        className={`w-full mx-auto relative ${className}`}
-        onMouseEnter={autoplay ? handleMouseEnter : undefined}
-        onMouseLeave={autoplay ? handleMouseLeave : undefined}
-      >
-        <div className='relative overflow-hidden'>
-          <div
-            className={`flex relative ${isTransitioning ? 'transition-transform duration-300' : ''}`}
-            style={{
-              transform: `translateX(-${currentIndex * slideWidth}%)`,
-              width: `${slides.length * slideWidth}%`
-            }}
-            onTransitionEnd={handleTransitionEnd}
-          >
-            {slides.map((image, index) => (
-              <div key={index} className='relative flex-shrink-0 px-2' style={{ width: `${slideWidth}%` }}>
-                <div className='aspect-video cursor-pointer'>
-                  <Image
-                    src={image.src}
-                    alt={image.alt || `Slide ${index}`}
-                    className='w-full object-cover hover:opacity-90 transition-opacity'
-                    radius='lg'
-                    onClick={() => handleImageClick(image)}
-                  />
+    <Card
+      className={`w-full mx-auto relative ${className}`}
+      onMouseEnter={autoplay ? handleMouseEnter : undefined}
+      onMouseLeave={autoplay ? handleMouseLeave : undefined}
+    >
+      <div className='relative overflow-hidden'>
+        <div
+          className={`flex relative ${isTransitioning ? 'transition-transform duration-300' : ''}`}
+          style={{
+            transform: `translateX(-${currentIndex * slideWidth}%)`,
+            width: `${reviews.length * slideWidth}%`
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {reviews.map((review, index) => (
+            <div key={index} className='relative flex-shrink-0 px-2' style={{ width: `${slideWidth}%` }}>
+              <div className='aspect-video cursor-pointer'>
+                <div className='w-full object-cover hover:opacity-90 transition-opacity'>
+                  <p>{review.text}</p>
+                  <p><strong>- {review.author_name}</strong></p>
                 </div>
               </div>
-            ))}
-          </div>
-          <div className='absolute inset-y-0 left-0 flex items-center'>
-            <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToPrevious} size='sm'>
-              <Image src={chevronLeft} alt='prev' />
-            </Button>
-          </div>
-
-          <div className='absolute inset-y-0 right-0 flex items-center'>
-            <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToNext} size='sm'>
-              <Image src={chevronRight} alt='next' />
-            </Button>
-          </div>
+            </div>
+          ))}
         </div>
-      </Card>
+        <div className='absolute inset-y-0 left-0 flex items-center'>
+          <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToPrevious} size='sm'>
+            <Image src={chevronLeft} alt='prev' />
+          </Button>
+        </div>
 
-      <Modal
-        isOpen={!!selectedImage}
-        onClose={() => setSelectedImage(null)}
-        size='5xl'
-        placement='center'
-        scrollBehavior='inside'
-      >
-        <ModalContent>
-          {onClose => (
-            <ModalBody className='p-0'>
-              {selectedImage && (
-                <div className='relative'>
-                  <Image
-                    src={selectedImage.src}
-                    alt={selectedImage.alt || 'Imagen ampliada'}
-                    className='w-full object-contain max-h-[80vh]'
-                  />
-                  <Button className='absolute top-2 right-2 bg-white/80 hover:bg-white/90' size='sm' onClick={onClose}>
-                    Cerrar
-                  </Button>
-                </div>
-              )}
-            </ModalBody>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+        <div className='absolute inset-y-0 right-0 flex items-center'>
+          <Button className='h-full bg-white/40 hover:bg-white/90' onClick={goToNext} size='sm'>
+            <Image src={chevronRight} alt='next' />
+          </Button>
+        </div>
+      </div>
+    </Card>
   )
 }
 
