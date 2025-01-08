@@ -14,6 +14,7 @@ import LoaderComponent from '../../utils/loader'
 import ContactForm from '../../components/contactForm/ContactForm'
 import mailIcon from '../../assets/SVG/Mail.svg'
 import PhoneIcon from '../../assets/SVG/Phone.svg'
+import heroImage from '../../assets/images/hero.jpg'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
@@ -95,7 +96,7 @@ const Home = () => {
       <div
         className='absolute top-0 left-0 w-full h-[30rem] md:h-[40rem] bg-cover bg-center'
         style={{
-          backgroundImage: 'url(https://images.pexels.com/photos/716421/pexels-photo-716421.jpeg)'
+          backgroundImage: `url(${heroImage})`
         }}
       ></div>
       <div className={`block md:sticky z-20 top-16`}>
@@ -172,37 +173,39 @@ const Home = () => {
 
 
       <div className="p-4 sm:flex flex-col items-start">
-      <p className="text-2xl font-bold mb-2">NEED HELP BOOKING?</p>
-      <p className="text-wrap w-2/4 mb-4">
-        Can't find what you're looking for online? We've got the answers you're looking for
-        through the phone numbers and links below.
-      </p>
+            <p className="text-2xl font-bold mb-2">NEED HELP BOOKING?</p>
+            <p className="text-wrap w-2/4 mb-4">
+              Can't find what you're looking for online? We've got the answers you're looking for
+              through the phone numbers and links below.
+            </p>
 
-      <ul className="list-disc pl-5">
-        <li className="text-gray-800 font-semibold flex items-center">
-        <img 
-            src={PhoneIcon}
-            className="mr-2 w-6 h-6" /> 
-          <a
-            href="tel:+529841417024"
-            className="text-blue-500 hover:underline"
-          >
-            +529841417024
-          </a>
-        </li>
-        <li className="text-gray-800 font-semibold flex items-center">
-        <img 
-            src={mailIcon} 
-            className="mr-2 w-6 h-6" /> 
-          <a
-            href="mailto:WilmotMountainInfo@vailresorts.com"
-            className="text-blue-500 hover:underline"
-          >
-            WilmotMountainInfo@vailresorts.com
-          </a>
-        </li>
-      </ul>
-    </div>
+              <ul className="list-disc pl-5">
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={PhoneIcon}
+                    className="mr-2 w-6 h-6" /> 
+                        <a
+                    href="https://wa.me/529841417024"
+                    className="text-blue-500 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    +529841417024
+                  </a>
+                </li>
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={mailIcon} 
+                    className="mr-2 w-6 h-6" /> 
+                  <a
+                    href="mailto:oficinaveleta.moving@gmail.com"
+                    className="text-blue-500 hover:underline"
+                  >
+                    oficinaveleta.moving@gmail.com 
+                  </a>
+                </li>
+              </ul>
+        </div>
 
     </main>
   )
