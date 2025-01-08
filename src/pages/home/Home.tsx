@@ -14,6 +14,7 @@ import LoaderComponent from '../../utils/loader'
 import ContactForm from '../../components/contactForm/ContactForm'
 import mailIcon from '../../assets/SVG/Mail.svg'
 import PhoneIcon from '../../assets/SVG/Phone.svg'
+import Faqs from './components/Faqs'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
@@ -129,15 +130,6 @@ const Home = () => {
             </div>
           </motion.div>
         )}
-         {/* <Button
-          onClick={() => {
-            window.open(`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}`, '_blank')
-          }}
-          className='fixed bottom-14 right-52 hidden w-16 h-16 bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
-        >
-          <FaWhatsapp className='w-24 h-24' />
-        </Button> 
-         */}
       
       </div>
 
@@ -181,41 +173,43 @@ const Home = () => {
       </motion.section>
       <ContactForm />
 
-          
+      <Faqs/>
 
 
       <div className="p-4 sm:flex flex-col items-start">
-      <p className="text-2xl font-bold mb-2">NEED HELP BOOKING?</p>
-      <p className="text-wrap w-2/4 mb-4">
-        Can't find what you're looking for online? We've got the answers you're looking for
-        through the phone numbers and links below.
-      </p>
+            <p className="text-2xl font-bold mb-2">NEED HELP BOOKING?</p>
+            <p className="text-wrap w-2/4 mb-4">
+              Can't find what you're looking for online? We've got the answers you're looking for
+              through the phone numbers and links below.
+            </p>
 
-      <ul className="list-disc pl-5">
-        <li className="text-gray-800 font-semibold flex items-center">
-        <img 
-            src={PhoneIcon}
-            className="mr-2 w-6 h-6" /> 
-          <a
-            href="tel:+529841417024"
-            className="text-blue-500 hover:underline"
-          >
-            +529841417024
-          </a>
-        </li>
-        <li className="text-gray-800 font-semibold flex items-center">
-        <img 
-            src={mailIcon} 
-            className="mr-2 w-6 h-6" /> 
-          <a
-            href="mailto:WilmotMountainInfo@vailresorts.com"
-            className="text-blue-500 hover:underline"
-          >
-            WilmotMountainInfo@vailresorts.com
-          </a>
-        </li>
-      </ul>
-    </div>
+              <ul className="list-disc pl-5">
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={PhoneIcon}
+                    className="mr-2 w-6 h-6" /> 
+                        <a
+                    href="https://wa.me/529841417024"
+                    className="text-blue-500 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    +529841417024
+                  </a>
+                </li>
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={mailIcon} 
+                    className="mr-2 w-6 h-6" /> 
+                  <a
+                    href="mailto:oficinaveleta.moving@gmail.com"
+                    className="text-blue-500 hover:underline"
+                  >
+                    oficinaveleta.moving@gmail.com 
+                  </a>
+                </li>
+              </ul>
+        </div>
 
     </main>
   )

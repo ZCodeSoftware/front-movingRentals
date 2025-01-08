@@ -26,6 +26,10 @@
   "footer": {
     "footer_copyright": "© 2024 Mooving. All rights reserved."
   },
+  "faqs": {
+    "contact":"For any other inquiries, feel free to contact us!",
+    "title": "FAQS"
+  },
   "listByCategory": {
     "not_products_available": "No products available."
   },

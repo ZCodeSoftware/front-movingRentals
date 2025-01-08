@@ -26,6 +26,10 @@
   "footer": {
     "footer_copyright": "© 2024 Mooving. Todos los derechos reservados."
   },
+  "faqs": {
+    "contact":"Para cualquier otra duda, ¡no dudes en contactarnos!.",
+    "title":"Preguntas Frecuentes"
+  },
   "payment": {
     "successMessage": "Gracias, hemos recibido tu reserva.",
     "errorMessage": "Ocurrió un error.",
