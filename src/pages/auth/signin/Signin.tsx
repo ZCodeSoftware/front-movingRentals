@@ -112,7 +112,8 @@ const Signin = () => {
             label='Country'
             name='country'
             required
-            className='h-auto'
+            isVirtualized
+            className='h-auto scroll-container'
             variant='bordered'
             onOpenChange={async isOpen => {
               if (isOpen && countriesData.length === 0) {

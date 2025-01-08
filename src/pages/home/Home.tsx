@@ -14,6 +14,7 @@ import LoaderComponent from '../../utils/loader'
 import ContactForm from '../../components/contactForm/ContactForm'
 import mailIcon from '../../assets/SVG/Mail.svg'
 import PhoneIcon from '../../assets/SVG/Phone.svg'
+import Faqs from './components/Faqs'
 import heroImage from '../../assets/images/hero.jpg'
 
 const Home = () => {
@@ -117,15 +118,6 @@ const Home = () => {
             </div>
           </motion.div>
         )}
-         {/* <Button
-          onClick={() => {
-            window.open(`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}`, '_blank')
-          }}
-          className='fixed bottom-14 right-52 hidden w-16 h-16 bg-white bg-opacity-40 backdrop-blur-lg p-4 rounded-full shadow-lg cursor-pointer sm:flex items-center space-x-3 hover:bg-opacity-80 z-50'
-        >
-          <FaWhatsapp className='w-24 h-24' />
-        </Button> 
-         */}
       
       </div>
 
@@ -169,7 +161,7 @@ const Home = () => {
       </motion.section>
       <ContactForm />
 
-          
+      <Faqs/>
 
 
       <div className="p-4 sm:flex flex-col items-start">
