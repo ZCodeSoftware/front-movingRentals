@@ -3,6 +3,7 @@ import { Navbar, NavbarContent, NavbarItem, Button } from '@nextui-org/react'
 import CreateVehicle from './CreateVehicle'
 import CreateTour from './CreateTour'
 import CreateTransfer from './CreateTransfer'
+import CreateTicket from './CreateTicket'
 
 const DashboardCreateProduct = () => {
   const [view, setView] = useState('vehicles')
@@ -13,6 +14,8 @@ const DashboardCreateProduct = () => {
         return <CreateVehicle />
       case 'tours':
         return <CreateTour />
+      case 'tickets':
+        return <CreateTicket />
       case 'transfers':
         return <CreateTransfer />
       default:
@@ -38,6 +41,13 @@ const DashboardCreateProduct = () => {
               onClick={() => setView('tours')}
             >
               Tours
+            </Button>
+            <Button
+              color={view === 'tickets' ? 'primary' : 'default'}
+              variant={view === 'tickets' ? 'solid' : 'light'}
+              onClick={() => setView('tickets')}
+            >
+              Tickets
             </Button>
             <Button
               color={view === 'transfers' ? 'primary' : 'default'}

@@ -1,5 +1,6 @@
 import { ICategories } from '../../categories/models/categories.interface'
 import { IVehicleOwners } from '../../owners/models/vehicle-owners.interface'
+import { IVehicle_model } from '../../vehicle_model/models/vehicle_model.interface'
 
 export interface IVehicles {
   _id: string
@@ -15,4 +16,5 @@ export interface IVehicles {
   description: string
   owner: IVehicleOwners
   tag: string
+  model: IVehicle_model
 }

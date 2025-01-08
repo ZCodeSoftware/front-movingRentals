@@ -48,10 +48,28 @@ const CreateOwnerModal = ({ setOwnerModal, ownerModal }: any) => {
                 onChange={handleChange}
               />
               <Input
-                label='Porcentage de comisión'
+                label='Porcentaje de comisión'
                 name='commissionPercentage'
+                type='text'
+                value={owner.commissionPercentage.toString()}
+                onChange={e => {
+                  const value = e.target.value
+                  const regex = /^[0-9]*[.,]?[0-9]*$/
+                  if (regex.test(value)) {
+                    handleChange({
+                      ...e,
+                      target: {
+                        ...e.target,
+                        name: e.target.name,
+                        value: value.replace(',', '.')
+                      }
+                    })
+                  }
+                }}
+                min={0}
+                required
+                fullWidth
                 variant='bordered'
-                onChange={handleChange}
               />
               <div className='flex justify-around p-4'>
                 <Button color='danger' variant='flat' type='button' onPress={() => setOwnerModal(false)}>

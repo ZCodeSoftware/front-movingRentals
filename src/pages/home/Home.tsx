@@ -3,7 +3,6 @@ import { fetchCategories } from '../../services/categories/categoriesService'
 import { ICategories } from '../../services/categories/models/categories.interface'
 import i18n from 'i18next'
 import ImageSlider from '../../components/imageSlider/ImageSlider'
-import { images } from '../../mocks/imageSliderHome'
 import HomeRental from '../../components/homeRental/HomeRental'
 import HomeCards from './components/HomeCards'
 import { motion } from 'framer-motion'
@@ -91,7 +90,7 @@ const Home = () => {
   if (loading) {
     return <LoaderComponent />
   }
-  
+
   return (
     <main className='w-full bg-backgroundWhite'>
       <div
@@ -118,7 +117,6 @@ const Home = () => {
             </div>
           </motion.div>
         )}
-      
       </div>
 
       <motion.section
@@ -131,7 +129,7 @@ const Home = () => {
           <h1 className='text-xl mb-2'>Vehicles</h1>
           <div className='flex w-full mx-auto overflow-x-auto'>
             <div className='flex space-x-4 md:space-x-6 w-max'>
-              <HomeCards items={data.filter(v => v.disclaimer && v)} />
+              <HomeCards items={data.filter(v => (v.disclaimerEs || v.disclaimerEn) && v)} />
             </div>
           </div>
         </div>
@@ -157,48 +155,39 @@ const Home = () => {
         animate={{ opacity: 1, rotate: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <ImageSlider images={images} autoplay={true} className='bg-backgroundWhite' />
+        <ImageSlider autoplay={true} className='bg-backgroundWhite my-8' />
       </motion.section>
       <ContactForm />
 
-      <Faqs/>
+      <Faqs />
 
+      <div className='p-4 sm:flex flex-col items-start'>
+        <p className='text-2xl font-bold mb-2'>NEED HELP BOOKING?</p>
+        <p className='text-wrap w-2/4 mb-4'>
+          Can't find what you're looking for online? We've got the answers you're looking for through the phone numbers
+          and links below.
+        </p>
 
-      <div className="p-4 sm:flex flex-col items-start">
-            <p className="text-2xl font-bold mb-2">NEED HELP BOOKING?</p>
-            <p className="text-wrap w-2/4 mb-4">
-              Can't find what you're looking for online? We've got the answers you're looking for
-              through the phone numbers and links below.
-            </p>
-
-              <ul className="list-disc pl-5">
-                <li className="text-gray-800 font-semibold flex items-center">
-                <img 
-                    src={PhoneIcon}
-                    className="mr-2 w-6 h-6" /> 
-                        <a
-                    href="https://wa.me/529841417024"
-                    className="text-blue-500 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    +529841417024
-                  </a>
-                </li>
-                <li className="text-gray-800 font-semibold flex items-center">
-                <img 
-                    src={mailIcon} 
-                    className="mr-2 w-6 h-6" /> 
-                  <a
-                    href="mailto:oficinaveleta.moving@gmail.com"
-                    className="text-blue-500 hover:underline"
-                  >
-                    oficinaveleta.moving@gmail.com 
-                  </a>
-                </li>
-              </ul>
-        </div>
-
+        <ul className='list-disc pl-5'>
+          <li className='text-gray-800 font-semibold flex items-center'>
+            <img src={PhoneIcon} className='mr-2 w-6 h-6' />
+            <a
+              href='https://wa.me/529841417024'
+              className='text-blue-500 hover:underline'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              +529841417024
+            </a>
+          </li>
+          <li className='text-gray-800 font-semibold flex items-center'>
+            <img src={mailIcon} className='mr-2 w-6 h-6' />
+            <a href='mailto:oficinaveleta.moving@gmail.com' className='text-blue-500 hover:underline'>
+              oficinaveleta.moving@gmail.com
+            </a>
+          </li>
+        </ul>
+      </div>
     </main>
   )
 }

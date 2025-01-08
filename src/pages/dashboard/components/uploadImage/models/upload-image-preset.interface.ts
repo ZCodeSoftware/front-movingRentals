@@ -4,4 +4,5 @@ export interface IPreset<T> {
   handleMouseEnter?: () => void
   handleMouseLeave?: () => void
   imageFiles: Blob[]
+  isMultiple?: boolean
 }

@@ -4,11 +4,13 @@ import { fetchAllVehicles } from '../../../../../services/products/vehicles/GET/
 import { IVehicles } from '../../../../../services/products/models/vehicles.interface'
 import UpdateVehicle from '../updateProduct/UpdateVehicle'
 import LoaderComponent from '../../../../../utils/loader'
+import UpdateModelModal from '../updateProduct/UpdatePriceModel'
 
 const VehicleList = () => {
   const [loading, setLoading] = useState(true)
   const [vehiclesData, setVehiclesData] = useState<IVehicles[]>([])
   const [openUpdateModal, setOpenUpdateModal] = useState(false)
+  const [openModelModal, setOpenModelModal] = useState(false)
   const [selectedVehicle, setSelectedVehicle] = useState<IVehicles | null>(null)
 
   const getData = async () => {
@@ -31,12 +33,22 @@ const VehicleList = () => {
       {loading ? (
         <LoaderComponent />
       ) : (
-        <div className='w-full h-full flex justify-center items-center py-4'>
+        <div className='w-full h-full flex flex-col justify-center items-center py-4'>
+          <div className='w-full flex justify-center pb-4'>
+            <Button
+              onPress={() => {
+                setOpenModelModal(true)
+              }}
+            >
+              Editar precio por modelo
+            </Button>
+          </div>
           <Table aria-label='Tabla de usuarios'>
             <TableHeader>
               <TableColumn>Imágen</TableColumn>
               <TableColumn>Nombre</TableColumn>
               <TableColumn>Tag</TableColumn>
+              <TableColumn>Modelo</TableColumn>
               <TableColumn>Precio por hora</TableColumn>
               <TableColumn>Precio por 4 horas</TableColumn>
               <TableColumn>Precio por 8 horas</TableColumn>
@@ -52,10 +64,11 @@ const VehicleList = () => {
                   </TableCell>
                   <TableCell>{v.name}</TableCell>
                   <TableCell>{v.tag}</TableCell>
-                  <TableCell>${v.price}</TableCell>
-                  <TableCell>${v.pricePer4}</TableCell>
-                  <TableCell>${v.pricePer8}</TableCell>
-                  <TableCell>${v.pricePer24}</TableCell>
+                  <TableCell>{v.model.name}</TableCell>
+                  <TableCell>{v.price ? '$' + v.price : '-'}</TableCell>
+                  <TableCell>{v.pricePer4 ? '$' + v.pricePer4 : '-'}</TableCell>
+                  <TableCell>{v.pricePer8 ? '$' + v.pricePer8 : '-'}</TableCell>
+                  <TableCell>{v.pricePer24 ? '$' + v.pricePer24 : '-'}</TableCell>
                   <TableCell>{v.category.name}</TableCell>
                   <TableCell>
                     <Button
@@ -80,6 +93,9 @@ const VehicleList = () => {
           vehicleId={selectedVehicle._id}
           onUpdate={getData}
         />
+      )}
+      {openModelModal && (
+        <UpdateModelModal setModelModal={setOpenModelModal} modelModal={openModelModal} onUpdate={getData} />
       )}
     </>
   )

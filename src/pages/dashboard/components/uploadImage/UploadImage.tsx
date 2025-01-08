@@ -4,19 +4,21 @@ import { IPreset } from './models/upload-image-preset.interface'
 import { IVehicleForm } from '../dashboardProducts/createProduct/models/vehicles-form.interface'
 import { ITourForm } from '../dashboardProducts/createProduct/models/tour-form.interface'
 import { ITransferForm } from '../dashboardProducts/createProduct/models/transfer-form.interface'
+import { ICategoryForm } from '../dashboardCatalogs/createCatalogs/models/category-form.interface'
 
 interface CroppedFilesState {
   croppedImages: Blob[]
 }
 
-type FormTypes = IVehicleForm | ITourForm | ITransferForm
+type FormTypes = IVehicleForm | ITourForm | ITransferForm | ICategoryForm
 
 const UploadImage = <T extends FormTypes>({
   setUrl,
   form,
   handleMouseEnter,
   handleMouseLeave,
-  imageFiles
+  imageFiles,
+  isMultiple = true
 }: IPreset<T>) => {
   const [isInputShow, setInputShow] = useState(false)
   const [croppingFiles, setCroppingFiles] = useState<File[]>([])
@@ -172,7 +174,13 @@ const UploadImage = <T extends FormTypes>({
                     <span className='font-semibold'>Tamaño de imágen recomendado: 1000px X 1000px</span>
                   </p>
                 </div>
-                <input id='dropzone-file' type='file' className='hidden' onChange={handleFileChange} multiple />
+                <input
+                  id='dropzone-file'
+                  type='file'
+                  className='hidden'
+                  onChange={handleFileChange}
+                  multiple={isMultiple}
+                />
                 <div className='w-full h-20 cursor-default flex items-end justify-around bg-dymBlack p-2'>
                   <button
                     type='button'

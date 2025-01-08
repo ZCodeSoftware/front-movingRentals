@@ -46,7 +46,7 @@ const ContactForm = () => {
   }
 
   return (
-    <div className='w-full h-screen flex md:flex-row flex-col justify-center items-center p-4 md:space-x-24'>
+    <div className='w-full flex md:flex-row flex-col justify-center items-center p-4 md:space-x-24'>
       <form className='md:w-2/6 w-full space-y-4' onSubmit={handleSubmit}>
         <h1 className='text-center text-2xl p-4'>Contacto</h1>
         <Input label='Nombre' name='name' onChange={handleChange} variant='bordered' />

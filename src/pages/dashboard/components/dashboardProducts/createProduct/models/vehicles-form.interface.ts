@@ -11,4 +11,5 @@ export interface IVehicleForm {
   description: string
   owner: string
   tag: string
+  model: string
 }

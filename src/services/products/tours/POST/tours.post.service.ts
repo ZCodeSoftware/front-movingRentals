@@ -1,5 +1,5 @@
-import { ITourForm } from '../../../../../pages/dashboard/components/dashboardProducts/createProduct/models/tour-form.interface'
-import { AppApiGateWay } from '../../../../app.api.gateway'
+import { ITourForm } from '../../../../pages/dashboard/components/dashboardProducts/createProduct/models/tour-form.interface'
+import { AppApiGateWay } from '../../../app.api.gateway'
 
 export const postTour = async (vehicle: ITourForm) => {
   try {
