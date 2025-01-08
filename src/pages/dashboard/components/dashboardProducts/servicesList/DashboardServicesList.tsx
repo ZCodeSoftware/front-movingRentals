@@ -3,6 +3,7 @@ import { useState } from 'react'
 import ToursList from './ToursList'
 import VehicleList from './VehiclesList'
 import TransfersList from './TransfersList'
+import TicketsList from './TicketsList'
 
 const DashboardProducts = () => {
   const [view, setView] = useState('vehicles')
@@ -13,6 +14,8 @@ const DashboardProducts = () => {
         return <VehicleList />
       case 'tours':
         return <ToursList />
+      case 'tickets':
+        return <TicketsList />
       case 'transfers':
         return <TransfersList />
       default:
@@ -38,6 +41,13 @@ const DashboardProducts = () => {
               onClick={() => setView('tours')}
             >
               Tours
+            </Button>
+            <Button
+              color={view === 'tickets' ? 'primary' : 'default'}
+              variant={view === 'tickets' ? 'solid' : 'light'}
+              onClick={() => setView('tickets')}
+            >
+              Tickets
             </Button>
             <Button
               color={view === 'transfers' ? 'primary' : 'default'}

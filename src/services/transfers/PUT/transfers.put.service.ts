@@ -5,6 +5,6 @@ export const putTransfer = async (id: string, transfer: ITransferForm) => {
   try {
     await AppApiGateWay.put(`/transfer/${id}`, transfer)
   } catch (error) {
-    console.error('Error al crear producto', error)
+    console.error('Error al modificar producto', error)
   }
 }
