@@ -12,7 +12,7 @@ const ListByCategory = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [openModal, setOpenModal] = useState<{ [key: string]: boolean }>({})
   const { id } = useParams()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     const getData = async () => {
@@ -44,7 +44,11 @@ const ListByCategory = () => {
         <main>
           <section className='w-full flex flex-col justify-center items-center p-4'>
             <h1 className='text-3xl text-center p-4'>{data[0].category.name}</h1>
-            <p className='w-full md:w-2/4 border p-4'>{data[0].category.disclaimer}</p>
+            <p className='w-full md:w-2/4 border p-4'>
+              {i18n.language === 'es-ES' || i18n.language === 'es'
+                ? data[0].category.disclaimerEs
+                : data[0].category.disclaimerEn}
+            </p>
           </section>
           <section className='grid md:grid-cols-4 gap-4 p-4'>
             {data.map(p => (

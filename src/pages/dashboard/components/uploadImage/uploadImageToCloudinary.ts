@@ -2,8 +2,13 @@ import axios from 'axios'
 import { IVehicleForm } from '../dashboardProducts/createProduct/models/vehicles-form.interface'
 import { ITourForm } from '../dashboardProducts/createProduct/models/tour-form.interface'
 import { ITransferForm } from '../dashboardProducts/createProduct/models/transfer-form.interface'
+import { ICategoryForm } from '../dashboardCatalogs/createCatalogs/models/category-form.interface'
 
-const uploadToCloudinary = async (file: Blob[], folderName: string, form: IVehicleForm | ITourForm | ITransferForm) => {
+const uploadToCloudinary = async (
+  file: Blob[],
+  folderName: string,
+  form: IVehicleForm | ITourForm | ITransferForm | ICategoryForm
+) => {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_CLOUD_PRESET
 

@@ -4,6 +4,8 @@ import DashboardHome from './components/dashboardHome/DashboardHome'
 import DashboardProducts from './components/dashboardProducts/servicesList/DashboardServicesList'
 import DashboardCreateProduct from './components/dashboardProducts/createProduct/DashboardCreateProduct'
 import Sidebar from './components/Sidebar'
+import DashboardCatalogsList from './components/dashboardCatalogs/catalogsList/DashboardCatalogList'
+import DashboardCreateCatalogs from './components/dashboardCatalogs/createCatalogs/DashboardCreate'
 
 const Dashboard: React.FC = () => {
   const dashboardItems: IDashboardItem[] = [
@@ -25,6 +27,22 @@ const Dashboard: React.FC = () => {
           id: 'create-service',
           name: 'Crear Servicio',
           component: <DashboardCreateProduct />
+        }
+      ]
+    },
+    {
+      id: 'catalogs',
+      name: 'Catálogos',
+      subItems: [
+        {
+          id: 'catalog-list',
+          name: 'Lista de Catálogos',
+          component: <DashboardCatalogsList />
+        },
+        {
+          id: 'create-catalog',
+          name: 'Crear Catálogo',
+          component: <DashboardCreateCatalogs />
         }
       ]
     }

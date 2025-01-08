@@ -11,6 +11,9 @@ import { fetchAllVehicleOwners } from '../../../../../services/owners/GET/vehicl
 import CreateOwnerModal from './components/CreateOwnerModal'
 import UploadImage from '../../uploadImage/UploadImage'
 import uploadImageConstants from '../../uploadImage/constants/uploadImageConstants'
+import { fetchAllModels } from '../../../../../services/vehicle_model/GET/vehicle_model.get.service'
+import { IVehicle_model } from '../../../../../services/vehicle_model/models/vehicle_model.interface'
+import CreateModelModal from './components/CreateModelModal'
 
 const CreateVehicle: React.FC = () => {
   const [vehicle, setVehicle] = useState<IVehicleForm>({
@@ -25,13 +28,16 @@ const CreateVehicle: React.FC = () => {
     pricePer24: 0,
     capacity: 0,
     minRentalHours: 0,
-    tag: ''
+    tag: '',
+    model: ''
   })
   const [categoriesData, setCategoriesData] = useState<ICategories[]>([])
   const [vehicleOwnersData, setVehicleOwnersData] = useState<IVehicleOwners[]>([])
+  const [vehicleModelData, setVehicleModelData] = useState<IVehicle_model[]>([])
   const [imageFiles, setImageFiles] = useState<Blob[]>([])
   const [loading, setLoading] = useState(true)
   const [openOwnerModal, setOpenOwnerModal] = useState(false)
+  const [openModelModal, setOpenModelModal] = useState(false)
   const [submitDisable, setSubmitDisable] = useState(true)
   const { t } = useTranslation()
 
@@ -49,6 +55,14 @@ const CreateVehicle: React.FC = () => {
     const result = await fetchAllVehicleOwners()
     if (result) {
       setVehicleOwnersData(result)
+      setLoading(false)
+    }
+  }
+
+  const getVehicleModels = async () => {
+    const result = await fetchAllModels()
+    if (result) {
+      setVehicleModelData(result)
       setLoading(false)
     }
   }
@@ -95,7 +109,8 @@ const CreateVehicle: React.FC = () => {
       pricePer24: 0,
       capacity: 0,
       minRentalHours: 0,
-      tag: ''
+      tag: '',
+      model: ''
     })
   }
   return (
@@ -282,6 +297,59 @@ const CreateVehicle: React.FC = () => {
             ]
           )}
         </Select>
+        <Select
+          label='Modelo'
+          value={vehicle.model}
+          name='model'
+          selectedKeys={[vehicle.model]}
+          onChange={handleChange}
+          required
+          variant='bordered'
+          onOpenChange={async isOpen => {
+            if (isOpen) {
+              await getVehicleModels()
+            }
+          }}
+          renderValue={() => {
+            const renderValue = vehicleModelData.find(m => m._id === vehicle.model && m.name !== 'Crear nuevo modelo')
+            return renderValue ? renderValue.name : ''
+          }}
+        >
+          {loading ? (
+            <SelectItem key='skeleton-1' isDisabled>
+              <Skeleton className='w-full h-6 rounded-lg mb-2'></Skeleton>
+              <Skeleton className='w-[80%] h-6 rounded-lg mb-2'></Skeleton>
+              <Skeleton className='w-[60%] h-6 rounded-lg'></Skeleton>
+            </SelectItem>
+          ) : (
+            [
+              <SelectSection>
+                <SelectItem
+                  unselectable='on'
+                  className='text-center h-12'
+                  hideSelectedIcon
+                  key={1}
+                  onPress={() => setOpenModelModal(true)}
+                >
+                  Crear nuevo modelo
+                </SelectItem>
+              </SelectSection>,
+              <SelectSection key='owners-section' title='Modelos existentes'>
+                {vehicleModelData.length > 0 ? (
+                  vehicleModelData.map(m => (
+                    <SelectItem key={m._id} className='text-center'>
+                      {m.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem key='no-products' className='text-gray-500 text-center'>
+                    {t('HomeRental.no_products_available')}
+                  </SelectItem>
+                )}
+              </SelectSection>
+            ]
+          )}
+        </Select>
 
         <UploadImage setUrl={setImageFiles} form={vehicle} imageFiles={imageFiles} />
 
@@ -290,6 +358,7 @@ const CreateVehicle: React.FC = () => {
         </Button>
       </form>
       {openOwnerModal && <CreateOwnerModal setOwnerModal={setOpenOwnerModal} ownerModal={openOwnerModal} />}
+      {openModelModal && <CreateModelModal setModelModal={setOpenModelModal} modelModal={openModelModal} />}
     </div>
   )
 }

@@ -25,6 +25,9 @@ import { IUpdateVehicleProps } from './models/update-vehicle-props.interface'
 import { putVehicle } from '../../../../../services/products/vehicles/PUT/vehicles.put.service'
 import UploadImage from '../../uploadImage/UploadImage'
 import uploadImageConstants from '../../uploadImage/constants/uploadImageConstants'
+import { fetchAllModels } from '../../../../../services/vehicle_model/GET/vehicle_model.get.service'
+import { IVehicle_model } from '../../../../../services/vehicle_model/models/vehicle_model.interface'
+import CreateModelModal from '../createProduct/components/CreateModelModal'
 
 const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
   openUpdateModal,
@@ -45,14 +48,17 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
     pricePer24: vehicleData?.pricePer24 || 0,
     capacity: vehicleData?.capacity || 0,
     minRentalHours: vehicleData?.minRentalHours || 0,
-    tag: vehicleData?.tag || ''
+    tag: vehicleData?.tag || '',
+    model: ''
   })
   const [categoriesData, setCategoriesData] = useState<ICategories[]>([])
   const [vehicleOwnersData, setVehicleOwnersData] = useState<IVehicleOwners[]>([])
+  const [vehicleModelData, setVehicleModelData] = useState<IVehicle_model[]>([])
   const [imageFiles, setImageFiles] = useState<Blob[]>([])
   const [submitDisable, setSubmitDisable] = useState(true)
   const [loading, setLoading] = useState(true)
   const [openOwnerModal, setOpenOwnerModal] = useState(false)
+  const [openModelModal, setOpenModelModal] = useState(false)
   const { t } = useTranslation()
 
   const filterCategories = categoriesData.filter(p => p.name != 'Tours' && p.name != 'Transfer')
@@ -69,6 +75,14 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
     const result = await fetchAllVehicleOwners()
     if (result) {
       setVehicleOwnersData(result)
+      setLoading(false)
+    }
+  }
+
+  const getVehicleModels = async () => {
+    const result = await fetchAllModels()
+    if (result) {
+      setVehicleModelData(result)
       setLoading(false)
     }
   }
@@ -116,7 +130,8 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
       pricePer24: vehicleData?.pricePer24 || 0,
       capacity: vehicleData?.capacity || 0,
       minRentalHours: vehicleData?.minRentalHours || 0,
-      tag: vehicleData?.tag || ''
+      tag: vehicleData?.tag || '',
+      model: vehicleData?.model._id || ''
     })
   }
   return (
@@ -320,6 +335,62 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
                 ]
               )}
             </Select>
+            <Select
+              label='Modelo'
+              placeholder={vehicleData?.model.name}
+              value={vehicle.model}
+              name='model'
+              selectedKeys={[vehicle.model]}
+              onChange={handleChange}
+              required
+              variant='bordered'
+              onOpenChange={async isOpen => {
+                if (isOpen) {
+                  await getVehicleModels()
+                }
+              }}
+              renderValue={() => {
+                const renderValue = vehicleModelData.find(
+                  m => m._id === vehicle.model && m.name !== 'Crear nuevo modelo'
+                )
+                return renderValue ? renderValue.name : ''
+              }}
+            >
+              {loading ? (
+                <SelectItem key='skeleton-1' isDisabled>
+                  <Skeleton className='w-full h-6 rounded-lg mb-2'></Skeleton>
+                  <Skeleton className='w-[80%] h-6 rounded-lg mb-2'></Skeleton>
+                  <Skeleton className='w-[60%] h-6 rounded-lg'></Skeleton>
+                </SelectItem>
+              ) : (
+                [
+                  <SelectSection>
+                    <SelectItem
+                      unselectable='on'
+                      className='text-center h-12'
+                      hideSelectedIcon
+                      key={1}
+                      onPress={() => setOpenModelModal(true)}
+                    >
+                      Crear nuevo modelo
+                    </SelectItem>
+                  </SelectSection>,
+                  <SelectSection key='owners-section' title='Modelos existentes'>
+                    {vehicleModelData.length > 0 ? (
+                      vehicleModelData.map(m => (
+                        <SelectItem key={m._id} className='text-center'>
+                          {m.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem key='no-products' className='text-gray-500 text-center'>
+                        {t('HomeRental.no_products_available')}
+                      </SelectItem>
+                    )}
+                  </SelectSection>
+                ]
+              )}
+            </Select>
             <div className='flex space-x-2 border p-2'>
               {vehicle.images.map((src, index) => (
                 <img key={index} src={src} alt={`preview-${index}`} className='w-16 h-16 object-cover rounded' />
@@ -336,6 +407,7 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
             </ModalFooter>
           </form>
           {openOwnerModal && <CreateOwnerModal setOwnerModal={setOpenOwnerModal} ownerModal={openOwnerModal} />}
+          {openModelModal && <CreateModelModal setModelModal={setOpenModelModal} modelModal={openModelModal} />}
         </ModalBody>
       </ModalContent>
     </Modal>
