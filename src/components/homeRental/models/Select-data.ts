@@ -12,6 +12,7 @@ export interface ISelectItems {
   vehicle: IVehicles
   total?: number
 }
+
 export interface ISelectTours {
   date: DateValue | null
   tour: ITours
@@ -21,7 +22,6 @@ export interface ISelectTransfers {
   transfer: ITransfers;
   date: Date;
 }
-
 
 export interface ISelectData {
   travelers: { adults: number; childrens: number }

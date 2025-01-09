@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Accordion, AccordionItem, Button } from '@nextui-org/react';
+import { Accordion, AccordionItem } from '@nextui-org/react';
 import { IHomeRentalProps } from './models/home-rental-props.interface';
 import { IVehicles } from '../../services/products/models/vehicles.interface';
 import { ISelectData } from './models/Select-data';
@@ -19,7 +19,6 @@ import VehiclesAccordionItem from './components/VehiclesAccordionItem';
 import SelectedItemDetails from './components/SelectedItemDetails';
 import { DatePicker } from '@nextui-org/react';
 import { now, getLocalTimeZone } from '@internationalized/date';
-import { FaWhatsapp } from 'react-icons/fa';
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>();
@@ -36,9 +35,13 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [isSubmitDisable, setIsSubmitDisable] = useState(false);
   const [transfers, setTransfers] = useState<ITransfers[]>([]);
   const [selectDate, setSelectDate] = useState<any>(now(getLocalTimeZone()));
-  const [selectedTransfer, setSelectedTransfer] = useState<ITransfers | null>(null);
-  const [selectedTour, setSelectedTour] = useState<ITours | null>(null);
-  const [selectedVehicle, setSelectedVehicle] = useState<IVehicles | null>(null);
+  const [selectedTransfers, setSelectedTransfers] = useState<ITransfers[]>([]);
+  const [selectedTours, setSelectedTours] = useState<ITours[]>([]);
+  const [selectedVehicles, setSelectedVehicles] = useState<IVehicles[]>([]);
+
+  useEffect(() => {
+    console.log('selectedVehicles updated:', selectedVehicles);
+  }, [selectedVehicles]);
 
   useEffect(() => {
     const getData = async () => {
@@ -200,11 +203,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }
   };
 
-  const clearSelection = () => {
-    setSelectedTransfer(null);
-    setSelectedTour(null);
-    setSelectedVehicle(null);
-    setSelectDate(null);
+  const clearSelection = (type: string, id: string) => {
+    if (type === 'transfer') {
+      setSelectedTransfers(prev => prev.filter(transfer => transfer._id !== id));
+    } else if (type === 'tour') {
+      setSelectedTours(prev => prev.filter(tour => tour._id !== id));
+    } else if (type === 'vehicle') {
+      setSelectedVehicles(prev => prev.filter(vehicle => vehicle._id !== id));
+    }
     setIsSubmitDisable(false);
   };
 
@@ -233,7 +239,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                 <TransfersAccordionItem
                   selectData={selectData}
                   setSelectData={setSelectData}
-                  setSelectedTransfer={setSelectedTransfer}
+                  setSelectedTransfer={setSelectedTransfers}
                 />
               </AccordionItem>
               <AccordionItem key='2' aria-label='Vehículos' title='Vehículos'>
@@ -246,30 +252,35 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   setSelectData={setSelectData}
                   selectData={selectData}
                   setIsSubmitDisable={setIsSubmitDisable}
-                  setSelectedVehicle={setSelectedVehicle}
+                  setSelectedVehicle={(vehicles) => {
+                    console.log('setSelectedVehicle called with:', vehicles);
+                    // Asegúrate de que vehicles sea un array
+                    const vehiclesArray = Array.isArray(vehicles) ? vehicles : [vehicles];
+                    setSelectedVehicles(vehiclesArray);
+                  }}
                 />
               </AccordionItem>
               <AccordionItem key='3' aria-label='Tours' title='Tours'>
                 <ToursAccordionItem
                   selectData={selectData}
                   setSelectData={setSelectData}
-                  setSelectedTour={setSelectedTour}
+                  setSelectedTour={setSelectedTours}
                 />
               </AccordionItem>
             </Accordion>
           </div>
         </div>
         <div className='w-full md:w-1/2 p-4'>
-          {(selectedTransfer || selectedTour || selectedVehicle) ? (
+          {selectedTransfers.length > 0 || selectedTours.length > 0 || selectedVehicles.length > 0 ? (
             <SelectedItemDetails
               selectData={selectData}
               setSelectDate={setSelectDate}
               setIsSubmitDisable={setIsSubmitDisable}
               handleSubmit={handleSubmit}
               isSubmitDisable={isSubmitDisable}
-              selectedTransfer={selectedTransfer}
-              selectedTour={selectedTour}
-              selectedVehicle={selectedVehicle}
+              selectedTransfers={selectedTransfers}
+              selectedTours={selectedTours}
+              selectedVehicles={selectedVehicles}
               clearSelection={clearSelection}
               selectDate={selectDate}
               handleTravelersChange={handleTravelersChange}
@@ -305,7 +316,6 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
               </div>
             </div>
           )}
-       
         </div>
       </div>
     </div>

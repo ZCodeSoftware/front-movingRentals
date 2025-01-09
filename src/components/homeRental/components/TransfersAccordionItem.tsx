@@ -6,9 +6,13 @@ import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.se
 import { ISelectData } from '../models/Select-data';
 
 interface TransfersAccordionItemProps {
+
   selectData: ISelectData;
+
   setSelectData: React.Dispatch<React.SetStateAction<ISelectData>>;
-  setSelectedTransfer: React.Dispatch<React.SetStateAction<ITransfers | null>>;
+
+  setSelectedTransfer: React.Dispatch<React.SetStateAction<ITransfers[]>>;
+
 }
 
 const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectData, setSelectData, setSelectedTransfer }) => {
@@ -38,7 +42,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
       ...prev,
       transfer: [...prev.transfer, { transfer, date: new Date() }]
     }));
-    setSelectedTransfer(transfer);
+    setSelectedTransfer([transfer]);
   };
 
   const handleRemove = (transfer: ITransfers) => {
@@ -46,7 +50,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
       ...prev,
       transfer: prev.transfer.filter((item: any) => item.transfer._id !== transfer._id)
     }));
-    setSelectedTransfer(null);
+    setSelectedTransfer([]);
   };
 
   return (
