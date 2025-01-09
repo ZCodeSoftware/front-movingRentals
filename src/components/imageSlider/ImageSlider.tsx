@@ -38,12 +38,23 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const autoplayTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (Reviews.length > 0) {
       setSlides(Reviews)
     }
+  }, [])
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // 768px es el breakpoint típico para móviles
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   useEffect(() => {
@@ -94,6 +105,10 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
   }
 
   const getVisibleSlides = () => {
+    if (isMobile) {
+      return [{ slide: slides[currentIndex], position: 0 }]
+    }
+
     const visibleSlides = []
     for (let i = -1; i <= 1; i++) {
       let index = currentIndex + i
@@ -113,15 +128,16 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
       <div className='relative h-full flex items-center justify-center'>
         <div className='absolute w-full h-full flex items-center justify-center'>
           {getVisibleSlides().map(({ slide, position }, index) => {
-            const translateX = position * 100
-            const scale = position === 0 ? 1.1 : 0.85
+            const translateX = isMobile ? 0 : position * 100
+            const scale = isMobile ? 1 : position === 0 ? 1.1 : 0.85
             const zIndex = position === 0 ? 10 : 5
             const opacity = position === 0 ? 1 : 0.7
 
             return (
               <div
                 key={index}
-                className='absolute w-1/3 h-32 px-2 transition-all duration-300 ease-in-out top-20'
+                className={`absolute transition-all duration-300 ease-in-out top-20 
+                  ${isMobile ? 'w-11/12' : 'w-1/3'} h-32 px-2`}
                 style={{
                   transform: `translateX(${translateX}%) scale(${scale})`,
                   zIndex,
@@ -130,11 +146,15 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
                 }}
               >
                 <div className='w-full bg-white rounded-lg overflow-hidden shadow-lg'>
-                  <div className='max-w-20 flex flex-col justify-center relative left-48 aspect-video m-4'>
+                  <div
+                    className={`flex flex-col justify-center relative ${
+                      isMobile ? 'left-32' : 'left-48'
+                    } aspect-video m-4 max-w-20`}
+                  >
                     <Image
                       src={slide.image}
                       alt={slide.name || 'Review image'}
-                      className='w-full h-full object-conver'
+                      className='w-full h-full object-cover'
                     />
                   </div>
                   <div className='p-4'>
@@ -144,7 +164,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
                     </div>
                     <p className='font-semibold'>{slide.name}</p>
                     <p className='text-sm text-gray-500'>{slide.guide}</p>
-                    <p className='text-sm line-clamp-4 overflow-y-auto'>{slide.review}</p>
+                    <p className='text-sm line-clamp-4 overflow-y-auto scroll-container'>{slide.review}</p>
                   </div>
                 </div>
               </div>
@@ -153,7 +173,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
         </div>
 
         <Button
-          className='absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
+          className='absolute -left-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
           onClick={goToPrevious}
           isIconOnly
         >
@@ -161,7 +181,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
         </Button>
 
         <Button
-          className='absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
+          className='absolute -right-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
           onClick={goToNext}
           isIconOnly
         >
