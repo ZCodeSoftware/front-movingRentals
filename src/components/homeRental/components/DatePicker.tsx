@@ -50,9 +50,14 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
     }
   }, [existingVehicleDateItem]);
 
+  useEffect(() => {
+    if (selectedDates.start && selectedDates.end) {
+      handleSave();
+    }
+  }, [selectedDates]);
+
   const handleSave = () => {
     if (selectedDates.start && selectedDates.end) {
-
       setSelectData((prev: ISelectData) => {
         const existingItemIndex = prev.selectedItems?.findIndex(item => item.vehicle._id === vehicle._id) ?? -1;
 
@@ -129,17 +134,9 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
           En el carrito
         </Button>
       ) : (
-        <>
-          {!existingVehicleDateItem ? (
-            <Button className='h-full ml-2' onPress={handleSave}>
-              Agregar
-            </Button>
-          ) : (
-            <Button className='h-full ml-2' color='danger' variant='flat' onPress={handleRemove}>
-              Eliminar
-            </Button>
-          )}
-        </>
+        <Button className='h-full ml-2' color='danger' variant='flat' onPress={handleRemove}>
+          Eliminar
+        </Button>
       )}
     </div>
   );
