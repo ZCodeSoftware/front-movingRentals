@@ -9,6 +9,7 @@ const CreateOwner: React.FC = () => {
     commissionPercentage: 0
   })
   const [submitDisable, setSubmitDisable] = useState(true)
+  const [displayValue, setDisplayValue] = useState(owner.commissionPercentage?.toString().replace('.', ',') || '')
 
   const validateForm = () => {
     const requiredFields = ['name', 'commissionPercentage']
@@ -55,11 +56,13 @@ const CreateOwner: React.FC = () => {
           label='Porcentaje de comisión'
           name='commissionPercentage'
           type='text'
-          value={owner.commissionPercentage.toString()}
+          value={displayValue}
           onChange={e => {
             const value = e.target.value
-            const regex = /^[0-9]*[.,]?[0-9]*$/
+            const regex = /^$|^[0-9]*(,[0-9]*)?$/
+
             if (regex.test(value)) {
+              setDisplayValue(value)
               handleChange({
                 ...e,
                 target: {

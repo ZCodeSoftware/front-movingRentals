@@ -8,6 +8,7 @@ const CreateOwnerModal = ({ setOwnerModal, ownerModal }: any) => {
     name: '',
     commissionPercentage: 0
   })
+  const [displayValue, setDisplayValue] = useState(owner.commissionPercentage?.toString().replace('.', ',') || '')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -51,11 +52,13 @@ const CreateOwnerModal = ({ setOwnerModal, ownerModal }: any) => {
                 label='Porcentaje de comisión'
                 name='commissionPercentage'
                 type='text'
-                value={owner.commissionPercentage.toString()}
+                value={displayValue}
                 onChange={e => {
                   const value = e.target.value
-                  const regex = /^[0-9]*[.,]?[0-9]*$/
+                  const regex = /^$|^[0-9]*(,[0-9]*)?$/
+
                   if (regex.test(value)) {
+                    setDisplayValue(value)
                     handleChange({
                       ...e,
                       target: {

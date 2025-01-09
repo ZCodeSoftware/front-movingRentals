@@ -22,9 +22,20 @@ const UploadImage = <T extends FormTypes>({
 }: IPreset<T>) => {
   const [isInputShow, setInputShow] = useState(false)
   const [croppingFiles, setCroppingFiles] = useState<File[]>([])
+  const [error, setError] = useState<string>('')
   const [croppedFiles, setCroppedFiles] = useState<CroppedFilesState>({
     croppedImages: []
   })
+
+  const validateFiles = (files: File[]): boolean => {
+    if (!isMultiple && imageFiles.length + files.length > 1) {
+      setError('Solo se permite subir una imagen')
+      return false
+    }
+
+    setError('')
+    return true
+  }
 
   const resizeImage = (file: File, maxDimension: number): Promise<File> => {
     return new Promise((resolve, reject) => {
@@ -79,14 +90,18 @@ const UploadImage = <T extends FormTypes>({
     })
   }
 
+  const processFiles = async (files: File[]) => {
+    if (validateFiles(files)) {
+      const scaledFiles = await Promise.all(files.map(file => resizeImage(file, 1000)))
+      setCroppingFiles(scaledFiles)
+    }
+  }
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     if (e.target.files) {
       const files = Array.from(e.target.files)
-
-      const scaledFiles = await Promise.all(files.map(file => resizeImage(file, 1000)))
-
-      setCroppingFiles(scaledFiles)
+      await processFiles(files)
     }
   }
 
@@ -94,8 +109,7 @@ const UploadImage = <T extends FormTypes>({
     e.preventDefault()
     if (e.dataTransfer.files) {
       const files = Array.from(e.dataTransfer.files)
-      const scaledFiles = await Promise.all(files.map(file => resizeImage(file, 1000)))
-      setCroppingFiles([...scaledFiles])
+      await processFiles(files)
     }
   }
 
@@ -105,6 +119,12 @@ const UploadImage = <T extends FormTypes>({
 
   useEffect(() => {
     if (croppedFiles.croppedImages.length > 0) {
+      if (!isMultiple && imageFiles.length + croppedFiles.croppedImages.length > 1) {
+        setError('Solo se permite subir una imagen')
+        setCroppedFiles({ croppedImages: [] })
+        return
+      }
+
       setUrl(prev => [...prev, ...croppedFiles.croppedImages])
       setCroppedFiles({ croppedImages: [] })
     }
@@ -125,10 +145,13 @@ const UploadImage = <T extends FormTypes>({
     setCroppedFiles({ croppedImages: [] })
     setUrl([])
     setInputShow(false)
+    setError('')
   }
 
+  console.log(imageFiles)
+
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='w-full flex justify-center'>
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='w-full flex flex-col items-center'>
       <button
         type='button'
         className={`bg-dymBlack text-dymAntiPop h-12 w-38 rounded-md border p-2 ${isInputShow && 'hidden'}`}
@@ -146,7 +169,7 @@ const UploadImage = <T extends FormTypes>({
             >
               <label
                 htmlFor='dropzone-file'
-                className='flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer'
+                className='flex flex-col items-center justify-center w-full p-2 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer'
               >
                 <div className='flex flex-col items-center justify-center pt-5 pb-6 h-full'>
                   <svg
@@ -158,9 +181,9 @@ const UploadImage = <T extends FormTypes>({
                   >
                     <path
                       stroke='currentColor'
-                      stroke-linecap='round'
-                      stroke-linejoin='round'
-                      stroke-width='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
                       d='M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2'
                     />
                   </svg>
@@ -168,7 +191,12 @@ const UploadImage = <T extends FormTypes>({
                     <span className='font-semibold'>Click aqui para subir archivo</span> o arrastra aquí
                   </p>
                   <p className='mb-2 text-sm text-gray-500 dark:text-gray-400'>
-                    <span className='font-semibold'>Selecciono {imageFiles.length} archivo/s</span>
+                    <span className='font-semibold'>
+                      {isMultiple ? 'Puedes seleccionar múltiples archivos' : 'Solo puedes seleccionar una imagen'}
+                    </span>
+                  </p>
+                  <p className='mb-2 text-sm text-gray-500 dark:text-gray-400'>
+                    <span className='font-semibold'>Seleccionado {imageFiles.length} archivo/s</span>
                   </p>
                   <p className='mb-2 text-bold text-gray-500 dark:text-gray-400'>
                     <span className='font-semibold'>Tamaño de imágen recomendado: 1000px X 1000px</span>
@@ -180,7 +208,9 @@ const UploadImage = <T extends FormTypes>({
                   className='hidden'
                   onChange={handleFileChange}
                   multiple={isMultiple}
+                  accept='image/*'
                 />
+                {error && <p className='text-red-500 text-sm mb-2'>{error}</p>}
                 <div className='w-full h-20 cursor-default flex items-end justify-around bg-dymBlack p-2'>
                   <button
                     type='button'
