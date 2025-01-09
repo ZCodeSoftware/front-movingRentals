@@ -42,6 +42,12 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   const [totalCost, setTotalCost] = useState<number>(0);
 
   const handleDateChange = (value: any) => {
+    console.log('handleDateChange - value:', value);
+    if (!(value instanceof ZonedDateTime)) {
+      console.log('handleDateChange - converting value to ZonedDateTime');
+      value = ZonedDateTime.from(value);
+    }
+    console.log('handleDateChange - converted value:', value);
     setSelectDate(value);
     if (value && value.day < today(getLocalTimeZone()).day) {
       setIsSubmitDisable(true);
@@ -50,33 +56,38 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
     }
   };
 
-     const calculatePrice = ({ vehicle, dates }: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
-      console.log('vehicle', vehicle);
-      
-    if (!dates.start || !dates.end) {
-      throw new Error('Las fechas de inicio y fin deben estar definidas.');
+  const calculateVehiclePrice = ({ vehicle, dates }: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+    console.log('calculateVehiclePrice - dates:', dates);
+    if (!(dates.start instanceof ZonedDateTime)) {
+      console.log('calculateVehiclePrice - converting start date to ZonedDateTime');
+      dates.start = ZonedDateTime.from(dates.start);
     }
+    if (!(dates.end instanceof ZonedDateTime)) {
+      console.log('calculateVehiclePrice - converting end date to ZonedDateTime');
+      dates.end = ZonedDateTime.from(dates.end);
+    }
+    console.log('calculateVehiclePrice - converted dates:', dates);
     const { price, pricePer4, pricePer8, pricePer24 } = vehicle;
     if (price === undefined || pricePer4 === undefined || pricePer8 === undefined || pricePer24 === undefined) {
       throw new Error('Los precios del vehículo deben estar definidos.');
     }
     const differenceInMilliseconds = dates.end.toDate().getTime() - dates.start.toDate().getTime();
     const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-  
+
     let totalPrice = 0;
-  
+
     if (differenceInHours >= 24) {
       const fullDays = Math.floor(differenceInHours / 24);
       totalPrice += fullDays * pricePer24;
       const remainingHours = differenceInHours % 24;
-  
+
       totalPrice += calculateRemainingPrice(remainingHours, price, pricePer4, pricePer8);
     } else {
       totalPrice += calculateRemainingPrice(differenceInHours, price, pricePer4, pricePer8);
     }
     return totalPrice;
   };
-  
+
   const calculateRemainingPrice = (hours: number, price: number, pricePer4: number, pricePer8: number) => {
     let cost = 0;
     if (hours >= 8) {
@@ -84,21 +95,21 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
       cost += fullBlocksOf8 * pricePer8;
       hours %= 8;
     }
-  
+
     if (hours >= 4) {
       const fullBlocksOf4 = Math.floor(hours / 4);
       cost += fullBlocksOf4 * pricePer4;
       hours %= 4;
     }
-  
+
     if (hours > 0) {
       cost += hours * price;
     }
-  
+
     return cost;
   };
 
-    useEffect(() => {
+  useEffect(() => {
     let cost = 0;
     selectedTransfers.forEach(transfer => {
       cost += transfer.price;
@@ -106,16 +117,34 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
     selectedTours.forEach(tour => {
       cost += tour.price;
     });
-    if (selectDate && selectDate.selectedItems) {
-      selectDate.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
-        const { vehicle, dates } = item;
-        if (dates && dates.start && dates.end) {
-          cost += calculatePrice({ vehicle, dates });
+
+    if (Array.isArray(selectedVehicles)) {
+      selectedVehicles.forEach(vehicle => {
+        if (selectData && selectData.selectedItems) {
+          selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+            const { vehicle, dates } = item;
+            console.log('useEffect - selectedVehicles - dates:', dates);
+            if (dates && dates.start && dates.end) {
+              cost += calculateVehiclePrice({ vehicle, dates });
+            }
+          });
         }
       });
+    } else if (selectedVehicles && typeof selectedVehicles === 'object') {
+      const vehicle = selectedVehicles;
+      if (selectData && selectData.selectedItems) {
+        selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+          const { vehicle, dates } = item;
+          console.log('useEffect - selectedVehicles (object) - dates:', dates);
+          if (dates && dates.start && dates.end) {
+            cost += calculateVehiclePrice({ vehicle, dates });
+          }
+        });
+      }
     }
+
     setTotalCost(cost);
-  }, [selectedTransfers, selectedTours, selectDate]);  
+  }, [selectedTransfers, selectedTours, selectedVehicles, selectData]);
 
   const getImage = (item: ITours | IVehicles) => {
     return item.images[0];
@@ -322,7 +351,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
 
       <div className='col-span-12 mt-4'>
         <div className='mt-4'>
-          <p className='text-lg font-semibold'>Total: MXN {totalCost}</p>
+           <p className='text-lg font-semibold'>Total: MXN {totalCost ? totalCost.toFixed(2) : '0.00'}</p>
         </div>
         <Button
           className='w-full p-2 h-10 bg-buttonPrimary flex justify-center items-center text-xs font-semibold mt-4'

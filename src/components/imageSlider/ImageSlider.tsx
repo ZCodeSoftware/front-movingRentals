@@ -174,7 +174,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
 
         <Button
           className='absolute -left-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
-          onClick={goToPrevious}
+          onPress={goToPrevious}
           isIconOnly
         >
           <Image src={chevronLeft} alt='prev' />
@@ -182,7 +182,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
 
         <Button
           className='absolute -right-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
-          onClick={goToNext}
+          onPress={goToNext}
           isIconOnly
         >
           <Image src={chevronRight} alt='next' />

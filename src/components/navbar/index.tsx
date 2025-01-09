@@ -131,17 +131,19 @@ export default function NavbarComponent() {
           <NavbarItem className='w-1/2'>
             <Select
               placeholder={t('navBar.select_language')}
+              isVirtualized
               value={language}
               onChange={e => handleLanguageChange(e.target.value)}
               className='w-full'
+              aria-label={t('navBar.select_language')}
             >
-              <SelectItem value='en' key={'en'}>
+              <SelectItem value='en' key={'en'} textValue={t('navBar.option1')}>
                 <div className='flex mx-auto'>
                   <img src={flagUse} />
                   <span className='ml-2'>En</span>
                 </div>
               </SelectItem>
-              <SelectItem value='es' key={'es'}>
+              <SelectItem value='es' key={'es'} textValue={t('navBar.option2')}>
                 <div className='flex mx-auto'>
                   <img src={flagMex} />
                   <span className='ml-2'>Es</span>
@@ -171,16 +173,16 @@ export default function NavbarComponent() {
                   </button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label='Profile Actions' variant='flat'>
-                  <DropdownItem key='profile' className='h-14 gap-2'>
+                  <DropdownItem key='profile' className='h-14 gap-2' textValue={t('navBar.signedInAs')}>
                     <p className='font-semibold'>{t('navBar.signedInAs')}</p>
                     <p className='font-semibold'>{userData?.email}</p>
                   </DropdownItem>
-                  <DropdownItem key='my_profile'>
+                  <DropdownItem key='my_profile' textValue={t('navBar.myProfile')}>
                     <Link href='/profile' className='w-full'>
                       {t('navBar.myProfile')}
                     </Link>
                   </DropdownItem>
-                  <DropdownItem key='logout' color='danger' onClick={handleLogout}>
+                  <DropdownItem key='logout' color='danger' onPress={handleLogout} textValue={t('navBar.logout')}>
                     {t('navBar.logout')}
                   </DropdownItem>
                 </DropdownMenu>
