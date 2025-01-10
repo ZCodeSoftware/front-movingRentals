@@ -1,6 +1,6 @@
 export const faqsEsContent = [
     {
-      category: "Reservas y Pagos",
+      category: "Reservas y Pagos",  
       questions: [
         {
           question: "¿Cómo reservo un vehículo?",
