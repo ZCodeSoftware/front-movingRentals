@@ -7,7 +7,9 @@
   },
   "homePage": {
     "home": "Esta es la página principal.",
-    "no_products_available": "No hay productos disponibles"
+    "no_products_available": "No hay productos disponibles",
+    "help_contact_title": "¿NECESITAS AYUDA PARA RESERVAR?",
+    "help_contact_text": "¿No puedes encontrar lo que buscas en línea? Tenemos las respuestas que necesitas a través de los números de teléfono y enlaces a continuación."
   },
   "navBar": {
     "home": "Inicio",

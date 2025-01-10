@@ -14,12 +14,14 @@ import ContactForm from '../../components/contactForm/ContactForm'
 import mailIcon from '../../assets/SVG/Mail.svg'
 import PhoneIcon from '../../assets/SVG/Phone.svg'
 import Faqs from './components/Faqs'
+import { useTranslation } from 'react-i18next'
 
 const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
   const [toursData, setToursData] = useState<ITours[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isSticky, setIsSticky] = useState(false)
+  const {t}= useTranslation()
 
   const handleScroll = () => {
     setIsSticky(window.pageYOffset >= 80)
@@ -173,33 +175,38 @@ const Home = () => {
 
       <Faqs />
 
-      <div className='p-4 sm:flex flex-col items-start'>
-        <p className='text-2xl font-bold mb-2'>NEED HELP BOOKING?</p>
-        <p className='text-wrap w-2/4 mb-4'>
-          Can't find what you're looking for online? We've got the answers you're looking for through the phone numbers
-          and links below.
-        </p>
+      <div className="p-4 sm:flex flex-col items-start">
+            <p className="text-2xl font-bold mb-2">{t("homePage.help_contact_title")}</p>
+            <p className="text-wrap w-2/4 mb-4">{t("homePage.help_contact_text")}
+            </p>
+              <ul className="list-disc pl-5">
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={PhoneIcon}
+                    className="mr-2 w-6 h-6" /> 
+                        <a
+                    href="https://wa.me/529841417024"
+                    className="text-blue-500 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    +529841417024
+                  </a>
+                </li>
+                <li className="text-gray-800 font-semibold flex items-center">
+                <img 
+                    src={mailIcon} 
+                    className="mr-2 w-6 h-6" /> 
+                  <a
+                    href="mailto:oficinaveleta.moving@gmail.com"
+                    className="text-blue-500 hover:underline"
+                  >
+                    oficinaveleta.moving@gmail.com 
+                  </a>
+                </li>
+              </ul>
+        </div>
 
-        <ul className='list-disc pl-5'>
-          <li className='text-gray-800 font-semibold flex items-center'>
-            <img src={PhoneIcon} className='mr-2 w-6 h-6' />
-            <a
-              href='https://wa.me/529841417024'
-              className='text-blue-500 hover:underline'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              +529841417024
-            </a>
-          </li>
-          <li className='text-gray-800 font-semibold flex items-center'>
-            <img src={mailIcon} className='mr-2 w-6 h-6' />
-            <a href='mailto:oficinaveleta.moving@gmail.com' className='text-blue-500 hover:underline'>
-              oficinaveleta.moving@gmail.com
-            </a>
-          </li>
-        </ul>
-      </div>
     </main>
   )
 }
