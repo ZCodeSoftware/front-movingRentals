@@ -67,7 +67,7 @@ const Cart = () => {
         title: product.vehicle.name,
         description: product.vehicle.name + ' Rental',
         quantity: 1,
-        currency_id: 'ARS',
+        currency_id: 'MXN',
         unit_price: product.total
       }
     }) || []
@@ -79,7 +79,7 @@ const Cart = () => {
         title: product.tour.name,
         description: product.tour.name + ' Tour',
         quantity: 1,
-        currency_id: 'ARS',
+        currency_id: 'MXN',
         unit_price: product.tour.price
       }
     }) || []
@@ -91,7 +91,7 @@ const Cart = () => {
         title: product.transfer.name,
         description: product.transfer.name + ' Transfer',
         quantity: 1,
-        currency_id: 'ARS',
+        currency_id: 'MXN',
         unit_price: product.transfer.price
       }
     }) || []
