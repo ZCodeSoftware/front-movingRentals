@@ -39,18 +39,12 @@ const CategoriesAccordion: React.FC<ICategoriesDropdownProps> = ({
         categoriesData
           .filter(c => c.name !== CATEGORIES.TOURS && c.name !== CATEGORIES.TRANSFERS)
           .map(c => (
-            <AccordionItem
-              key={c._id}
-              className='cursor-pointer'
-              title={
-                <div className='flex items-center'>
-                  <img src={c.image} alt={c.name} className='w-14 h-14 mr-2 rounded-full' />
-                  {c.name}
-                </div>
-              }
-              textValue={c.name} // Agregar textValue para accesibilidad
-              onPress={() => getData(c._id)}
-            >
+            <AccordionItem key={c._id} className='cursor-pointer' title={
+              <div className='flex items-center'>
+                <img src={c.image} alt={c.name} className='w-14 h-14 mr-2 rounded-full' />
+                {c.name}
+              </div>
+            } onPress={() => getData(c._id)}>
               {loading[c._id] ? (
                 <div className='w-full'>
                   <Skeleton className='w-full h-6 rounded-lg mb-2' />
@@ -84,7 +78,7 @@ const CategoriesAccordion: React.FC<ICategoriesDropdownProps> = ({
             </AccordionItem>
           ))
       ) : (
-        <AccordionItem key={"no category"} className='text-center text-gray-500' textValue={t('HomeRental.no_categories_available')}>{t('HomeRental.no_categories_available')}</AccordionItem>
+        <AccordionItem key={"no category"} className='text-center text-gray-500'>{t('HomeRental.no_categories_available')}</AccordionItem>
       )}
     </Accordion>
   );
