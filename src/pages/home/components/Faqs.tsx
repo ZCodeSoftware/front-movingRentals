@@ -19,15 +19,16 @@ const Faqs = () => {
 
  return (
     <div className="mt-32 md:mt-0 p-4">
-      <h3 className="p-4">{t('faqs.title')}</h3> 
-    <Accordion className='md:w-[40%]' isCompact variant="splitted">
+    <h3 className="text-gray-700 ml-3 text-lg font-semibold uppercase tracking-wider">{t('faqs.title')}</h3>
+
+    <Accordion className="rounded-none pt-4 pb-4 md:w-[40%] bg-[#F0F0F0]" isCompact>
       {faqs.map((category, index) => (
-        <AccordionItem isCompact key={index} aria-label={category.category} title={category.category} indicator={({ isOpen }) => (
-            isOpen ? <img src={minusIcon} alt="Expand Icon" /> : <img src={plusIcon} alt="Collapse Icon"/>
+        <AccordionItem className="rounded-none" isCompact key={index} aria-label={category.category} title={category.category} indicator={({ isOpen }) => (
+            isOpen ? <img className="rotate-90" src={minusIcon} alt="Expand Icon" /> : <img src={plusIcon} alt="Collapse Icon"/>
           )}>
-          <Accordion isCompact variant="splitted">
+          <Accordion isCompact>
             {category.questions.map((faq:any, qIndex:number) => (
-              <AccordionItem isCompact className='whitespace-pre-line' key={qIndex} aria-label={faq.question} title={faq.question}>
+              <AccordionItem isCompact className="rounded-none whitespace-pre-line" key={qIndex} aria-label={faq.question} title={faq.question}>
                 {faq.answer}
               </AccordionItem>
             ))}
