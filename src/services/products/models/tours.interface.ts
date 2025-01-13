@@ -10,5 +10,6 @@ export interface ITours {
   startDates: string
   description: string
   images: string[]
+  selectedTransfers: any[];
   category: ICategories
 }

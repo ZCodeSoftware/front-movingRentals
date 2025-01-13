@@ -41,15 +41,10 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   const navigate = useNavigate();
   const [totalCost, setTotalCost] = useState<number>(0);
 
-  console.log(selectedTours);
-
   const handleDateChange = (value: any) => {
-    console.log('handleDateChange - value:', value);
     if (!(value instanceof ZonedDateTime)) {
-      console.log('handleDateChange - converting value to ZonedDateTime');
       value = ZonedDateTime.from(value);
     }
-    console.log('handleDateChange - converted value:', value);
     setSelectDate(value);
     if (value && value.day < today(getLocalTimeZone()).day) {
       setIsSubmitDisable(true);
@@ -59,16 +54,12 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   };
 
   const calculateVehiclePrice = ({ vehicle, dates }: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
-    console.log('calculateVehiclePrice - dates:', dates);
     if (!(dates.start instanceof ZonedDateTime)) {
-      console.log('calculateVehiclePrice - converting start date to ZonedDateTime');
       dates.start = ZonedDateTime.from(dates.start);
     }
     if (!(dates.end instanceof ZonedDateTime)) {
-      console.log('calculateVehiclePrice - converting end date to ZonedDateTime');
       dates.end = ZonedDateTime.from(dates.end);
     }
-    console.log('calculateVehiclePrice - converted dates:', dates);
     const { price, pricePer4, pricePer8, pricePer24 } = vehicle;
     if (price === undefined || pricePer4 === undefined || pricePer8 === undefined || pricePer24 === undefined) {
       throw new Error('Los precios del vehículo deben estar definidos.');
@@ -125,7 +116,6 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
         if (selectData && selectData.selectedItems) {
           selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
             const { vehicle, dates } = item;
-            console.log('useEffect - selectedVehicles - dates:', dates);
             if (dates && dates.start && dates.end) {
               cost += calculateVehiclePrice({ vehicle, dates });
             }
@@ -137,7 +127,6 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
       if (selectData && selectData.selectedItems) {
         selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
           const { vehicle, dates } = item;
-          console.log('useEffect - selectedVehicles (object) - dates:', dates);
           if (dates && dates.start && dates.end) {
             cost += calculateVehiclePrice({ vehicle, dates });
           }
@@ -147,9 +136,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
 
     setTotalCost(cost);
   }, [selectedTransfers, selectedTours, selectedVehicles, selectData]);
-
-  console.log(totalCost);
-  
+ 
 
   const getTourImage = (tour: ITours) => {
     return tour.images && tour.images.length > 0 ? tour.images[0] : 'https://via.placeholder.com/150'; // Reemplaza 'https://via.placeholder.com/150' con una URL de imagen predeterminada
