@@ -26,11 +26,13 @@
     "logout": "Cerrar sesión"
   },
   "footer": {
-    "footer_copyright": "© 2025 Mooving. Todos los derechos reservados."
+    "footer_copyright": "© 2025 Mooving. Todos los derechos reservados.",
+    "privacy_policy": "Política de Privacidad",
+    "cancelation_policy": "Política de Cancelación"
   },
   "faqs": {
-    "contact":"Para cualquier otra duda, ¡no dudes en contactarnos!.",
-    "title":"Preguntas Frecuentes"
+    "contact": "Para cualquier otra duda, ¡no dudes en contactarnos!.",
+    "title": "Preguntas Frecuentes"
   },
   "payment": {
     "successMessage": "Gracias, hemos recibido tu reserva.",
