@@ -154,7 +154,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
                     <Image
                       src={slide.image}
                       alt={slide.name || 'Review image'}
-                      className='w-full h-full object-cover'
+                      className='w-full h-full object-cover '
                     />
                   </div>
                   <div className='p-4'>

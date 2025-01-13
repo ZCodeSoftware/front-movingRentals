@@ -17,7 +17,7 @@ interface SelectedItemDetailsProps {
   handleSubmit: () => void;
   isSubmitDisable: boolean;
   selectedTransfers: ITransfers[];
-  selectedTours: ITours[];
+  selectedTours: { tour: ITours }[];
   selectedVehicles: IVehicles[];
   clearSelection: (type: string, id: string) => void;
   selectDate: any;
@@ -41,7 +41,15 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   const navigate = useNavigate();
   const [totalCost, setTotalCost] = useState<number>(0);
 
+  console.log(selectedTours);
+
   const handleDateChange = (value: any) => {
+    console.log('handleDateChange - value:', value);
+    if (!(value instanceof ZonedDateTime)) {
+      console.log('handleDateChange - converting value to ZonedDateTime');
+      value = ZonedDateTime.from(value);
+    }
+    console.log('handleDateChange - converted value:', value);
     setSelectDate(value);
     if (value && value.day < today(getLocalTimeZone()).day) {
       setIsSubmitDisable(true);
@@ -50,33 +58,38 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
     }
   };
 
-     const calculatePrice = ({ vehicle, dates }: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
-      console.log('vehicle', vehicle);
-      
-    if (!dates.start || !dates.end) {
-      throw new Error('Las fechas de inicio y fin deben estar definidas.');
+  const calculateVehiclePrice = ({ vehicle, dates }: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+    console.log('calculateVehiclePrice - dates:', dates);
+    if (!(dates.start instanceof ZonedDateTime)) {
+      console.log('calculateVehiclePrice - converting start date to ZonedDateTime');
+      dates.start = ZonedDateTime.from(dates.start);
     }
+    if (!(dates.end instanceof ZonedDateTime)) {
+      console.log('calculateVehiclePrice - converting end date to ZonedDateTime');
+      dates.end = ZonedDateTime.from(dates.end);
+    }
+    console.log('calculateVehiclePrice - converted dates:', dates);
     const { price, pricePer4, pricePer8, pricePer24 } = vehicle;
     if (price === undefined || pricePer4 === undefined || pricePer8 === undefined || pricePer24 === undefined) {
       throw new Error('Los precios del vehículo deben estar definidos.');
     }
     const differenceInMilliseconds = dates.end.toDate().getTime() - dates.start.toDate().getTime();
     const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
-  
+
     let totalPrice = 0;
-  
+
     if (differenceInHours >= 24) {
       const fullDays = Math.floor(differenceInHours / 24);
       totalPrice += fullDays * pricePer24;
       const remainingHours = differenceInHours % 24;
-  
+
       totalPrice += calculateRemainingPrice(remainingHours, price, pricePer4, pricePer8);
     } else {
       totalPrice += calculateRemainingPrice(differenceInHours, price, pricePer4, pricePer8);
     }
     return totalPrice;
   };
-  
+
   const calculateRemainingPrice = (hours: number, price: number, pricePer4: number, pricePer8: number) => {
     let cost = 0;
     if (hours >= 8) {
@@ -84,41 +97,66 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
       cost += fullBlocksOf8 * pricePer8;
       hours %= 8;
     }
-  
+
     if (hours >= 4) {
       const fullBlocksOf4 = Math.floor(hours / 4);
       cost += fullBlocksOf4 * pricePer4;
       hours %= 4;
     }
-  
+
     if (hours > 0) {
       cost += hours * price;
     }
-  
+
     return cost;
   };
 
-    useEffect(() => {
+  useEffect(() => {
     let cost = 0;
     selectedTransfers.forEach(transfer => {
       cost += transfer.price;
     });
-    selectedTours.forEach(tour => {
+    selectedTours.forEach(({ tour }) => {
       cost += tour.price;
     });
-    if (selectDate && selectDate.selectedItems) {
-      selectDate.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
-        const { vehicle, dates } = item;
-        if (dates && dates.start && dates.end) {
-          cost += calculatePrice({ vehicle, dates });
+
+    if (Array.isArray(selectedVehicles)) {
+      selectedVehicles.forEach(vehicle => {
+        if (selectData && selectData.selectedItems) {
+          selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+            const { vehicle, dates } = item;
+            console.log('useEffect - selectedVehicles - dates:', dates);
+            if (dates && dates.start && dates.end) {
+              cost += calculateVehiclePrice({ vehicle, dates });
+            }
+          });
         }
       });
+    } else if (selectedVehicles && typeof selectedVehicles === 'object') {
+      const vehicle = selectedVehicles;
+      if (selectData && selectData.selectedItems) {
+        selectData.selectedItems.forEach((item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+          const { vehicle, dates } = item;
+          console.log('useEffect - selectedVehicles (object) - dates:', dates);
+          if (dates && dates.start && dates.end) {
+            cost += calculateVehiclePrice({ vehicle, dates });
+          }
+        });
+      }
     }
-    setTotalCost(cost);
-  }, [selectedTransfers, selectedTours, selectDate]);  
 
-  const getImage = (item: ITours | IVehicles) => {
-    return item.images[0];
+    setTotalCost(cost);
+  }, [selectedTransfers, selectedTours, selectedVehicles, selectData]);
+
+  console.log(totalCost);
+  
+
+  const getTourImage = (tour: ITours) => {
+    return tour.images && tour.images.length > 0 ? tour.images[0] : 'https://via.placeholder.com/150'; // Reemplaza 'https://via.placeholder.com/150' con una URL de imagen predeterminada
+  };
+
+  const getVehicleImage = (vehicle: IVehicles) => {
+    return vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : 'https://via.placeholder.com/150'; // Reemplaza 'https://via.placeholder.com/150' con una URL de imagen predeterminada
   };
 
   const handleViewDetails = (categoryId: string) => {
@@ -126,6 +164,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   };
 
   const formatText = (text: string) => {
+    if (!text) return null;
     return text.split('\\n').map((line, index) => (
       <p key={index}>{line}</p>
     ));
@@ -133,8 +172,8 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
 
   return (
     <div className='w-full p-4 transition-all duration-500 relative max-h-[25rem] overflow-auto scroll-container'>
-      {selectedTours.map(tour => (
-        <div key={tour._id} className='mb-4'>
+      {selectedTours.map(({ tour }) => (
+        <div key={tour._id} className='mb-4 relative'>
           <button
             className='absolute top-6 right-6 text-red-500 hover:text-red-700 bg-transparent hover:bg-red-100 rounded-full p-1 transition-colors duration-200 z-20'
             onClick={() => clearSelection('tour', tour._id)}
@@ -144,7 +183,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
           <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg grid grid-cols-12 gap-4 max-h-[21rem] overflow-y-auto scroll-container'>
             <div className='col-span-12 md:col-span-6'>
               <img
-                src={getImage(tour)}
+                src={getTourImage(tour)}
                 alt='Placeholder'
                 className='w-full h-28 object-cover rounded-lg'
               />
@@ -182,7 +221,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
       ))}
 
       {Array.isArray(selectedVehicles) ? selectedVehicles.map(vehicle => (
-        <div key={vehicle._id} className='mb-4'>
+        <div key={vehicle._id} className='mb-4 relative'>
           <button
             className='absolute top-6 right-6 text-red-500 hover:text-red-700 bg-transparent hover:bg-red-100 rounded-full p-1 transition-colors duration-200 z-20'
             onClick={() => clearSelection('vehicle', vehicle._id)}
@@ -192,7 +231,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
           <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg grid grid-cols-12 gap-4 max-h-[21rem] overflow-y-auto scroll-container'>
             <div className='col-span-12 md:col-span-6'>
               <img
-                src={getImage(vehicle)}
+                src={getVehicleImage(vehicle)}
                 alt='Placeholder'
                 className='w-full h-28 object-cover rounded-lg'
               />
@@ -203,7 +242,6 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
                 vehicle={vehicle}
                 selectData={selectData}
                 setIsSubmitDisable={setIsSubmitDisable}
-                initialDate={selectDate}
               />
               <div>
                 <label htmlFor="travelers" className='block text-sm font-medium text-gray-700 mt-2'>
@@ -263,7 +301,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
       )) : null}
 
       {selectedTransfers.map(transfer => (
-        <div key={transfer._id} className='mb-4'>
+        <div key={transfer._id} className='mb-4 relative'>
           <button
             className='absolute top-6 right-6 text-red-500 hover:text-red-700 bg-transparent hover:bg-red-100 rounded-full p-1 transition-colors duration-200 z-20'
             onClick={() => clearSelection('transfer', transfer._id)}
@@ -322,7 +360,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
 
       <div className='col-span-12 mt-4'>
         <div className='mt-4'>
-          <p className='text-lg font-semibold'>Total: MXN {totalCost}</p>
+          <p className='text-lg font-semibold'>Total: MXN {totalCost.toFixed(2)}</p>
         </div>
         <Button
           className='w-full p-2 h-10 bg-buttonPrimary flex justify-center items-center text-xs font-semibold mt-4'
