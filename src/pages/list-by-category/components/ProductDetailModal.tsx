@@ -11,7 +11,9 @@ const ProductDetailModal = ({ product, setOpenModal }: any) => {
       size='5xl'
       placement='center'
       scrollBehavior='inside'
-      className='md:w-2/4 h-auto absolute z-50'
+      className={`${
+        product.hasOwnProperty(HOME_CARDS_CONSTANTS.ITINERARY) ? 'md:w-2/4' : 'md:w-2/6'
+      } h-auto absolute z-50`}
     >
       <ModalContent>
         <ModalBody>

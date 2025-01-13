@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Input, Textarea } from '@nextui-org/react'
 import ButtonLoader from './components/ButtonLoader'
 import { postContactForm } from '../../services/contact-form/POST/contact-form.post.service'
+import logo from '/palmera-icon.svg'
 const ContactForm = () => {
   const [message, setMessage] = useState({
     name: '',
@@ -62,6 +63,11 @@ const ContactForm = () => {
           />
         </div>
       </form>
+      <div className='flex flex-row items-center md:w-12 w-4/5 mx-auto my-4 sm:flex-col sm:mx-4 sm:my-auto'>
+        <div className='w-2/4 h-0 border border-black opacity-20 md:w-0 sm:h-48 sm:mx-auto' />
+        <img src={logo} className='text-lg mx-2 size-10 md:my-2' />
+        <div className='w-2/4 h-0 border border-black opacity-20 md:w-0 sm:h-48 sm:mx-auto' />
+      </div>
       <div className='md:w-2/6'>
         <h1 className='text-center text-2xl p-4'>Nuestra sucursal</h1>
         <iframe

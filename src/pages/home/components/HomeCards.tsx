@@ -8,13 +8,13 @@ import { HOME_CARDS_CONSTANTS } from '../constants/home.constants'
 const HomeCards = ({ items }: any) => {
   const [openDetailModal, setOpenDetailModal] = useState(false)
   const { t } = useTranslation()
-
+  console.log(items)
   return (
-    <div className='flex space-x-4 overflow-x-auto md:overflow-visible w-full md:justify-center'>
+    <div className='scroll-container flex space-x-4 overflow-x-auto md:overflow-visible w-full md:justify-center'>
       {items.length > 0 ? (
         items.map((i: any) => (
           <>
-            {!i.hasOwnProperty(HOME_CARDS_CONSTANTS.ITINERARY) ? (
+            {!i.hasOwnProperty('estimatedDuration') && !i.hasOwnProperty('cenotePrice') ? (
               <Card key={i._id} className='flex-none w-72 mx-2'>
                 <Link to={`/list-by-category/${i._id}`}>
                   <Card radius='none' className='h-full' isPressable>

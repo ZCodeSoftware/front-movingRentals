@@ -1,5 +1,4 @@
 {
-  
   "landingPage": {
     "welcome": "Welcome to MovingRentals",
     "hero_subtitle": "Your journey starts here",
@@ -10,7 +9,7 @@
     "home": "This is the home page.",
     "no_products_available": "No products available",
     "help_contact_title": "NEED HELP BOOKING?",
-    "help_contact_text":"Can't find what you're looking for online? We've got the answers you're looking for through the phone numbers and links below."       
+    "help_contact_text": "Can't find what you're looking for online? We've got the answers you're looking for through the phone numbers and links below."
   },
   "navBar": {
     "home": "Home",
@@ -27,10 +26,12 @@
     "logout": "Log out"
   },
   "footer": {
-    "footer_copyright": "© 2025 Mooving. All rights reserved."
+    "footer_copyright": "© 2025 Mooving. All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "cancelation_policy": "Cancellation Policy"
   },
   "faqs": {
-    "contact":"For any other inquiries, feel free to contact us!",
+    "contact": "For any other inquiries, feel free to contact us!",
     "title": "FAQS"
   },
   "listByCategory": {
