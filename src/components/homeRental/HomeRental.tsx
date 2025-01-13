@@ -17,7 +17,7 @@ import ToursAccordionItem from './components/ToursAccordionItem';
 import TransfersAccordionItem from './components/TransfersAccordionItem';
 import VehiclesAccordionItem from './components/VehiclesAccordionItem';
 import SelectedItemDetails from './components/SelectedItemDetails';
-import { now, getLocalTimeZone, ZonedDateTime } from '@internationalized/date';
+import { now, getLocalTimeZone } from '@internationalized/date';
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>();
@@ -78,100 +78,113 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     getToursData();
   }, []);
 
-  const handleSubmit = async () => {
-    if (!selectData.branch && (selectData.selectedItems.length > 0 || selectData.selectedTours.length > 0)) {
-      alert('Por favor, selecciona una sucursal.');
-      return;
-    }
-
-    if (
-      selectData.selectedItems.length === 0 &&
-      selectData.selectedTours.length === 0 &&
-      selectData.transfer.length === 0
-    ) {
-      alert('Por favor, selecciona al menos un vehiculo, tour o traslado.');
-      return;
-    }
-    const formattedItems = selectData.selectedItems.map(item => ({
-      ...item,
-      dates: item.dates
-        ? {
-          start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
-          end: item.dates.end ? item.dates.end.toDate().toISOString() : null
+         const handleSubmit = async () => {
+        console.log('selectData:', selectData);
+      
+        if (
+          selectData.selectedItems.length === 0 &&
+          selectData.selectedTours.length === 0 &&
+          selectData.transfer.length === 0
+        ) {
+          alert('Por favor, selecciona al menos un vehiculo, tour o traslado.');
+          return;
         }
-        : null,
-      vehicle: item.vehicle ? item.vehicle._id : null,
-      total: item.total
-    }));
-
-    const formattedTours = selectData.selectedTours.map(item => ({
-      ...item,
-      date: item.date ? item.date.toString() : null,
-      tour: item.tour ? item.tour._id : null
-    }));
-    const formattedTransfers = selectData.transfer.map(item => ({
-      ...item,
-      date: item.date ? item.date.toISOString() : null,
-      transfer: item.transfer._id ? item.transfer._id : null
-    }));
-
-    const localBackCart = getLocalStorage('backCart');
-
-    const combinedVehicle = localBackCart
-      ? [
-        ...localBackCart.selectedItems,
-        ...formattedItems.filter(
-          item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
-        )
-      ]
-      : null;
-
-    const combinedTours = localBackCart
-      ? [
-        ...localBackCart.selectedTours,
-        ...formattedTours.filter(
-          item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
-        )
-      ]
-      : null;
-
-    const combinedTransfers = localBackCart
-      ? [
-        ...localBackCart.transfer,
-        ...formattedTransfers.filter(
-          item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
-        )
-      ]
-      : null;
-
-    const backPayload = {
-      branch: selectData.branch ? selectData.branch : localBackCart.branch,
-      transfer: localBackCart ? combinedTransfers : formattedTransfers,
-      travelers: selectData.travelers ? selectData.travelers : localBackCart.travelers,
-      selectedItems: localBackCart ? combinedVehicle : formattedItems,
-      selectedTours: localBackCart ? combinedTours : formattedTours
-    };
-
-    const localStoragePayload = {
-      branch: selectData.branch,
-      transfer: selectData.transfer,
-      travelers: selectData.travelers,
-      selectedItems: selectData.selectedItems,
-      selectedTours: selectData.selectedTours
-    };
-    try {
-      if (localStorage.getItem('user')) {
-        if (userData) {
-          await postCart({ cart: backPayload as any, userCartId: userData.cart });
-          setLocalStorage('backCart', backPayload);
+      
+        const formattedItems = selectData.selectedItems.map(item => ({
+          ...item,
+          dates: item.dates
+            ? {
+              start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
+              end: item.dates.end ? item.dates.end.toDate().toISOString() : null
+            }
+            : null,
+          vehicle: item.vehicle ? item.vehicle._id : null,
+          total: item.total
+        }));
+      
+        const formattedTours = selectData.selectedTours.map(item => ({
+          ...item,
+          date: item.date ? item.date.toString() : null,
+          tour: item.tour ? item.tour._id : null
+        }));
+      
+        const formattedTransfers = selectData.transfer.map(item => ({
+          ...item,
+          date: item.date instanceof Date ? item.date.toISOString() : null,
+          transfer: item.transfer._id ? item.transfer._id : null
+        }));
+      
+        const localBackCart = getLocalStorage('backCart');
+      
+        const combinedVehicle = localBackCart
+          ? [
+            ...localBackCart.selectedItems,
+            ...formattedItems.filter(
+              item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
+            )
+          ]
+          : formattedItems;
+      
+        const combinedTours = localBackCart
+          ? [
+            ...localBackCart.selectedTours,
+            ...formattedTours.filter(
+              item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
+            )
+          ]
+          : formattedTours;
+      
+        const combinedTransfers = localBackCart
+          ? [
+            ...localBackCart.transfer,
+            ...formattedTransfers.filter(
+              item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
+            )
+          ]
+          : formattedTransfers;
+      
+        const backPayload = {
+          transfer: combinedTransfers,
+          travelers: selectData.travelers,
+          selectedItems: combinedVehicle,
+          selectedTours: combinedTours
+        };
+      
+        const localStoragePayload = {
+          transfer: selectData.transfer,
+          travelers: selectData.travelers,
+          selectedItems: selectData.selectedItems,
+          selectedTours: selectData.selectedTours
+        };
+      
+        try {
+          if (localStorage.getItem('user')) {
+            if (userData) {
+              await postCart({ cart: backPayload as any, userCartId: userData.cart });
+              setLocalStorage('backCart', backPayload);
+            }
+          } else {
+            ValidateProductInCart(localStoragePayload);
+            setLocalStorage('backCart', localStoragePayload);
+          }
+        } catch (error: any) {
+          console.error('Error al enviar los datos:', error);
         }
-      } else {
-        ValidateProductInCart(localStoragePayload);
-      }
-    } catch (error: any) { }
-
-    alert('Datos enviados correctamente');
-  };
+      
+        // Limpiar los datos de SelectedItemDetails
+        setSelectData({
+          travelers: { adults: 1, childrens: 0 },
+          selectedItems: [],
+          selectedTours: [],
+          branch: '',
+          transfer: [],
+          selectedTransfers: [],
+          selectedVehicles: [],
+          selectDate: now(getLocalTimeZone())
+        });
+      
+        alert('Datos enviados correctamente');
+      };
 
   const getTransfersData = async () => {
     if (!loading.transfer && transfers.length === 0) {
@@ -240,6 +253,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
 
   return (
     <div className='flex flex-col w-full bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg h-full md:max-h-[37rem]'>
+      
       <div className='w-full text-center mb-4'>
         <h1 className='text-3xl font-bold'>Reservas</h1>
       </div>
@@ -255,7 +269,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                     const transfersArray = Array.isArray(transfers) ? transfers : [transfers];
                     setSelectData(prevState => ({
                       ...prevState,
-                      selectedTransfers: transfersArray,
+                      selectedTransfers: [...prevState.selectedTransfers, ...transfersArray],
                       transfer: [...prevState.transfer, ...transfersArray.map(transfer => ({ transfer, date: selectData.selectDate }))]
                     }));
                   }}
@@ -275,7 +289,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                     const vehiclesArray = Array.isArray(vehicles) ? vehicles : [vehicles];
                     setSelectData(prevState => ({
                       ...prevState,
-                      selectedVehicles: vehiclesArray,
+                      selectedVehicles: [...prevState.selectedVehicles, ...vehiclesArray],
                       selectedItems: [...prevState.selectedItems, ...vehiclesArray.map(vehicle => ({ vehicle, dates: { start: selectData.selectDate, end: selectData.selectDate } }))]
                     }));
                   }}
@@ -289,7 +303,6 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                     const toursArray = Array.isArray(tours) ? tours : [tours];
                     setSelectData(prevState => ({
                       ...prevState,
-                      selectedTours: toursArray,
                       selectedTours: [...prevState.selectedTours, ...toursArray.map(tour => ({ tour, date: selectData.selectDate }))]
                     }));
                   }}

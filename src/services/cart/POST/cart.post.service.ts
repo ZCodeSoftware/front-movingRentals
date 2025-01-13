@@ -7,6 +7,8 @@ interface ICartPut {
 }
 
 export const postCart = async ({ cart, userCartId }: ICartPut) => {
+  console.log('cart', cart);
+  
   try {
     await AppApiGateWay.put(`/cart/${userCartId}`, cart)
   } catch (error) {
