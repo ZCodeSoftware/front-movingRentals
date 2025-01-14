@@ -41,7 +41,8 @@
     "redirectCountdown": "Serás redirigido en {{seconds}} segundos."
   },
   "listByCategory": {
-    "not_products_available": "No hay productos disponibles"
+    "not_products_available": "No hay productos disponibles",
+    "vehicle_title": "Vehículos"
   },
   "logIn": {
     "log_in_title": "Accede a tu cuenta",
@@ -138,5 +139,8 @@
   },
   "Dashboard": {
     "dashboard-home-eslogan": "Libertad = Aventuras"
+  },
+  "Reviews": {
+    "title": "Reseñas"
   }
 }

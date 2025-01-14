@@ -135,24 +135,16 @@ const Home = () => {
       </div>
 
       <motion.section
-        className='flex flex-col md:items-center md:mt-28'
+        className='flex flex-col md:items-center md:mt-72'
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <div className='w-full flex flex-col items-start justify-start p-6'>
-          <h1 className='text-xl mb-2'>Vehicles</h1>
+          <h1 className='text-xl mb-2'>{t('listByCategory.vehicle_title')}</h1>
           <div className='flex w-full mx-auto overflow-x-auto'>
             <div className='flex space-x-4 md:space-x-6 w-max'>
-              <HomeCards
-                items={data.filter(
-                  v =>
-                    v._id != '67395f7b7a88ec4200a23b78' &&
-                    v._id != '675f8eabf335a40a88556281' &&
-                    v._id != '6778c2aed1935f707861f6e3' &&
-                    v
-                )}
-              />
+              <HomeCards items={data.filter(v => (v.disclaimerEn || v.disclaimerEs) && v)} />
             </div>
           </div>
         </div>

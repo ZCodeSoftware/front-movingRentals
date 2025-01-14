@@ -35,7 +35,8 @@
     "title": "FAQS"
   },
   "listByCategory": {
-    "not_products_available": "No products available."
+    "not_products_available": "No products available.",
+    "vehicle_title": "Vehicles"
   },
   "payment": {
     "successMessage": "Thank you, we have received your reservation.",
@@ -138,5 +139,8 @@
   },
   "Dashboard": {
     "dashboard-home-eslogan": "Freedom = Adventures"
+  },
+  "Reviews": {
+    "title": "Reviews"
   }
 }

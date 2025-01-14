@@ -34,6 +34,8 @@ const Cart = () => {
   })
   const [cartData, setCartData] = useState<null | any>(null)
 
+  console.log(cartData)
+
   useEffect(() => {
     const fetchUserAndCart = async () => {
       try {

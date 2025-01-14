@@ -7,10 +7,10 @@ interface ICartPut {
 }
 
 export const postCart = async ({ cart, userCartId }: ICartPut) => {
-  console.log('cart', cart);
-  
+  console.log('cart', cart)
+
   try {
-    await AppApiGateWay.put(`/cart/${userCartId}`, cart)
+    await AppApiGateWay.put(`/cart/${userCartId}`, { ...cart, branch: '67565e0566c5d8a60202adb8' })
   } catch (error) {
     console.error('Error al agregar al carrito', error)
   }

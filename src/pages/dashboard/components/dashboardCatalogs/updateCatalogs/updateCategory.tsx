@@ -47,7 +47,7 @@ const UpdateCategory: React.FC<IUpdateCategory> = ({
     const validImages = uploadedImages.filter(url => url !== null) as string[]
     const categoryData = {
       ...category,
-      images: validImages.length > 0 ? validImages[0] : category.image
+      image: validImages.length > 0 ? validImages[0] : category.image
     }
     await putCategory(categoryId, categoryData)
     onUpdate()
