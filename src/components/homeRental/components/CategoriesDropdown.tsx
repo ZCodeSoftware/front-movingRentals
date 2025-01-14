@@ -37,7 +37,7 @@ const CategoriesAccordion: React.FC<ICategoriesDropdownProps> = ({
     <Accordion>
       {categoriesData && categoriesData.length > 0 ? (
         categoriesData
-          .filter(c => c.name !== CATEGORIES.TOURS && c.name !== CATEGORIES.TRANSFERS)
+          .filter(c => c.name !== CATEGORIES.TOURS && c.name !== CATEGORIES.TRANSFERS && c.name !== CATEGORIES.TICKETS)
           .map(c => (
             <AccordionItem key={c._id} className='cursor-pointer' title={
               <div className='flex items-center'>

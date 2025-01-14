@@ -18,6 +18,7 @@ import TransfersAccordionItem from './components/TransfersAccordionItem';
 import VehiclesAccordionItem from './components/VehiclesAccordionItem';
 import SelectedItemDetails from './components/SelectedItemDetails';
 import { now, getLocalTimeZone } from '@internationalized/date';
+import logo from '/palmera-icon.svg'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>();
@@ -295,7 +296,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   }}
                 />
               </AccordionItem>
-              <AccordionItem key='3' aria-label='Tours' title='Tours'>
+              <AccordionItem key='3' aria-label='Tours | Tickets' title='Tours | Tickets'>
                 <ToursAccordionItem
                   selectData={selectData}
                   setSelectData={setSelectData}
@@ -310,6 +311,11 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
               </AccordionItem>
             </Accordion>
           </div>
+        </div>
+                <div className='flex flex-row items-center md:w-12 w-4/5 mx-auto my-4 sm:flex-col sm:mx-4 sm:my-auto'>
+          <div className='w-2/4 h-auto min-h-[48px] border border-black opacity-20 md:w-0 sm:h-auto sm:mx-auto' />
+          <img src={logo} className='text-lg mx-2 size-10 md:my-2' />
+          <div className='w-2/4 h-auto min-h-[48px] border border-black opacity-20 md:w-0 sm:h-auto sm:mx-auto' />
         </div>
         <div className='w-full md:w-1/2 p-4'>
           {selectData.selectedTransfers.length > 0 || selectData.selectedTours.length > 0 || selectData.selectedVehicles.length > 0 ? (

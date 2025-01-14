@@ -3,6 +3,8 @@ import trashIcon from '../../../assets/SVG/trash-icon.svg'
 import { ISelectItems, ISelectTours, ISelectTransfers } from '../../../components/homeRental/models/Select-data'
 
 const LocalCartItemList = ({ product, handleRemove }: any) => {
+  console.log(product);
+  
   return (
     <>
       {product &&
@@ -17,7 +19,7 @@ const LocalCartItemList = ({ product, handleRemove }: any) => {
               />
               <div className='ml-2 flex flex-col'>
                 <div>
-                  <h2 className='text-sm font-bold mb-1'>{p.vehicle.name}</h2>
+                  <h2 className='text-sm font-bold mb-1'>{p.vehicle.tag}</h2>
                   <p className='text-sm'>Subtotal: ${p.total}</p>
                 </div>
                 <div className='flex flex-col'></div>
