@@ -49,7 +49,7 @@ const UpdateVehicle: React.FC<IUpdateVehicleProps> = ({
     capacity: vehicleData?.capacity || 0,
     minRentalHours: vehicleData?.minRentalHours || 0,
     tag: vehicleData?.tag || '',
-    model: ''
+    model: vehicleData?.model._id || ''
   })
   const [categoriesData, setCategoriesData] = useState<ICategories[]>([])
   const [vehicleOwnersData, setVehicleOwnersData] = useState<IVehicleOwners[]>([])
