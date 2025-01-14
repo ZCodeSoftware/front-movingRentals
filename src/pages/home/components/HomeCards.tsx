@@ -15,7 +15,7 @@ const HomeCards = ({ items }: any) => {
             {!i.hasOwnProperty('estimatedDuration') && !i.hasOwnProperty('cenotePrice') ? (
               <Card key={i._id} className='flex-none w-72 mx-2'>
                 <Link to={`/list-by-category/${i._id}`}>
-                  <Card radius='none' className='h-full' isPressable>
+                  <Card radius='none' className='h-full' >
                     <Image
                       alt={i.name}
                       sizes='200px'

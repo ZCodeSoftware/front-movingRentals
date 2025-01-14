@@ -73,6 +73,7 @@
   "SignIn": {
     "sign_in_title": "Create your account",
     "sign_in": "Create account",
+    "country": "Country",
     "have_an_account": "Are you registered?",
     "confirm_password": "Confirm your password",
     "formValidations": {

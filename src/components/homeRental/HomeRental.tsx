@@ -265,7 +265,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
             </div>
             <div className='flex flex-col md:flex-row w-full'>
                 <div
-                    className='w-full md:w-1/2 p-4 sticky top-0 z-50 transition-all duration-500 overflow-auto max-h-[25rem] scroll-container'>
+                    className='w-full md:w-1/2 p-4 top-0 z-50 transition-all duration-500 overflow-auto max-h-[25rem] scroll-container'>
                     <div className='overflow-auto max-h-full scroll-container'>
                         <Accordion>
                             <AccordionItem key='1' aria-label='Traslados' title='Traslados'>

@@ -146,8 +146,10 @@ const Home = () => {
       >
         <div className='w-full flex flex-col items-start justify-start p-6'>
           <h1 className='text-xl mb-2'>Tours</h1>
+          <div className='flex w-full mx-auto overflow-x-auto'>
           <div className='flex space-x-4 md:space-x-6 w-max'>
             <HomeCards items={toursData} />
+          </div>
           </div>
         </div>
       </motion.section>
@@ -171,7 +173,7 @@ const Home = () => {
 
       <div className='p-4 sm:flex flex-col items-start'>
         <p className='text-2xl font-bold mb-2'>{t('homePage.help_contact_title')}</p>
-        <p className='text-wrap w-2/4 mb-4'>{t('homePage.help_contact_text')}</p>
+        <p className='text-wrap md:w-2/4 mb-4'>{t('homePage.help_contact_text')}</p>
         <ul className='list-disc pl-5'>
           <li className='text-gray-800 font-semibold flex items-center'>
             <img src={PhoneIcon} className='mr-2 w-6 h-6' />

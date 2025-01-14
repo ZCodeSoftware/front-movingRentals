@@ -37,8 +37,7 @@ const TourDetailComponent = ({ product, setOpenModal }: any) => {
       </span>
       <div className='border-t border-black w-full p-4'>
         <div className='flex justify-end gap-4'>
-          <Button color='success'>Agregar al carrito</Button>
-          <Button color='danger' onClick={() => setOpenModal(false)}>
+          <Button className='bg-error' onPress={() => setOpenModal(false)}>
             Close
           </Button>
         </div>

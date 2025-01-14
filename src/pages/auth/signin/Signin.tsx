@@ -72,7 +72,7 @@ const Signin = () => {
               required: t('SignIn.validations.field-require')
             })}
             type='text'
-            label='Nombre'
+            label={t('Profile.place-holders.name')}
             name='name'
             className='p-2'
           />
@@ -81,7 +81,7 @@ const Signin = () => {
               required: t('SignIn.validations.field-require')
             })}
             type='text'
-            label='Apellido'
+            label={t('Profile.place-holders.lastname')}
             name='lastName'
             className='p-2'
           />
@@ -103,13 +103,13 @@ const Signin = () => {
               required: t('SignIn.validations.field-require')
             })}
             type='number'
-            label='Telefono'
+            label={t('Profile.place-holders.cellphone')}
             name='cellphone'
             className='p-2'
           />
           <Select
             onChange={e => setValue('address.countryId', e.target.value, { shouldValidate: true })}
-            label='Country'
+            label={t('SignIn.country')}
             name='country'
             required
             isVirtualized
