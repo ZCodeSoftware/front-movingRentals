@@ -40,6 +40,8 @@ export default function NavbarComponent() {
   const [exchangeData, setExchangeData] = useState<any>(null)
   const [roles, setRoles] = useState<IRoles[]>([])
   const { cartItems } = useCartStore()
+  console.log(cartData);
+  
 
   const handleLanguageChange = (value: string) => {
     setLanguage(value)
