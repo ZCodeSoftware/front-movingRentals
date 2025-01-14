@@ -26,7 +26,7 @@ export interface ISelectTransfers {
 export interface ISelectData {
   travelers: { adults: number; childrens: number }
   selectedItems: ISelectItems[]
-  selectedTours: ISelectTours[]
+  selectedTours: any[]
   branch: string
   transfer: ISelectTransfers[]
   selectDate?: any

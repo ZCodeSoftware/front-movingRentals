@@ -3,14 +3,11 @@ import { Modal, Button, ModalHeader, ModalBody, ModalFooter, ModalContent } from
 import { PrivacyPolicyEs, CancelationPolicyEs } from '../../../../mocks/PoliciesEs'
 import { PrivacyPolicyEn, CancelationPolicyEn } from '../../../../mocks/PoliciesEn'
 import { useTranslation } from 'react-i18next'
-import i18n from '../../../../utils/i18n'
 
 interface IPolicyModal {
   open: any
   setOpen: any
 }
-
-console.log(i18n)
 
 const PolicyModal: React.FC<IPolicyModal> = ({ open, setOpen }) => {
   const { t, i18n } = useTranslation()

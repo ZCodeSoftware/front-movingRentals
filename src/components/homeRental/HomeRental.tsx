@@ -18,6 +18,7 @@ import VehiclesAccordionItem from './components/VehiclesAccordionItem'
 import SelectedItemDetails from './components/SelectedItemDetails'
 import {now, getLocalTimeZone} from '@internationalized/date'
 import logo from '/palmera-icon.svg'
+import useCartStore from '../../store/cart.store'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
     const [userData, setUserData] = useState<IUser>()
@@ -33,6 +34,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
         selectedVehicles: [],
         selectDate: now(getLocalTimeZone())
     })
+    const { setCartItems } = useCartStore()
     const [tours, setTours] = useState<ITours[]>([])
     const [isSubmitDisable, setIsSubmitDisable] = useState(false)
     const [transfers, setTransfers] = useState<ITransfers[]>([])
@@ -102,7 +104,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
 
         const formattedTours = selectData.selectedTours.map((item: any) => ({
             ...item,
-            date: item.date ? item.date.toString() : null,
+            date: item.date instanceof Date ? item.date.toISOString().replace(/\[.*\]$/, '') : null,
             tour: item.tour ? item.tour._id : null
         }))
 
@@ -162,10 +164,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
                 if (userData) {
                     await postCart({cart: backPayload as any, userCartId: userData.cart})
                     setLocalStorage('backCart', backPayload)
+                    const totalItems = backPayload.selectedItems.length + backPayload.selectedTours.length + backPayload.transfer.length
+                    setCartItems(totalItems)
                 }
             } else {
                 ValidateProductInCart(localStoragePayload)
                 setLocalStorage('backCart', localStoragePayload)
+                const totalItems = backPayload.selectedItems.length + backPayload.selectedTours.length + backPayload.transfer.length
+                setCartItems(totalItems)
             }
         } catch (error: any) {
             console.error('Error al enviar los datos:', error)

@@ -7,7 +7,6 @@ import ProductDetailModal from '../../list-by-category/components/ProductDetailM
 const HomeCards = ({ items }: any) => {
   const [openDetailModal, setOpenDetailModal] = useState(false)
   const { t } = useTranslation()
-  console.log(items)
   return (
     <div className='scroll-container flex space-x-4 overflow-x-auto md:overflow-visible w-full md:justify-center'>
       {items.length > 0 ? (

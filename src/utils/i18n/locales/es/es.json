@@ -1,4 +1,21 @@
 {
+  "cart": {
+    "cart": "Carrito",
+    "emptyCart": "Tu carrito está vacío",
+    "removeAll": "Eliminar todo",
+    "tyc": "Acepto los términos y condiciones"
+  },
+  "contact": {
+    "contact": "Contacto",
+    "form": {
+      "name": "Nombre",
+      "subject": "Asunto",
+      "message": "Mensaje"
+    },
+    "branch": {
+      "our": "Nuestra sucursal"
+    }
+  },
   "landingPage": {
     "welcome": "Bienvenido a MovingRentals",
     "hero_subtitle": "Tu viaje comienza aquí",

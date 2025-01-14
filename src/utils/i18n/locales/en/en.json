@@ -1,4 +1,21 @@
 {
+  "cart": {
+    "cart": "Cart",
+    "emptyCart": "Your cart is empty",
+    "removeAll": "Remove all",
+    "tyc": "I agree to the terms and conditions"
+  },
+  "contact": {
+    "contact": "Contact",
+    "form": {
+      "name": "Name",
+      "subject": "Subject",
+      "message": "Message"
+    },
+    "branch": {
+      "our": "Our branch"
+    }
+  },
   "landingPage": {
     "welcome": "Welcome to MovingRentals",
     "hero_subtitle": "Your journey starts here",
