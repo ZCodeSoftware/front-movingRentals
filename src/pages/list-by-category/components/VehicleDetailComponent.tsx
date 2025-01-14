@@ -35,8 +35,7 @@ const VehicleDetailComponent = ({ product, setOpenModal }: any) => {
       </div>
       <div className='mt-8 pt-6 border-t border-gray-600 relative z-10'>
         <div className='flex justify-end gap-4'>
-          <Button color='success'>Agregar al carrito</Button>
-          <Button color='danger' onClick={() => setOpenModal(false)}>
+          <Button className='bg-error' onPress={() => setOpenModal(false)}>
             Close
           </Button>
         </div>

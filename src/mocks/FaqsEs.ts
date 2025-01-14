@@ -1,6 +1,14 @@
+import PaymentCard from '../assets/SVG/Payment-Card.svg'
+import Refund from '../assets/SVG/Refund.svg'
+import Car from '../assets/SVG/Car.svg'
+import CautionSign from '../assets/SVG/Caution-Sign.svg'
+import Repair from '../assets/SVG/Repair.svg'
+import Chat from '../assets/SVG/Chat.svg'
+
+
 export const faqsEsContent = [
     {
-      category: "Reservas y Pagos",  
+      category: {title:"Reservas y Pagos", logo:`${PaymentCard}`}, 
       questions: [
         {
           question: "¿Cómo reservo un vehículo?",
@@ -17,7 +25,7 @@ export const faqsEsContent = [
       ],
     },
     {
-      category: "Depósito de Seguridad y Reembolsos",
+      category: {title:"Depósito de Seguridad y Reembolsos", logo:`${Refund}`},
       questions: [
           {
             question: "¿Cuánto es el depósito de seguridad?",
@@ -38,7 +46,7 @@ export const faqsEsContent = [
       ],
     },
     {
-        category: "Entrega y Devolución de Vehículos",
+        category: {title:"Entrega y Devolución de Vehículos", logo:`${Car}`},
         questions: [
           {
             question:"¿Qué incluye la renta del vehículo?",
@@ -55,7 +63,7 @@ export const faqsEsContent = [
         ],
       },
       {
-        category: "Seguridad y Normas de Conducción",
+        category: {title:"Seguridad y Normas de Conducción", logo:`${CautionSign}`},
         questions: [
           {
             question: "¿Qué medidas de seguridad debo seguir al manejar?",
@@ -68,7 +76,7 @@ export const faqsEsContent = [
         ],
       },
       {
-        category: "Incidentes y Reparaciones",
+        category: {title:"Incidentes y Reparaciones", logo:`${Repair}`},
         questions: [
           {
             question: "¿Qué hacer si el vehículo sufre daños durante la renta",
@@ -93,7 +101,7 @@ export const faqsEsContent = [
         ],
       },
       {
-        category: "Atención y Contacto",
+        category: {title:"Atención y Contacto", logo:`${Chat}`},
         questions: [
           {
             question: "¿Cuáles son los horarios de atención?",

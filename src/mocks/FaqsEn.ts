@@ -1,6 +1,14 @@
+import PaymentCard from '../assets/SVG/Payment-Card.svg'
+import Refund from '../assets/SVG/Refund.svg'
+import Car from '../assets/SVG/Car.svg'
+import CautionSign from '../assets/SVG/Caution-Sign.svg'
+import Repair from '../assets/SVG/Repair.svg'
+import Chat from '../assets/SVG/Chat.svg'
+
+
 export const faqsEnContent = [
     {
-      category: "Reservations and Payments",
+      category: {title:"Reservations and Payments", logo:`${PaymentCard}`},
       questions: [
         {
           question: "How can I book a vehicle?",
@@ -17,7 +25,7 @@ export const faqsEnContent = [
       ],
     },
     {
-      category: "Security Deposit and Refunds",
+      category: {title:"Security Deposit and Refunds", logo:`${Refund}`},
       questions: [
           {
             question: "How much is the security deposit?",
@@ -38,7 +46,7 @@ export const faqsEnContent = [
       ],
     },
     {
-        category: "Vehicle Pickup and Return",
+        category: {title:"Vehicle Pickup and Return", logo:`${Car}`},
         questions: [
           {
             question:"What does the vehicle rental include?",
@@ -55,7 +63,7 @@ export const faqsEnContent = [
         ],
       },
       {
-        category: "Safety and Driving Rules",
+        category: {title:"Safety and Driving Rules", logo:`${CautionSign}`},
         questions: [
           {
             question: "What safety measures should I follow while driving?",
@@ -68,7 +76,7 @@ export const faqsEnContent = [
         ],
       },
       {
-        category: "Incidents and Repairs",
+        category: {title:"Incidents and Repairs", logo:`${Repair}`},
         questions: [
           {
             question: "What happens if the vehicle gets damaged during the rental?",
@@ -93,7 +101,7 @@ export const faqsEnContent = [
         ],
       },
       {
-        category: "Service and Contact",
+        category: {title:"Service and Contact", logo:`${Chat}`},
         questions: [
           {
             question: "What are the store hours?",
