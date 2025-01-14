@@ -38,10 +38,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
     const [transfers, setTransfers] = useState<ITransfers[]>([])
 
     useEffect(() => {
-        console.log('selectedVehicles updated:', selectData.selectedVehicles)
     }, [selectData.selectedVehicles])
-    console.log("SelectDate", selectData.selectDate)
-    console.log("SelectData", selectData)
     useEffect(() => {
         const getData = async () => {
             const result = await fetchUserDetail()
@@ -81,7 +78,6 @@ const HomeRental: React.FC<IHomeRentalProps> = ({categoriesData}) => {
     }, [])
 
     const handleSubmit = async () => {
-        console.log('selectData:', selectData)
 
         if (
             selectData.selectedItems.length === 0 &&

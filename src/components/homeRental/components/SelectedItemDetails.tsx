@@ -108,10 +108,8 @@ const handleTransferDateChange = (value: any, id: string) => {
       const remainingHours = differenceInHours % 24
 
       totalPrice += calculateRemainingPrice(remainingHours, price, pricePer4, pricePer8)
-      console.log(totalPrice)
     } else {
       totalPrice += calculateRemainingPrice(differenceInHours, price, pricePer4, pricePer8)
-      console.log(totalPrice, 'totalPrice')
     }
     return totalPrice
   }
@@ -133,10 +131,8 @@ const handleTransferDateChange = (value: any, id: string) => {
     if (hours > 0) {
       cost += hours * price
     }
-    console.log(cost)
     return cost
   }
-  console.log(selectData)
   useEffect(() => {
     let cost = 0
     selectedTransfers.forEach(transfer => {

@@ -61,7 +61,6 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
     if (selectedDates.start && selectedDates.end) {
       setSelectData((prev: ISelectData) => {
         const existingItemIndex = prev.selectedItems?.findIndex(item => item.vehicle._id === vehicle._id) ?? -1
-        console.log(prev, 'prev')
         const newItem = {
           dates: { start: selectedDates.start, end: selectedDates.end },
           vehicle: vehicle,
