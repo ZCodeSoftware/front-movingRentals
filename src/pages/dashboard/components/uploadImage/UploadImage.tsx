@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import ImageCrop from './utils/ImageCrop'
-import { IPreset } from './models/upload-image-preset.interface'
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react'
 import { IVehicleForm } from '../dashboardProducts/createProduct/models/vehicles-form.interface'
 import { ITourForm } from '../dashboardProducts/createProduct/models/tour-form.interface'
 import { ITransferForm } from '../dashboardProducts/createProduct/models/transfer-form.interface'
 import { ICategoryForm } from '../dashboardCatalogs/createCatalogs/models/category-form.interface'
+import { IPreset } from './models/upload-image-preset.interface'
 
 interface CroppedFilesState {
   croppedImages: Blob[]
@@ -26,13 +27,13 @@ const UploadImage = <T extends FormTypes>({
   const [croppedFiles, setCroppedFiles] = useState<CroppedFilesState>({
     croppedImages: []
   })
+  const [optionModal, setOptionModal] = useState(false)
 
   const validateFiles = (files: File[]): boolean => {
     if (!isMultiple && imageFiles.length + files.length > 1) {
       setError('Solo se permite subir una imagen')
       return false
     }
-
     setError('')
     return true
   }
@@ -53,11 +54,7 @@ const UploadImage = <T extends FormTypes>({
           }
 
           const { width, height } = img
-          const scaleFactor = Math.min(
-            width > 1000 ? maxDimension / (width * 3) : maxDimension / width,
-            maxDimension / height,
-            1
-          )
+          const scaleFactor = Math.min(maxDimension / width, maxDimension / height, 1)
           const newWidth = Math.round(width * scaleFactor)
           const newHeight = Math.round(height * scaleFactor)
 
@@ -92,8 +89,8 @@ const UploadImage = <T extends FormTypes>({
 
   const processFiles = async (files: File[]) => {
     if (validateFiles(files)) {
-      const scaledFiles = await Promise.all(files.map(file => resizeImage(file, 1000)))
-      setCroppingFiles(scaledFiles)
+      setCroppingFiles(files)
+      setOptionModal(true)
     }
   }
 
@@ -130,15 +127,21 @@ const UploadImage = <T extends FormTypes>({
     }
   }, [croppedFiles.croppedImages])
 
-  const handleCropComplete = (croppedImages: Blob[]) => {
+  const handleCropComplete = async (croppedImages: Blob[]) => {
+    const resizedImages = await Promise.all(
+      croppedImages.map(image => resizeImage(new File([image], 'cropped-image', { type: 'image/jpeg' }), 1000))
+    )
+
     setCroppedFiles(prevState => ({
-      croppedImages: [...prevState.croppedImages, ...croppedImages]
+      croppedImages: [...prevState.croppedImages, ...resizedImages]
     }))
     setCroppingFiles([])
+    setOptionModal(false)
   }
 
   const handleCropCancel = () => {
     setCroppingFiles([])
+    setOptionModal(false)
   }
 
   const handleImageChargeCancel = () => {
@@ -148,7 +151,11 @@ const UploadImage = <T extends FormTypes>({
     setError('')
   }
 
-  console.log(imageFiles)
+  const handleOriginalUpload = async () => {
+    setUrl(prev => [...prev, ...croppingFiles])
+    setCroppingFiles([])
+    setOptionModal(false)
+  }
 
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='w-full flex flex-col items-center'>
@@ -229,9 +236,27 @@ const UploadImage = <T extends FormTypes>({
           )}
         </>
       )}
-      {croppingFiles.length > 0 ? (
+      {optionModal && (
+        <Modal isOpen onClose={handleCropCancel}>
+          <ModalContent>
+            <ModalHeader>Opciones de carga</ModalHeader>
+            <ModalBody>
+              <p>Elige una opción: Recortar para ajustar las imágenes o sube las imágenes originales.</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color='primary' onClick={handleOriginalUpload}>
+                Original
+              </Button>
+              <Button color='secondary' onClick={() => setOptionModal(false)}>
+                Recortar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+      {croppingFiles.length > 0 && !optionModal && (
         <ImageCrop files={croppingFiles} onCropComplete={handleCropComplete} onCancel={handleCropCancel} />
-      ) : null}
+      )}
     </div>
   )
 }
