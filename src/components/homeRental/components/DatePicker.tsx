@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import { NextUIProvider, DateRangePicker, Button } from '@nextui-org/react';
-import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date';
-import { useTranslation } from 'react-i18next';
-import { IDatePickerSectionProps } from '../models/date-picker-props';
-import { ISelectData, ISelectItems } from '../models/Select-data';
-import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage';
+import { useState, useEffect } from 'react'
+import { NextUIProvider, DateRangePicker, Button } from '@nextui-org/react'
+import { getLocalTimeZone, now, parseZonedDateTime, ZonedDateTime } from '@internationalized/date'
+import { useTranslation } from 'react-i18next'
+import { IDatePickerSectionProps } from '../models/date-picker-props'
+import { ISelectData, ISelectItems } from '../models/Select-data'
+import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
+import { IVehicles } from '../../../services/products/models/vehicles.interface'
+import calculateVehiclePrice from '../../../utils/calculate-cost/calculateCost'
 
 const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   selectData,
@@ -12,83 +14,87 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
   setIsSubmitDisable,
   vehicle
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
 
   const existingVehicleDateItem = selectData.selectedItems?.find(
     (item: ISelectItems) => item.vehicle._id === vehicle._id
-  );
-  const localBackCart = getLocalStorage('backCart');
-  const localCart = getLocalStorage('cart');
+  )
+  const localBackCart = getLocalStorage('backCart')
+  const localCart = getLocalStorage('cart')
 
   const [selectedDates, setSelectedDates] = useState<{ start: ZonedDateTime; end: ZonedDateTime }>({
     start: existingVehicleDateItem ? existingVehicleDateItem.dates.start : now(getLocalTimeZone()).add({ days: 1 }),
     end: existingVehicleDateItem
       ? existingVehicleDateItem.dates.end
       : now(getLocalTimeZone()).add({ days: 1, hours: 4 })
-  });
+  })
 
   const isAlreadySelected = () => {
-    const isInBackCart = localBackCart?.selectedItems?.some((item: any) => item.vehicle === vehicle._id);
-    const isInLocalCart = localCart?.selectedItems?.some((item: any) => item.vehicle._id === vehicle._id);
+    const isInBackCart = localBackCart?.selectedItems?.some((item: any) => item.vehicle === vehicle._id)
+    const isInLocalCart = localCart?.selectedItems?.some((item: any) => item.vehicle._id === vehicle._id)
 
-    return isInBackCart || isInLocalCart;
-  };
+    return isInBackCart || isInLocalCart
+  }
 
   useEffect(() => {
-    const currentDate = now(getLocalTimeZone());
+    const currentDate = now(getLocalTimeZone())
 
     if (!existingVehicleDateItem) {
       if (currentDate.hour > 20) {
-        const start = currentDate.add({ days: 1 });
-        const end = currentDate.add({ days: 2, hours: 4 });
+        const start = currentDate.add({ days: 1 })
+        const end = currentDate.add({ days: 2, hours: 4 })
 
         setSelectedDates({
           start,
           end
-        });
+        })
       }
     }
-  }, [existingVehicleDateItem]);
+  }, [existingVehicleDateItem])
 
   useEffect(() => {
     if (selectedDates.start && selectedDates.end) {
-      handleSave();
+      handleSave()
     }
-  }, [selectedDates]);
+  }, [selectedDates])
 
   const handleSave = () => {
     if (selectedDates.start && selectedDates.end) {
       setSelectData((prev: ISelectData) => {
-        const existingItemIndex = prev.selectedItems?.findIndex(item => item.vehicle._id === vehicle._id) ?? -1;
-
+        const existingItemIndex = prev.selectedItems?.findIndex(item => item.vehicle._id === vehicle._id) ?? -1
+        console.log(prev, 'prev')
         const newItem = {
           dates: { start: selectedDates.start, end: selectedDates.end },
-          vehicle: vehicle
-        };
+          vehicle: vehicle,
+          total: calculateVehiclePrice({
+            vehicle: vehicle,
+            dates: { start: selectedDates.start, end: selectedDates.end }
+          })
+        }
 
         if (existingItemIndex > -1) {
-          const updatedSelectedItem = [...prev.selectedItems];
-          updatedSelectedItem[existingItemIndex] = newItem;
+          const updatedSelectedItem = [...prev.selectedItems]
+          updatedSelectedItem[existingItemIndex] = newItem
           return {
             ...prev,
             selectedItems: updatedSelectedItem
-          };
+          }
         }
 
         return {
           ...prev,
           selectedItems: [...(prev.selectedItems || []), newItem]
-        };
-      });
+        }
+      })
     }
-  };
+  }
 
   const handleRemove = () => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
       selectedItems: prev.selectedItems?.filter(item => item.vehicle._id !== vehicle._id) || []
-    }));
-  };
+    }))
+  }
 
   return (
     <div className='flex'>
@@ -108,21 +114,21 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
           }
           validate={(value: any) => {
             if (value.start.day === value.end.day) {
-              const hoursDiff = value.end.hour - value.start.hour;
+              const hoursDiff = value.end.hour - value.start.hour
               if (hoursDiff < 4) {
-                setIsSubmitDisable(true);
-                return t('HomeRental.date_picker.min_hours_valid');
+                setIsSubmitDisable(true)
+                return t('HomeRental.date_picker.min_hours_valid')
               } else {
-                setIsSubmitDisable(false);
+                setIsSubmitDisable(false)
               }
             }
             if (value.start.day < now(getLocalTimeZone()).day || value.end.day < now(getLocalTimeZone()).day) {
-              setIsSubmitDisable(true);
-              return t('HomeRental.date_picker.previous_day_valid');
+              setIsSubmitDisable(true)
+              return t('HomeRental.date_picker.previous_day_valid')
             } else {
-              setIsSubmitDisable(false);
+              setIsSubmitDisable(false)
             }
-            return true;
+            return true
           }}
           defaultValue={selectedDates}
           label={t('HomeRental.date_picker.title')}
@@ -139,7 +145,7 @@ const DatePickerSection: React.FC<IDatePickerSectionProps> = ({
         </Button>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default DatePickerSection;
+export default DatePickerSection

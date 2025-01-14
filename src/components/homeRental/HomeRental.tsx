@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Accordion, AccordionItem, DatePicker } from '@nextui-org/react';
-import { IHomeRentalProps } from './models/home-rental-props.interface';
-import { IVehicles } from '../../services/products/models/vehicles.interface';
-import { ISelectData } from './models/Select-data';
-import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart';
-import { postCart } from '../../services/cart/POST/cart.post.service';
-import { IUser } from '../../services/users/models/user.interface';
-import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service';
-import { setLocalStorage } from '../../utils/local-storage/setLocalStorage';
-import { getLocalStorage } from '../../utils/local-storage/getLocalStorage';
-import { fetchTransfers } from '../../services/transfers/GET/transfers.get.service';
-import { ITransfers } from '../../services/transfers/models/transfers.interface';
-import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service';
-import { ITours } from '../../services/products/models/tours.interface';
-import ToursAccordionItem from './components/ToursAccordionItem';
-import TransfersAccordionItem from './components/TransfersAccordionItem';
-import VehiclesAccordionItem from './components/VehiclesAccordionItem';
-import SelectedItemDetails from './components/SelectedItemDetails';
-import { now, getLocalTimeZone } from '@internationalized/date';
+import { useState, useEffect } from 'react'
+import { Accordion, AccordionItem, DatePicker } from '@nextui-org/react'
+import { IHomeRentalProps } from './models/home-rental-props.interface'
+import { IVehicles } from '../../services/products/models/vehicles.interface'
+import { ISelectData } from './models/Select-data'
+import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
+import { postCart } from '../../services/cart/POST/cart.post.service'
+import { IUser } from '../../services/users/models/user.interface'
+import { fetchUserDetail } from '../../services/users/GET/user-detail.get.service'
+import { setLocalStorage } from '../../utils/local-storage/setLocalStorage'
+import { getLocalStorage } from '../../utils/local-storage/getLocalStorage'
+import { fetchTransfers } from '../../services/transfers/GET/transfers.get.service'
+import { ITransfers } from '../../services/transfers/models/transfers.interface'
+import { fetchAllTours } from '../../services/products/tours/GET/tours.get.service'
+import { ITours } from '../../services/products/models/tours.interface'
+import ToursAccordionItem from './components/ToursAccordionItem'
+import TransfersAccordionItem from './components/TransfersAccordionItem'
+import VehiclesAccordionItem from './components/VehiclesAccordionItem'
+import SelectedItemDetails from './components/SelectedItemDetails'
+import { now, getLocalTimeZone } from '@internationalized/date'
 import logo from '/palmera-icon.svg'
 
 const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
-  const [userData, setUserData] = useState<IUser>();
-  const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({});
-  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [userData, setUserData] = useState<IUser>()
+  const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
+  const [loading, setLoading] = useState<Record<string, boolean>>({})
   const [selectData, setSelectData] = useState<ISelectData>({
     travelers: { adults: 1, childrens: 0 },
     selectedItems: [],
@@ -33,187 +33,188 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     selectedTransfers: [],
     selectedVehicles: [],
     selectDate: now(getLocalTimeZone())
-  });
-  const [tours, setTours] = useState<ITours[]>([]);
-  const [isSubmitDisable, setIsSubmitDisable] = useState(false);
-  const [transfers, setTransfers] = useState<ITransfers[]>([]);
+  })
+  const [tours, setTours] = useState<ITours[]>([])
+  const [isSubmitDisable, setIsSubmitDisable] = useState(false)
+  const [transfers, setTransfers] = useState<ITransfers[]>([])
 
   useEffect(() => {
-    console.log('selectedVehicles updated:', selectData.selectedVehicles);
-  }, [selectData.selectedVehicles]);
+    console.log('selectedVehicles updated:', selectData.selectedVehicles)
+  }, [selectData.selectedVehicles])
 
   useEffect(() => {
     const getData = async () => {
-      const result = await fetchUserDetail();
-      setUserData(result);
-    };
-    getData();
-  }, []);
+      const result = await fetchUserDetail()
+      setUserData(result)
+    }
+    getData()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
-      const element = document.getElementById('sticky-container');
-      const rightSection = document.getElementById('right-section');
-      const stickyContent = document.getElementById('sticky-content');
-      if (window.scrollY > 30 * 16) { // 30rem in pixels
-        element?.classList.add('sticky-reduced');
-        rightSection?.classList.add('hidden');
-        element?.classList.add('w-full');
-        stickyContent?.classList.remove('hidden');
+      const element = document.getElementById('sticky-container')
+      const rightSection = document.getElementById('right-section')
+      const stickyContent = document.getElementById('sticky-content')
+      if (window.scrollY > 30 * 16) {
+        // 30rem in pixels
+        element?.classList.add('sticky-reduced')
+        rightSection?.classList.add('hidden')
+        element?.classList.add('w-full')
+        stickyContent?.classList.remove('hidden')
       } else {
-        element?.classList.remove('sticky-reduced');
-        rightSection?.classList.remove('hidden');
-        element?.classList.remove('w-full');
-        stickyContent?.classList.add('hidden');
+        element?.classList.remove('sticky-reduced')
+        rightSection?.classList.remove('hidden')
+        element?.classList.remove('w-full')
+        stickyContent?.classList.add('hidden')
       }
-    };
+    }
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
-    getTransfersData();
-    getToursData();
-  }, []);
+    getTransfersData()
+    getToursData()
+  }, [])
 
-         const handleSubmit = async () => {
-        console.log('selectData:', selectData);
-      
-        if (
-          selectData.selectedItems.length === 0 &&
-          selectData.selectedTours.length === 0 &&
-          selectData.transfer.length === 0
-        ) {
-          alert('Por favor, selecciona al menos un vehiculo, tour o traslado.');
-          return;
-        }
-      
-        const formattedItems = selectData.selectedItems.map(item => ({
-          ...item,
-          dates: item.dates
-            ? {
-              start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
-              end: item.dates.end ? item.dates.end.toDate().toISOString() : null
-            }
-            : null,
-          vehicle: item.vehicle ? item.vehicle._id : null,
-          total: item.total
-        }));
-      
-        const formattedTours = selectData.selectedTours.map(item => ({
-          ...item,
-          date: item.date ? item.date.toString() : null,
-          tour: item.tour ? item.tour._id : null
-        }));
-      
-        const formattedTransfers = selectData.transfer.map(item => ({
-          ...item,
-          date: item.date instanceof Date ? item.date.toISOString() : null,
-          transfer: item.transfer._id ? item.transfer._id : null
-        }));
-      
-        const localBackCart = getLocalStorage('backCart');
-      
-        const combinedVehicle = localBackCart
-          ? [
-            ...localBackCart.selectedItems,
-            ...formattedItems.filter(
-              item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
-            )
-          ]
-          : formattedItems;
-      
-        const combinedTours = localBackCart
-          ? [
-            ...localBackCart.selectedTours,
-            ...formattedTours.filter(
-              item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
-            )
-          ]
-          : formattedTours;
-      
-        const combinedTransfers = localBackCart
-          ? [
-            ...localBackCart.transfer,
-            ...formattedTransfers.filter(
-              item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
-            )
-          ]
-          : formattedTransfers;
-      
-        const backPayload = {
-          transfer: combinedTransfers,
-          travelers: selectData.travelers,
-          selectedItems: combinedVehicle,
-          selectedTours: combinedTours
-        };
-      
-        const localStoragePayload = {
-          transfer: selectData.transfer,
-          travelers: selectData.travelers,
-          selectedItems: selectData.selectedItems,
-          selectedTours: selectData.selectedTours
-        };
-      
-        try {
-          if (localStorage.getItem('user')) {
-            if (userData) {
-              await postCart({ cart: backPayload as any, userCartId: userData.cart });
-              setLocalStorage('backCart', backPayload);
-            }
-          } else {
-            ValidateProductInCart(localStoragePayload);
-            setLocalStorage('backCart', localStoragePayload);
+  const handleSubmit = async () => {
+    console.log('selectData:', selectData)
+
+    if (
+      selectData.selectedItems.length === 0 &&
+      selectData.selectedTours.length === 0 &&
+      selectData.transfer.length === 0
+    ) {
+      alert('Por favor, selecciona al menos un vehiculo, tour o traslado.')
+      return
+    }
+
+    const formattedItems = selectData.selectedItems.map(item => ({
+      ...item,
+      dates: item.dates
+        ? {
+            start: item.dates.start ? item.dates.start.toDate().toISOString() : null,
+            end: item.dates.end ? item.dates.end.toDate().toISOString() : null
           }
-        } catch (error: any) {
-          console.error('Error al enviar los datos:', error);
+        : null,
+      vehicle: item.vehicle ? item.vehicle._id : null,
+      total: item.total
+    }))
+
+    const formattedTours = selectData.selectedTours.map(item => ({
+      ...item,
+      date: item.date ? item.date.toString() : null,
+      tour: item.tour ? item.tour._id : null
+    }))
+
+    const formattedTransfers = selectData.transfer.map(item => ({
+      ...item,
+      date: item.date instanceof Date ? item.date.toISOString() : null,
+      transfer: item.transfer._id ? item.transfer._id : null
+    }))
+
+    const localBackCart = getLocalStorage('backCart')
+
+    const combinedVehicle = localBackCart
+      ? [
+          ...localBackCart.selectedItems,
+          ...formattedItems.filter(
+            item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
+          )
+        ]
+      : formattedItems
+
+    const combinedTours = localBackCart
+      ? [
+          ...localBackCart.selectedTours,
+          ...formattedTours.filter(
+            item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
+          )
+        ]
+      : formattedTours
+
+    const combinedTransfers = localBackCart
+      ? [
+          ...localBackCart.transfer,
+          ...formattedTransfers.filter(
+            item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
+          )
+        ]
+      : formattedTransfers
+
+    const backPayload = {
+      transfer: combinedTransfers,
+      travelers: selectData.travelers,
+      selectedItems: combinedVehicle,
+      selectedTours: combinedTours
+    }
+
+    const localStoragePayload = {
+      transfer: selectData.transfer,
+      travelers: selectData.travelers,
+      selectedItems: selectData.selectedItems,
+      selectedTours: selectData.selectedTours
+    }
+
+    try {
+      if (localStorage.getItem('user')) {
+        if (userData) {
+          await postCart({ cart: backPayload as any, userCartId: userData.cart })
+          setLocalStorage('backCart', backPayload)
         }
-      
-        // Limpiar los datos de SelectedItemDetails
-        setSelectData({
-          travelers: { adults: 1, childrens: 0 },
-          selectedItems: [],
-          selectedTours: [],
-          branch: '',
-          transfer: [],
-          selectedTransfers: [],
-          selectedVehicles: [],
-          selectDate: now(getLocalTimeZone())
-        });
-      
-        alert('Datos enviados correctamente');
-      };
+      } else {
+        ValidateProductInCart(localStoragePayload)
+        setLocalStorage('backCart', localStoragePayload)
+      }
+    } catch (error: any) {
+      console.error('Error al enviar los datos:', error)
+    }
+
+    // Limpiar los datos de SelectedItemDetails
+    setSelectData({
+      travelers: { adults: 1, childrens: 0 },
+      selectedItems: [],
+      selectedTours: [],
+      branch: '',
+      transfer: [],
+      selectedTransfers: [],
+      selectedVehicles: [],
+      selectDate: now(getLocalTimeZone())
+    })
+
+    alert('Datos enviados correctamente')
+  }
 
   const getTransfersData = async () => {
     if (!loading.transfer && transfers.length === 0) {
-      setLoading(prev => ({ ...prev, transfers: true }));
+      setLoading(prev => ({ ...prev, transfers: true }))
       try {
-        const result = await fetchTransfers();
-        setTransfers(result);
+        const result = await fetchTransfers()
+        setTransfers(result)
       } catch (error) {
-        console.error('Error fetching transfers:', error);
+        console.error('Error fetching transfers:', error)
       } finally {
-        setLoading(prev => ({ ...prev, transfers: false }));
+        setLoading(prev => ({ ...prev, transfers: false }))
       }
     }
-  };
+  }
 
   const getToursData = async () => {
     if (!loading.tours && tours.length === 0) {
-      setLoading(prev => ({ ...prev, tours: true }));
+      setLoading(prev => ({ ...prev, tours: true }))
       try {
-        const result = await fetchAllTours();
-        setTours(result);
+        const result = await fetchAllTours()
+        setTours(result)
       } catch (error) {
-        console.error('Error fetching tours:', error);
+        console.error('Error fetching tours:', error)
       } finally {
-        setLoading(prev => ({ ...prev, tours: false }));
+        setLoading(prev => ({ ...prev, tours: false }))
       }
     }
-  };
+  }
 
   const clearSelection = (type: string, id: string) => {
     if (type === 'transfer') {
@@ -221,40 +222,39 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
         ...prevState,
         transfer: prevState.transfer.filter(transfer => transfer.transfer._id !== id),
         selectedTransfers: prevState.selectedTransfers.filter(transfer => transfer._id !== id)
-      }));
+      }))
     } else if (type === 'tour') {
       setSelectData(prevState => ({
         ...prevState,
         selectedTours: prevState.selectedTours.filter(tour => tour.tour._id !== id)
-      }));
+      }))
     } else if (type === 'vehicle') {
       setSelectData(prevState => ({
         ...prevState,
         selectedItems: prevState.selectedItems.filter(item => item.vehicle._id !== id),
         selectedVehicles: prevState.selectedVehicles.filter(vehicle => vehicle._id !== id)
-      }));
+      }))
     }
-    setIsSubmitDisable(false);
-  };
+    setIsSubmitDisable(false)
+  }
 
   const handleTravelersChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
+    const { value } = event.target
     setSelectData(prevState => ({
       ...prevState,
       travelers: { ...prevState.travelers, adults: parseInt(value, 10) }
-    }));
-  };
+    }))
+  }
 
   const handleDateChange = (date: any) => {
     setSelectData(prevState => ({
       ...prevState,
       selectDate: date
-    }));
-  };
+    }))
+  }
 
   return (
     <div className='flex flex-col w-full bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg h-full md:max-h-[37rem]'>
-      
       <div className='w-full text-center mb-4'>
         <h1 className='text-3xl font-bold'>Reservas</h1>
       </div>
@@ -266,13 +266,16 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                 <TransfersAccordionItem
                   selectData={selectData}
                   setSelectData={setSelectData}
-                  setSelectedTransfer={(transfers) => {
-                    const transfersArray = Array.isArray(transfers) ? transfers : [transfers];
+                  setSelectedTransfer={transfers => {
+                    const transfersArray = Array.isArray(transfers) ? transfers : [transfers]
                     setSelectData(prevState => ({
                       ...prevState,
                       selectedTransfers: [...prevState.selectedTransfers, ...transfersArray],
-                      transfer: [...prevState.transfer, ...transfersArray.map(transfer => ({ transfer, date: selectData.selectDate }))]
-                    }));
+                      transfer: [
+                        ...prevState.transfer,
+                        ...transfersArray.map(transfer => ({ transfer, date: selectData.selectDate }))
+                      ]
+                    }))
                   }}
                 />
               </AccordionItem>
@@ -286,13 +289,19 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   setSelectData={setSelectData}
                   selectData={selectData}
                   setIsSubmitDisable={setIsSubmitDisable}
-                  setSelectedVehicle={(vehicles) => {
-                    const vehiclesArray = Array.isArray(vehicles) ? vehicles : [vehicles];
+                  setSelectedVehicle={vehicles => {
+                    const vehiclesArray = Array.isArray(vehicles) ? vehicles : [vehicles]
                     setSelectData(prevState => ({
                       ...prevState,
                       selectedVehicles: [...prevState.selectedVehicles, ...vehiclesArray],
-                      selectedItems: [...prevState.selectedItems, ...vehiclesArray.map(vehicle => ({ vehicle, dates: { start: selectData.selectDate, end: selectData.selectDate } }))]
-                    }));
+                      selectedItems: [
+                        ...prevState.selectedItems,
+                        ...vehiclesArray.map(vehicle => ({
+                          vehicle,
+                          dates: { start: selectData.selectDate, end: selectData.selectDate }
+                        }))
+                      ]
+                    }))
                   }}
                 />
               </AccordionItem>
@@ -300,27 +309,33 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                 <ToursAccordionItem
                   selectData={selectData}
                   setSelectData={setSelectData}
-                  setSelectedTour={(tours) => {
-                    const toursArray = Array.isArray(tours) ? tours : [tours];
+                  setSelectedTour={tours => {
+                    const toursArray = Array.isArray(tours) ? tours : [tours]
                     setSelectData(prevState => ({
                       ...prevState,
-                      selectedTours: [...prevState.selectedTours, ...toursArray.map(tour => ({ tour, date: selectData.selectDate }))]
-                    }));
+                      selectedTours: [
+                        ...prevState.selectedTours,
+                        ...toursArray.map(tour => ({ tour, date: selectData.selectDate }))
+                      ]
+                    }))
                   }}
                 />
               </AccordionItem>
             </Accordion>
           </div>
         </div>
-                <div className='flex flex-row items-center md:w-12 w-4/5 mx-auto my-4 sm:flex-col sm:mx-4 sm:my-auto'>
+        <div className='flex flex-row items-center md:w-12 w-4/5 mx-auto my-4 sm:flex-col sm:mx-4 sm:my-auto'>
           <div className='w-2/4 h-auto min-h-[48px] border border-black opacity-20 md:w-0 sm:h-auto sm:mx-auto' />
           <img src={logo} className='text-lg mx-2 size-10 md:my-2' />
           <div className='w-2/4 h-auto min-h-[48px] border border-black opacity-20 md:w-0 sm:h-auto sm:mx-auto' />
         </div>
         <div className='w-full md:w-1/2 p-4'>
-          {selectData.selectedTransfers.length > 0 || selectData.selectedTours.length > 0 || selectData.selectedVehicles.length > 0 ? (
+          {selectData.selectedTransfers.length > 0 ||
+          selectData.selectedTours.length > 0 ||
+          selectData.selectedVehicles.length > 0 ? (
             <SelectedItemDetails
               selectData={selectData}
+              setSelectData={setSelectData}
               setSelectDate={setSelectData}
               setIsSubmitDisable={setIsSubmitDisable}
               handleSubmit={handleSubmit}
@@ -339,17 +354,17 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                 showMonthAndYearPickers
                 value={selectData.selectDate}
                 onChange={handleDateChange}
-                label="Selecciona una fecha"
-                variant="bordered"
+                label='Selecciona una fecha'
+                variant='bordered'
                 className='bg-[#D4EDFF] hover:bg-[#D4EDFF] hover:focus-within:bg-[#D4EDFF] rounded-md'
               />
               <div>
-                <label htmlFor="travelers" className='block text-sm font-medium text-gray-700'>
+                <label htmlFor='travelers' className='block text-sm font-medium text-gray-700'>
                   Cantidad de personas
                 </label>
                 <select
-                  id="travelers"
-                  name="travelers"
+                  id='travelers'
+                  name='travelers'
                   className='mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'
                   value={selectData.travelers.adults}
                   onChange={handleTravelersChange}
@@ -366,7 +381,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomeRental;
+export default HomeRental

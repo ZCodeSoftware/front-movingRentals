@@ -5,6 +5,7 @@ import { IimageSliderProps } from './models/image-slider-props.interface'
 import chevronLeft from '../../assets/SVG/chevron-left.svg'
 import chevronRight from '../../assets/SVG/chevron-right.svg'
 import { Reviews } from '../../mocks/Reviews'
+import { useTranslation } from 'react-i18next'
 
 interface IReview {
   image: string
@@ -40,6 +41,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
   const [isPaused, setIsPaused] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const autoplayTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (Reviews.length > 0) {
@@ -125,6 +127,7 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
       onMouseEnter={autoplay ? handleMouseEnter : undefined}
       onMouseLeave={autoplay ? handleMouseLeave : undefined}
     >
+      <h1 className='text-center font-semibold text-2xl p-2 h-2'>{t('Reviews.title')}</h1>
       <div className='relative h-full flex items-center justify-center'>
         <div className='absolute w-full h-full flex items-center justify-center'>
           {getVisibleSlides().map(({ slide, position }, index) => {
@@ -171,7 +174,6 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
             )
           })}
         </div>
-
         <Button
           className='absolute -left-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
           onClick={goToPrevious}
@@ -179,7 +181,6 @@ const ImageCarousel: React.FC<IimageSliderProps> = ({ className = '', autoplay =
         >
           <Image src={chevronLeft} alt='prev' />
         </Button>
-
         <Button
           className='absolute -right-2 top-1/2 -translate-y-1/2 z-20 bg-white/40 hover:bg-white/90'
           onClick={goToNext}
