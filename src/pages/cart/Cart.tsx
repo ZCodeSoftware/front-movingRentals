@@ -15,9 +15,10 @@ import { ISelectItems, ISelectTours, ISelectTransfers } from '../../components/h
 import BackCartItemList from './components/BackCartListItems'
 import CryptoJS from 'crypto-js'
 import LoaderComponent from '../../utils/loader'
+import useCartStore from '../../store/cart.store'
 
 const Cart = () => {
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   const locale = i18n.language === 'en' ? 'en-US' : 'es-AR'
   initMercadoPago(import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY, { locale })
   const [loading, setLoading] = useState<boolean>(true)
@@ -32,9 +33,9 @@ const Cart = () => {
     transfer: [],
     travelers: { adults: 0, childrens: 0 }
   })
+  const [tyc, setTyc] = useState<boolean>(false)
   const [cartData, setCartData] = useState<null | any>(null)
-
-  console.log(cartData)
+  const { setCartItems } = useCartStore()
 
   useEffect(() => {
     const fetchUserAndCart = async () => {
@@ -139,18 +140,27 @@ const Cart = () => {
   const handleRemoveItem = async (productId: string) => {
     try {
       if (getLocalStorage('user') && cartData) {
-        const updatedCartVehicles =
-          cartData.vehicles.filter((product: ISelectItems) => product.vehicle._id != productId) || []
-        const updatedCartTours = cartData.tours.filter((product: ISelectTours) => product.tour._id != productId) || []
-        const updateTransfer =
-          cartData.transfer.filter((product: ISelectTransfers) => product.transfer._id != productId) || []
+        
+        const updatedCartVehicles = cartData.vehicles?.filter((product: ISelectItems) => product.vehicle._id != productId) || []
+        const updatedCartTours = cartData.tours?.filter((product: ISelectTours) => product.tour._id != productId) || []
+        const updateTransfer = cartData.transfer?.filter((product: ISelectTransfers) => product.transfer._id != productId) || []
         const newCart = {
           ...cartData,
-          vehicles: updatedCartVehicles,
-          tours: updatedCartTours,
-          transfer: updateTransfer
+          selectedItems: updatedCartVehicles.map((product: ISelectItems) => ({
+            ...product,
+            vehicle: product.vehicle._id
+          })),
+          selectedTours: updatedCartTours.map((product: ISelectTours) => ({
+            ...product,
+            tour: product.tour._id
+          })),
+          transfer: updateTransfer.map((product: ISelectTransfers) => ({
+            ...product,
+            transfer: product.transfer._id
+          }))
         }
-
+        console.log('newCart', newCart);
+        
         await postCart({ cart: newCart, userCartId: userData.cart })
         setLocalStorage('backCart', {
           ...localCart,
@@ -159,7 +169,10 @@ const Cart = () => {
           transfer: updateTransfer
         })
         setCartData(newCart)
+        const totalItems = updatedCartVehicles.length + updatedCartTours.length + updateTransfer.length
+        setCartItems(totalItems)
       } else {
+        
         const updatedCartVehicles = localCart?.selectedItems?.filter(product => product.vehicle._id != productId) || []
         const updatedCartTours = localCart?.selectedTours?.filter(product => product.tour._id != productId) || []
         const updateTransfer = localCart?.transfer?.filter(product => product.transfer._id != productId) || []
@@ -170,6 +183,8 @@ const Cart = () => {
           selectedTours: updatedCartTours,
           transfer: updateTransfer
         }
+        const totalItems = updatedCartVehicles.length + updatedCartTours.length + updateTransfer.length
+        setCartItems(totalItems)
 
         setLocalCart(newCart)
         setLocalStorage('cart', newCart)
@@ -200,7 +215,7 @@ const Cart = () => {
           selectedTours: [],
           transfer: []
         }
-
+        setCartItems(0)
         setLocalCart(emptyCart)
         localStorage.removeItem('cart')
       }
@@ -214,12 +229,18 @@ const Cart = () => {
     return <LoaderComponent />
   }
 
+  const handleTycChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTyc(event.target.checked);
+  };
+  
   const cart = userData && cartData ? cartData : { products: localCart }
+  const itemsInCart = cartData ? cartData.vehicles.length + cartData.tours.length + cartData.transfer.length : localCart.selectedItems.length + localCart.selectedTours.length + localCart.transfer.length
 
+  
   return (
     <main className='w-full'>
-      <h1 className='m-4 text-center text-2xl font-bold'>Cart</h1>
-      {cart ? (
+      <h1 className='m-4 text-center text-2xl font-bold'>{t("cart.cart")}</h1>
+      {itemsInCart ? (
         <div className='mx-auto max-w-5xl justify-center md:flex md:space-x-6 xl:px-0 p-4'>
           <div className='md:w-2/3 flex flex-col'>
             <section className='rounded-lg md:overflow-auto overflow-hidden md:max-h-[80vh]'>
@@ -231,27 +252,38 @@ const Cart = () => {
             </section>
             <div className='w-full flex justify-end md:justify-start'>
               <button onClick={handleRemoveAll} className='max-w-28 p-2'>
-                Remove all
+                {t("cart.removeAll")}
               </button>
             </div>
           </div>
           <section className='mt-6 h-full md:mt-0 md:w-1/3 bg-transparent'>
             <div className='p-4 border border-b-0 rounded-md rounded-b-none mt-6'>
               <h1 className='mt-6 font-bold'>Total: ${totalPrice}</h1>
+              <div className='flex mt-6'>
+                <input
+                id='terms'
+                type='checkbox'
+                className='mr-2'
+                checked={tyc}
+                onChange={handleTycChange}
+                />
+                <label htmlFor='terms' className=''>{t("cart.tyc")}</label>
+
+              </div>
             </div>
             <Button
               onPress={handleBuy}
               className='w-full rounded-md font-semibold text-xl border rounded-t-none bg-buttonPrimary p-6'
-              disabled={purchaseLoading} // Deshabilita el botón mientras se está cargando la compra
+              isDisabled={purchaseLoading || !tyc} // Deshabilita el botón mientras se está cargando la compra
             >
               {purchaseLoading ? <Spinner color='primary' size='sm' /> : 'Purchase'}
             </Button>
-            {preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
+            {tyc && preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
           </section>
         </div>
       ) : (
         <div className='flex justify-center w-full'>
-          <h1 className='rounded-lg border p-6'>Tu carrito está vacío</h1>
+          <h3 className='rounded-lg border p-6'>{t("cart.emptyCart")}</h3>
         </div>
       )}
     </main>

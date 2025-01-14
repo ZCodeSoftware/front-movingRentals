@@ -3,7 +3,6 @@ import trashIcon from '../../../assets/SVG/trash-icon.svg'
 import { ISelectItems, ISelectTours, ISelectTransfers } from '../../../components/homeRental/models/Select-data'
 
 const LocalCartItemList = ({ product, handleRemove }: any) => {
-  console.log(product);
   
   return (
     <>

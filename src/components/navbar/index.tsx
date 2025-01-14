@@ -27,6 +27,7 @@ import { removeLocalStorage } from '../../utils/local-storage/removeLocalStorage
 import { fetchAllRoles } from '../../services/roles/GET/roles.get.service'
 import { IRoles } from '../../services/roles/models/roles.interface'
 import { getExchange } from '../../services/exchange/GET/exchange.get.service'
+import useCartStore from '../../store/cart.store'
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -38,6 +39,9 @@ export default function NavbarComponent() {
   const [cartData, setCartData] = useState<any>(null)
   const [exchangeData, setExchangeData] = useState<any>(null)
   const [roles, setRoles] = useState<IRoles[]>([])
+  const { cartItems } = useCartStore()
+  console.log(cartData);
+  
 
   const handleLanguageChange = (value: string) => {
     setLanguage(value)
@@ -97,7 +101,6 @@ export default function NavbarComponent() {
         setCartData(localCartData)
       }
       throw new Error(error)
-    } finally {
     }
   }
 
@@ -111,9 +114,6 @@ export default function NavbarComponent() {
   }
 
   const adminRole = roles.find(role => role.name === 'ADMIN')
-
-  const itemsInCart =
-    (cartData?.vehicles?.length || 0) + (cartData?.tours?.length || 0) + (cartData?.transfer?.length || 0)
 
   const getFlag = (language: string) => {
     return language === 'en' ? flagUse : flagMex
@@ -165,9 +165,9 @@ export default function NavbarComponent() {
             <NavbarContent as='div' justify='end' className='flex items-center'>
               <Link href='/cart' className='flex flex-col items-center text-white mr-4 relative'>
                 <img src={cartIcon} alt='cart' className='w-8 h-8' />
-                {itemsInCart > 0 && (
+                {cartItems > 0 && (
                   <div className='absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs'>
-                    {itemsInCart}
+                    {cartItems}
                   </div>
                 )}
               </Link>

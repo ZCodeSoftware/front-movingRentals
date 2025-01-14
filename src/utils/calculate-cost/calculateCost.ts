@@ -30,10 +30,8 @@ const calculateVehiclePrice = ({
     const remainingHours = differenceInHours % 24
 
     totalPrice += calculateRemainingPrice(remainingHours, price, pricePer4, pricePer8)
-    console.log(totalPrice)
   } else {
     totalPrice += calculateRemainingPrice(differenceInHours, price, pricePer4, pricePer8)
-    console.log(totalPrice, 'totalPrice')
   }
   return totalPrice
 }
