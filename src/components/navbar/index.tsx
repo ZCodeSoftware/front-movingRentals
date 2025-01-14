@@ -8,15 +8,13 @@ import {
   NavbarItem,
   Link,
   Button,
-  Select,
-  SelectItem,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem
 } from '@nextui-org/react'
 import { useTranslation } from 'react-i18next'
-import { FaHome, FaShoppingCart, FaUser } from 'react-icons/fa'
+import {FaChevronDown, FaHome, FaShoppingCart, FaUser} from 'react-icons/fa'
 import cartIcon from '../../assets/SVG/cart-icon.svg'
 import flagUse from '../../assets/SVG/flag-usa.svg'
 import logo from '../../assets/SVG/logo.svg'
@@ -34,12 +32,18 @@ export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { t, i18n } = useTranslation()
   const [language, setLanguage] = useState(i18n.language)
+  const [selectedLanguage, setSelectedLanguage] = useState(language)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userData, setUserData] = useState<IUser | null>(null)
   const [cartData, setCartData] = useState<any>(null)
   const [exchangeData, setExchangeData] = useState<any>(null)
   const [roles, setRoles] = useState<IRoles[]>([])
 
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value)
+    setSelectedLanguage(value)
+    i18n.changeLanguage(value)
+  }
   useEffect(() => {
     const fetchUserData = async () => {
       const userResponse = await fetchUserDetail()
@@ -97,11 +101,6 @@ export default function NavbarComponent() {
     }
   }
 
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value)
-    i18n.changeLanguage(value)
-  }
-
   const handleLogout = () => {
     removeLocalStorage('user')
     removeLocalStorage('cart')
@@ -116,6 +115,9 @@ export default function NavbarComponent() {
   const itemsInCart =
     (cartData?.vehicles?.length || 0) + (cartData?.tours?.length || 0) + (cartData?.transfer?.length || 0)
 
+  const getFlag = (language: string) => {
+    return language === 'en' ? flagUse : flagMex
+  }
   return (
     <>
       <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className='hidden sm:flex'>
@@ -129,25 +131,35 @@ export default function NavbarComponent() {
 
         <NavbarContent justify='start' className='hidden sm:flex'>
           <NavbarItem className='w-1/2'>
-            <Select
-              placeholder={t('navBar.select_language')}
-              value={language}
-              onChange={e => handleLanguageChange(e.target.value)}
-              className='w-full'
-            >
-              <SelectItem value='en' key={'en'}>
-                <div className='flex mx-auto'>
-                  <img src={flagUse} />
-                  <span className='ml-2'>En</span>
-                </div>
-              </SelectItem>
-              <SelectItem value='es' key={'es'}>
-                <div className='flex mx-auto'>
-                  <img src={flagMex} />
-                  <span className='ml-2'>Es</span>
-                </div>
-              </SelectItem>
-            </Select>
+
+<Dropdown>
+  <DropdownTrigger>
+    <Button className='w-full sm:w-auto flex items-center justify-between'>
+      <div className='flex items-center'>
+        <img src={getFlag(selectedLanguage)} alt={selectedLanguage} className='mr-2' />
+        {selectedLanguage === 'en' ? 'En' : 'Es'}
+      </div>
+      <FaChevronDown className='ml-2' />
+    </Button>
+  </DropdownTrigger>
+  <DropdownMenu
+    aria-label='Select Language'
+    onAction={key => handleLanguageChange(key as string)}
+  >
+    <DropdownItem key='en'>
+      <div className='flex mx-auto'>
+        <img src={flagUse} alt='En' />
+        <span className='ml-2'>En</span>
+      </div>
+    </DropdownItem>
+    <DropdownItem key='es'>
+      <div className='flex mx-auto'>
+        <img src={flagMex} alt='Es' />
+        <span className='ml-2'>Es</span>
+      </div>
+    </DropdownItem>
+  </DropdownMenu>
+</Dropdown>
           </NavbarItem>
           {isLoggedIn ? (
             <NavbarContent as='div' justify='end' className='flex items-center'>

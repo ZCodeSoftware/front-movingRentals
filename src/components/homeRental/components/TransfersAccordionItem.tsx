@@ -6,13 +6,9 @@ import { fetchTransfers } from '../../../services/transfers/GET/transfers.get.se
 import { ISelectData } from '../models/Select-data';
 
 interface TransfersAccordionItemProps {
-
   selectData: ISelectData;
-
   setSelectData: React.Dispatch<React.SetStateAction<ISelectData>>;
-
   setSelectedTransfer: React.Dispatch<React.SetStateAction<ITransfers[]>>;
-
 }
 
 const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectData, setSelectData, setSelectedTransfer }) => {
@@ -40,7 +36,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
   const handleSave = (transfer: ITransfers) => {
     setSelectData((prev: any) => ({
       ...prev,
-      transfer: [...prev.transfer, { transfer, date: new Date() }]
+      transfer: [...(prev.transfer || []), { transfer, date: new Date() }]
     }));
     setSelectedTransfer([transfer]);
   };
@@ -48,7 +44,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
   const handleRemove = (transfer: ITransfers) => {
     setSelectData((prev: ISelectData) => ({
       ...prev,
-      transfer: prev.transfer.filter((item: any) => item.transfer._id !== transfer._id)
+      transfer: (prev.transfer || []).filter((item: any) => item.transfer._id !== transfer._id)
     }));
     setSelectedTransfer([]);
   };
@@ -63,7 +59,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
             <Button
               className='w-full m-2'
               onPress={() => {
-                if (selectData.transfer.some(s => s.transfer._id === transfer._id)) {
+                if ((selectData.transfer || []).some(s => s.transfer._id === transfer._id)) {
                   handleRemove(transfer);
                 } else {
                   handleSave(transfer);
@@ -72,7 +68,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
             >
               {transfer.name}
             </Button>
-            {selectData.transfer.some(s => s.transfer._id === transfer._id) && (
+            {(selectData.transfer || []).some(s => s.transfer._id === transfer._id) && (
               <Button
                 className='h-full ml-2 flex items-center justify-center'
                 onPress={() => handleRemove(transfer)}

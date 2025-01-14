@@ -94,7 +94,6 @@ const Home = () => {
   if (loading) {
     return <LoaderComponent />
   }
-  console.log(data, 'data')
   return (
     <main className='w-full bg-backgroundWhite'>
       <div
@@ -133,7 +132,7 @@ const Home = () => {
           <h1 className='text-xl mb-2'>{t('listByCategory.vehicle_title')}</h1>
           <div className='flex w-full mx-auto overflow-x-auto'>
             <div className='flex space-x-4 md:space-x-6 w-max'>
-              <HomeCards items={data.filter(v => (v.disclaimerEn || v.disclaimerEs) && v)} />
+              <HomeCards items={data.filter(v => v.image)} />
             </div>
           </div>
         </div>

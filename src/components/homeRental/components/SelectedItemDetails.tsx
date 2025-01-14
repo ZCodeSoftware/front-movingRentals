@@ -1,7 +1,7 @@
 import { Button, Spinner, DatePicker } from '@nextui-org/react'
 import { FaShoppingCart, FaTimes } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
-import { today, getLocalTimeZone, ZonedDateTime, parseZonedDateTime } from '@internationalized/date'
+import {today, getLocalTimeZone, ZonedDateTime, parseZonedDateTime, now} from '@internationalized/date'
 import { ISelectData, ISelectItems } from '../models/Select-data'
 import { ITransfers } from '../../../services/transfers/models/transfers.interface'
 import { ITours } from '../../../services/products/models/tours.interface'
@@ -36,24 +36,48 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
   selectedTours,
   selectedVehicles,
   clearSelection,
-  selectDate,
   handleTravelersChange
 }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [totalCost, setTotalCost] = useState<number>(0)
-
-  const handleDateChange = (value: any) => {
-    if (!(value instanceof ZonedDateTime)) {
-      value = parseZonedDateTime(value)
-    }
-    setSelectDate(value)
-    if (value && value.day < today(getLocalTimeZone()).day) {
-      setIsSubmitDisable(true)
-    } else {
-      setIsSubmitDisable(false)
-    }
+const handleTourDateChange = (value: any, id: string) => {
+  if (!(value instanceof ZonedDateTime)) {
+    value = parseZonedDateTime(value.toString());
   }
+
+  setSelectData((prevState: any) => {
+    const updatedTours = prevState.selectedTours.map((item: any) =>
+      item.tour._id === id ? { ...item, date: value } : item
+    );
+    return { ...prevState, selectedTours: updatedTours };
+  });
+
+  if (value && value.day < today(getLocalTimeZone()).day) {
+    setIsSubmitDisable(true);
+  } else {
+    setIsSubmitDisable(false);
+  }
+};
+
+const handleTransferDateChange = (value: any, id: string) => {
+  if (!(value instanceof ZonedDateTime)) {
+    value = parseZonedDateTime(value.toString());
+  }
+
+  setSelectData((prevState: any) => {
+    const updatedTransfers = prevState.selectedTransfers.map((item: any) =>
+      item._id === id ? { ...item, date: value } : item
+    );
+    return { ...prevState, selectedTransfers: updatedTransfers };
+  });
+
+  if (value && value.day < today(getLocalTimeZone()).day) {
+    setIsSubmitDisable(true);
+  } else {
+    setIsSubmitDisable(false);
+  }
+};
 
   const calculateVehiclePrice = ({
     vehicle,
@@ -197,19 +221,19 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
             </div>
             <div className='col-span-12 md:col-span-6 flex justify-center'>
               <DatePicker
-                className='w-full'
-                label='Fecha del Tour'
-                onChange={handleDateChange}
-                validate={(value: any) => {
-                  if (value && value.day < today(getLocalTimeZone()).day) {
-                    setIsSubmitDisable(true)
-                    return t('HomeRental.date_picker.previous_day_valid')
-                  } else {
-                    setIsSubmitDisable(false)
-                  }
-                  return true
-                }}
-                value={selectDate}
+                  className='w-full'
+                  label='Fecha del Tour'
+                  onChange={(value) => handleTourDateChange(value, tour._id)}
+                  validate={(value: any) => {
+                    if (value && value.day < today(getLocalTimeZone()).day) {
+                      setIsSubmitDisable(true);
+                      return t('HomeRental.date_picker.previous_day_valid');
+                    } else {
+                      setIsSubmitDisable(false);
+                    }
+                    return true;
+                  }}
+                  value={selectData.selectedTours.find((item: any) => item.tour._id === tour._id)?.date || now(getLocalTimeZone())}
               />
             </div>
             <div className='col-span-12'>
@@ -249,11 +273,11 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
                 <FaTimes size={20} />
               </button>
               <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg grid grid-cols-12 gap-4 max-h-[21rem] overflow-y-auto scroll-container'>
-                <div className='col-span-12 md:col-span-6'>
+                <div className='col-span-12 md:col-span-6 rounded-xl'>
                   <img
                     src={getVehicleImage(vehicle)}
                     alt='Placeholder'
-                    className='w-full h-28 object-cover rounded-lg'
+                    className='w-full h-32 object-contain rounded-2xl'
                   />
                 </div>
                 <div className='col-span-12 md:col-span-6 flex justify-center flex-col'>
@@ -348,21 +372,23 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
           </button>
           <div className='bg-white bg-opacity-50 backdrop-blur-lg p-4 rounded-lg shadow-lg grid grid-cols-12 gap-4 max-h-[21rem] overflow-y-auto scroll-container'>
             <div className='col-span-12 md:col-span-5 flex justify-center flex-col'>
+
               <DatePicker
-                className='w-full'
-                label='Fecha del Traslado'
-                onChange={handleDateChange}
-                validate={(value: any) => {
-                  if (value && value.day < today(getLocalTimeZone()).day) {
-                    setIsSubmitDisable(true)
-                    return t('HomeRental.date_picker.previous_day_valid')
-                  } else {
-                    setIsSubmitDisable(false)
-                  }
-                  return true
-                }}
-                value={selectDate}
+                  className='w-full'
+                  label='Fecha del Traslado'
+                  onChange={(value) => handleTransferDateChange(value, transfer._id)}
+                  validate={(value: any) => {
+                    if (value && value.day < today(getLocalTimeZone()).day) {
+                      setIsSubmitDisable(true);
+                      return t('HomeRental.date_picker.previous_day_valid');
+                    } else {
+                      setIsSubmitDisable(false);
+                    }
+                    return true;
+                  }}
+                  value={selectData.selectedTransfers.find((item: any) => item._id === transfer._id)?.date || now(getLocalTimeZone())}
               />
+
               <div className='flex flex-col gap-4 mt-4'>
                 <div>
                   <label htmlFor='travelers' className='block text-sm font-medium text-gray-700'>
