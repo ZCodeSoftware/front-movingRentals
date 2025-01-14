@@ -3,7 +3,6 @@ import { Card, CardFooter, Image } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProductDetailModal from '../../list-by-category/components/ProductDetailModal'
-import { HOME_CARDS_CONSTANTS } from '../constants/home.constants'
 
 const HomeCards = ({ items }: any) => {
   const [openDetailModal, setOpenDetailModal] = useState(false)

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { NextUIProvider, DateRangePicker, Button } from '@nextui-org/react'
-import { getLocalTimeZone, now, parseZonedDateTime, ZonedDateTime } from '@internationalized/date'
+import { getLocalTimeZone, now, ZonedDateTime } from '@internationalized/date'
 import { useTranslation } from 'react-i18next'
 import { IDatePickerSectionProps } from '../models/date-picker-props'
 import { ISelectData, ISelectItems } from '../models/Select-data'
 import { getLocalStorage } from '../../../utils/local-storage/getLocalStorage'
-import { IVehicles } from '../../../services/products/models/vehicles.interface'
 import calculateVehiclePrice from '../../../utils/calculate-cost/calculateCost'
 
 const DatePickerSection: React.FC<IDatePickerSectionProps> = ({

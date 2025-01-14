@@ -20,7 +20,7 @@ export interface ISelectTours {
 
 export interface ISelectTransfers {
   transfer: ITransfers;
-  date: Date;
+  date: ZonedDateTime;
 }
 
 export interface ISelectData {
@@ -29,4 +29,7 @@ export interface ISelectData {
   selectedTours: ISelectTours[]
   branch: string
   transfer: ISelectTransfers[]
+  selectDate?: any
+  selectedVehicles?: any
+  selectedTransfers?: any
 }

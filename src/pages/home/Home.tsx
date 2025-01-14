@@ -22,18 +22,7 @@ const Home = () => {
   const [data, setData] = useState<ICategories[]>([])
   const [toursData, setToursData] = useState<ITours[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [isSticky, setIsSticky] = useState(false)
   const { t } = useTranslation()
-  const handleScroll = () => {
-    setIsSticky(window.pageYOffset >= 80)
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   interface WeatherData {
     main: {

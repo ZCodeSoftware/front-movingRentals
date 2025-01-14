@@ -1,7 +1,7 @@
 import { Button, Spinner, DatePicker } from '@nextui-org/react'
 import { FaShoppingCart, FaTimes } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
-import { today, getLocalTimeZone, ZonedDateTime } from '@internationalized/date'
+import { today, getLocalTimeZone, ZonedDateTime, parseZonedDateTime } from '@internationalized/date'
 import { ISelectData, ISelectItems } from '../models/Select-data'
 import { ITransfers } from '../../../services/transfers/models/transfers.interface'
 import { ITours } from '../../../services/products/models/tours.interface'
@@ -45,7 +45,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
 
   const handleDateChange = (value: any) => {
     if (!(value instanceof ZonedDateTime)) {
-      value = ZonedDateTime.from(value)
+      value = parseZonedDateTime(value)
     }
     setSelectDate(value)
     if (value && value.day < today(getLocalTimeZone()).day) {
@@ -63,10 +63,10 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
     dates: { start: ZonedDateTime; end: ZonedDateTime }
   }) => {
     if (!(dates.start instanceof ZonedDateTime)) {
-      dates.start = ZonedDateTime.from(dates.start)
+      dates.start = parseZonedDateTime(dates.start)
     }
     if (!(dates.end instanceof ZonedDateTime)) {
-      dates.end = ZonedDateTime.from(dates.end)
+      dates.end = parseZonedDateTime(dates.end)
     }
 
     const { price, pricePer4, pricePer8, pricePer24 } = vehicle
@@ -123,26 +123,27 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
     })
 
     if (Array.isArray(selectedVehicles)) {
-      selectedVehicles.forEach(vehicle => {
+      selectedVehicles.forEach(() => {
         if (selectData && selectData.selectedItems) {
           selectData.selectedItems.forEach(
-            (item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+            (item: ISelectItems) => {
               const { vehicle, dates } = item
               if (dates && dates.start && dates.end) {
-                cost += calculateVehiclePrice({ vehicle, dates })
+                cost += calculateVehiclePrice({ vehicle, dates: { start: dates.start, end: dates.end } })
               }
             }
           )
         }
       })
     } else if (selectedVehicles && typeof selectedVehicles === 'object') {
-      const vehicle = selectedVehicles
       if (selectData && selectData.selectedItems) {
         selectData.selectedItems.forEach(
-          (item: { vehicle: IVehicles; dates: { start: ZonedDateTime; end: ZonedDateTime } }) => {
+          (item: ISelectItems) => {
             const { vehicle, dates } = item
             if (dates && dates.start && dates.end) {
-              cost += calculateVehiclePrice({ vehicle, dates })
+              if (dates.start && dates.end) {
+                cost += calculateVehiclePrice({ vehicle, dates: { start: dates.start, end: dates.end } })
+              }
             }
           }
         )
@@ -261,6 +262,7 @@ const SelectedItemDetails: React.FC<SelectedItemDetailsProps> = ({
                     vehicle={vehicle}
                     selectData={selectData}
                     setIsSubmitDisable={setIsSubmitDisable}
+                    initialDate={selectData.selectedItems.find((item: ISelectItems) => item.vehicle._id === vehicle._id)?.dates || { start: null, end: null }}
                   />
                   <div>
                     <label htmlFor='travelers' className='block text-sm font-medium text-gray-700 mt-2'>

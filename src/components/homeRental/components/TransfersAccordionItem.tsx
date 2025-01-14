@@ -38,7 +38,7 @@ const TransfersAccordionItem: React.FC<TransfersAccordionItemProps> = ({ selectD
   }, [loading, transfers]);
 
   const handleSave = (transfer: ITransfers) => {
-    setSelectData((prev: ISelectData) => ({
+    setSelectData((prev: any) => ({
       ...prev,
       transfer: [...prev.transfer, { transfer, date: new Date() }]
     }));

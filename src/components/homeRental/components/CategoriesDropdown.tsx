@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Button,
   Skeleton,
@@ -19,7 +18,6 @@ const CategoriesAccordion: React.FC<ICategoriesDropdownProps> = ({
   setSelectedVehicle
 }) => {
   const { t } = useTranslation();
-  const [openPickers, setOpenPickers] = useState(new Set());
 
   const getData = async (categoryId: string) => {
     if (categoryId && !vehiclesByCategory[categoryId]) {
@@ -58,11 +56,6 @@ const CategoriesAccordion: React.FC<ICategoriesDropdownProps> = ({
                       className='w-full m-2 flex items-center justify-start p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition'
                       onPress={() => {
                         setSelectedVehicle(p);
-                        setOpenPickers(prev =>
-                          prev.has(p._id)
-                            ? new Set([...prev].filter(id => id !== p._id))
-                            : new Set(prev).add(p._id)
-                        );
                       }}
                     >
                       {p.images && p.images.length > 0 && (

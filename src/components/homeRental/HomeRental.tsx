@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Accordion, AccordionItem, DatePicker } from '@nextui-org/react'
 import { IHomeRentalProps } from './models/home-rental-props.interface'
 import { IVehicles } from '../../services/products/models/vehicles.interface'
-import { ISelectData } from './models/Select-data'
 import ValidateProductInCart from '../../pages/cart/utils/validateProductInCart'
 import { postCart } from '../../services/cart/POST/cart.post.service'
 import { IUser } from '../../services/users/models/user.interface'
@@ -24,7 +23,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
   const [userData, setUserData] = useState<IUser>()
   const [vehiclesByCategory, setVehiclesByCategory] = useState<Record<string, IVehicles[]>>({})
   const [loading, setLoading] = useState<Record<string, boolean>>({})
-  const [selectData, setSelectData] = useState<ISelectData>({
+  const [selectData, setSelectData] = useState<any>({
     travelers: { adults: 1, childrens: 0 },
     selectedItems: [],
     selectedTours: [],
@@ -92,7 +91,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       return
     }
 
-    const formattedItems = selectData.selectedItems.map(item => ({
+    const formattedItems = selectData.selectedItems.map((item: any) => ({
       ...item,
       dates: item.dates
         ? {
@@ -104,13 +103,13 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       total: item.total
     }))
 
-    const formattedTours = selectData.selectedTours.map(item => ({
+    const formattedTours = selectData.selectedTours.map((item: any) => ({
       ...item,
       date: item.date ? item.date.toString() : null,
       tour: item.tour ? item.tour._id : null
     }))
 
-    const formattedTransfers = selectData.transfer.map(item => ({
+    const formattedTransfers = selectData.transfer.map((item: any) => ({
       ...item,
       date: item.date instanceof Date ? item.date.toISOString() : null,
       transfer: item.transfer._id ? item.transfer._id : null
@@ -122,7 +121,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       ? [
           ...localBackCart.selectedItems,
           ...formattedItems.filter(
-            item => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
+            (item: any) => !localBackCart.selectedItems.some((localItem: any) => localItem.vehicle === item.vehicle)
           )
         ]
       : formattedItems
@@ -131,7 +130,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       ? [
           ...localBackCart.selectedTours,
           ...formattedTours.filter(
-            item => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
+            (item: any) => !localBackCart.selectedTours.some((localItem: any) => localItem.tour === item.tour)
           )
         ]
       : formattedTours
@@ -140,12 +139,13 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
       ? [
           ...localBackCart.transfer,
           ...formattedTransfers.filter(
-            item => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
+            (item: any) => !localBackCart.transfer.some((localItem: any) => localItem.transfer === item.transfer)
           )
         ]
       : formattedTransfers
 
     const backPayload = {
+      branch: "67565e0566c5d8a60202adb8",
       transfer: combinedTransfers,
       travelers: selectData.travelers,
       selectedItems: combinedVehicle,
@@ -153,6 +153,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
     }
 
     const localStoragePayload = {
+      branch: "67565e0566c5d8a60202adb8",
       transfer: selectData.transfer,
       travelers: selectData.travelers,
       selectedItems: selectData.selectedItems,
@@ -218,21 +219,21 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
 
   const clearSelection = (type: string, id: string) => {
     if (type === 'transfer') {
-      setSelectData(prevState => ({
+      setSelectData((prevState: any) => ({
         ...prevState,
-        transfer: prevState.transfer.filter(transfer => transfer.transfer._id !== id),
-        selectedTransfers: prevState.selectedTransfers.filter(transfer => transfer._id !== id)
+        transfer: prevState.transfer.filter((transfer: any) => transfer.transfer._id !== id),
+        selectedTransfers: prevState.selectedTransfers.filter((transfer: any) => transfer._id !== id)
       }))
     } else if (type === 'tour') {
-      setSelectData(prevState => ({
+      setSelectData((prevState: any) => ({
         ...prevState,
-        selectedTours: prevState.selectedTours.filter(tour => tour.tour._id !== id)
+        selectedTours: prevState.selectedTours.filter((tour: any) => tour.tour._id !== id)
       }))
     } else if (type === 'vehicle') {
-      setSelectData(prevState => ({
+      setSelectData((prevState: any) => ({
         ...prevState,
-        selectedItems: prevState.selectedItems.filter(item => item.vehicle._id !== id),
-        selectedVehicles: prevState.selectedVehicles.filter(vehicle => vehicle._id !== id)
+        selectedItems: prevState.selectedItems.filter((item: any) => item.vehicle._id !== id),
+        selectedVehicles: prevState.selectedVehicles.filter((vehicle: any) => vehicle._id !== id)
       }))
     }
     setIsSubmitDisable(false)
@@ -240,14 +241,14 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
 
   const handleTravelersChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target
-    setSelectData(prevState => ({
+    setSelectData((prevState: any) => ({
       ...prevState,
       travelers: { ...prevState.travelers, adults: parseInt(value, 10) }
     }))
   }
 
   const handleDateChange = (date: any) => {
-    setSelectData(prevState => ({
+    setSelectData((prevState: any) => ({
       ...prevState,
       selectDate: date
     }))
@@ -268,7 +269,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   setSelectData={setSelectData}
                   setSelectedTransfer={transfers => {
                     const transfersArray = Array.isArray(transfers) ? transfers : [transfers]
-                    setSelectData(prevState => ({
+                    setSelectData((prevState: any) => ({
                       ...prevState,
                       selectedTransfers: [...prevState.selectedTransfers, ...transfersArray],
                       transfer: [
@@ -291,7 +292,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   setIsSubmitDisable={setIsSubmitDisable}
                   setSelectedVehicle={vehicles => {
                     const vehiclesArray = Array.isArray(vehicles) ? vehicles : [vehicles]
-                    setSelectData(prevState => ({
+                    setSelectData((prevState: any) => ({
                       ...prevState,
                       selectedVehicles: [...prevState.selectedVehicles, ...vehiclesArray],
                       selectedItems: [
@@ -311,7 +312,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   setSelectData={setSelectData}
                   setSelectedTour={tours => {
                     const toursArray = Array.isArray(tours) ? tours : [tours]
-                    setSelectData(prevState => ({
+                    setSelectData((prevState: any) => ({
                       ...prevState,
                       selectedTours: [
                         ...prevState.selectedTours,
@@ -330,9 +331,9 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
           <div className='w-2/4 h-auto min-h-[48px] border border-black opacity-20 md:w-0 sm:h-auto sm:mx-auto' />
         </div>
         <div className='w-full md:w-1/2 p-4'>
-          {selectData.selectedTransfers.length > 0 ||
-          selectData.selectedTours.length > 0 ||
-          selectData.selectedVehicles.length > 0 ? (
+          {(selectData.selectedTransfers && selectData.selectedTransfers.length > 0) ||
+          (selectData.selectedTours && selectData.selectedTours.length > 0) ||
+          (selectData.selectedVehicles && selectData.selectedVehicles.length > 0) ? (
             <SelectedItemDetails
               selectData={selectData}
               setSelectData={setSelectData}
@@ -366,7 +367,7 @@ const HomeRental: React.FC<IHomeRentalProps> = ({ categoriesData }) => {
                   id='travelers'
                   name='travelers'
                   className='mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'
-                  value={selectData.travelers.adults}
+                  value={selectData?.travelers?.adults || 0}
                   onChange={handleTravelersChange}
                 >
                   {[...Array(10).keys()].map(num => (
