@@ -23,7 +23,7 @@ const Faqs = () => {
 
     <Accordion className="rounded-none pt-4 pb-4 md:w-[40%] bg-[#F0F0F0]" isCompact>
       {faqs.map((category, index) => (
-        <AccordionItem className="rounded-none" isCompact key={index} aria-label={category.category} title={category.category} indicator={({ isOpen }) => (
+        <AccordionItem startContent={<img src={category.category.logo}/>} className="rounded-none" isCompact key={index} aria-label={category.category} title={category.category.title} indicator={({ isOpen }) => (
             isOpen ? <img className="rotate-90" src={minusIcon} alt="Expand Icon" /> : <img src={plusIcon} alt="Collapse Icon"/>
           )}>
           <Accordion isCompact>
